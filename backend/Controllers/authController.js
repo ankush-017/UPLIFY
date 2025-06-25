@@ -92,29 +92,30 @@ export const sendOtpController = async (req, res) => {
 export const verifyOtpController = async (req, res) => {
 
   const { email, otp } = req.body;
+  console.log("Received for verification:", { email, otp });
 
   if (!email || !otp) {
+    console.log("Missing fields");
     return res.status(400).json({ error: 'Missing email or OTP' });
   }
 
   try {
-    const storedOtp = await redisClient.get(`otp:${email}`);
-    console.log(`Stored OTP for ${email}: ${storedOtp}, Provided: ${otp}`);
+    const storedOtp = await redisClient.get(`otp:${email.toLowerCase()}`);
+    console.log(`Stored: ${storedOtp}, Provided: ${otp}`);
 
     if (!storedOtp) {
       return res.status(400).json({ verified: false, error: 'OTP expired or not sent' });
     }
 
     if (storedOtp === otp) {
-      await redisClient.del(`otp:${email}`);
+      await redisClient.del(`otp:${email.toLowerCase()}`);
       return res.status(200).json({ success: true });
     } else {
       return res.status(400).json({ success: false, error: 'Invalid OTP' });
     }
-  }
+  } 
   catch (err) {
     console.error("Redis error during OTP verification:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
-
-};
+}

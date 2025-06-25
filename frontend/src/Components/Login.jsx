@@ -199,7 +199,7 @@ export default function Login({ onClose }) {
   };
   const handleVerifyOtp = async () => {
     try {
-      const res = await axios.post("https://uplify.onrender.com/api/auth/verify-otp", { email, otp });
+      const res = await axios.post("https://uplify.onrender.com/api/auth/verify-otp", { email: email.toLowerCase(), otp });
       if (res.data.success) {
         toast.success("Email verified");
         setEmailVerified(true);

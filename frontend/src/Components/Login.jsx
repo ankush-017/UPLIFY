@@ -188,7 +188,7 @@ export default function Login({ onClose }) {
       return;
     }
     try {
-      const res = await axios.post("https://uplify.onrender.com/api/auth/send-otp", { email });
+      const res = await axios.post("http://localhost:8080/api/auth/send-otp", { email });
       toast.success("OTP sent to email");
       setOtpSent(true);
       setShowOtpModal(true);
@@ -197,21 +197,28 @@ export default function Login({ onClose }) {
       toast.error("Failed to send OTP");
     }
   };
-  const handleVerifyOtp = async () => {
-    try {
-      const res = await axios.post("https://uplify.onrender.com/api/auth/verify-otp", { email: email.toLowerCase(), otp });
-      if (res.data.success) {
-        toast.success("Email verified");
-        setEmailVerified(true);
-        setShowOtpModal(false);
-      }
-      else {
-        toast.error("Invalid OTP");
-      }
-    } catch (err) {
-      toast.error("OTP verification failed");
+const handleVerifyOtp = async () => {
+  console.log("Verifying OTP for:", email, "OTP:", otp);
+  try {
+    const res = await axios.post("http://localhost:8080/api/auth/verify-otp", {
+      email: email.toLowerCase(),
+      otp
+    });
+    console.log("Verify OTP response:", res.data);
+
+    if (res.data.success) {
+      toast.success("Email verified");
+      setEmailVerified(true);
+      setShowOtpModal(false);
+    } else {
+      toast.error("Invalid OTP");
     }
-  };
+  } 
+  catch (err) {
+    console.log("OTP verification error:", err.response?.data || err.message);
+    toast.error("OTP verification failed");
+  }
+};
 
   return (
     <>

@@ -9,21 +9,21 @@ dotenv.config();
 const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://uplify-alpha.vercel.app'
+  'https://uplify-alpha.vercel.app',
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // Allow curl/Postman
+    if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
       return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
     }
+    console.log("❌ Blocked by CORS:", origin);
+    return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
 }));
+
 app.use(express.json());
 
 connectDB();

@@ -45,77 +45,61 @@ export const getUserController = async (req, res) => {
 // SendOTP Controller
 export const sendOtpController = async (req, res) => {
   const { email } = req.body;
+  if (!email) return res.status(400).json({ success: false, error: 'Email required' });
 
-  if (!email) return res.status(400).json({
-    success: true,
-    error: 'Email is required'
-  });
-
-  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+  const normalizedEmail = email.toLowerCase();
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
   try {
-    // Store OTP in Redis with 5-minute expiry
-    const result = await redisClient.set(`otp:${email}`, otp, { EX: 300 });
-    console.log("Redis SET result:", result); // should log "OK"
-    
-    // Send email (you can use nodemailer)
-    // Here’s a mock transporter (replace with real SMTP details)
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: process.env.Email,
-        pass: process.env.password,
-      },
-    });
+    const result = await redisClient.set(`otp:${normalizedEmail}`, otp, { EX: 300 });
+    console.log("🔐 Redis SET:", result, "OTP:", otp, "for", normalizedEmail);
 
+    const transporter = nodemailer.createTransport({ /* your config */ });
     await transporter.sendMail({
-      to: email,
-      subject: 'Your OTP from Uplify',
-      text: `Your OTP is: ${otp}. It expires in 5 minutes.`,
+      to: normalizedEmail,
+      subject: 'Your OTP',
+      text: `Your OTP is ${otp}, valid for 5 mins.`,
     });
 
-    res.status(200).json({
-      success: true,
-      message: 'OTP sent successfully'
-    });
-  }
-  catch (err) {
-    console.error('Error sending OTP:', err);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to send OTP'
-    });
+    res.status(200).json({ success: true, message: 'OTP sent' });
+  } catch (err) {
+    console.error("Error in sendOtp:", err);
+    res.status(500).json({ success: false, error: 'Failed to send OTP' });
   }
 };
 
-// Verify OTP Controller
 export const verifyOtpController = async (req, res) => {
+  console.log("🚀 verifyOtpController HIT");
+  console.log("Request body:", req.body);
 
   const { email, otp } = req.body;
-  console.log("Received for verification:", { email, otp });
-
   if (!email || !otp) {
-    console.log("Missing fields");
+    console.log("❌ Missing email or OTP");
     return res.status(400).json({ error: 'Missing email or OTP' });
   }
 
   try {
-    const storedOtp = await redisClient.get(`otp:${email.toLowerCase()}`);
-    console.log(`Stored: ${storedOtp}, Provided: ${otp}`);
+    const key = `otp:${email.toLowerCase()}`;
+    console.log("🔑 Fetching key:", key);
+
+    const storedOtp = await redisClient.get(key);
+    console.log("📦 Stored OTP:", storedOtp);
 
     if (!storedOtp) {
+      console.log("❌ OTP not found or expired");
       return res.status(400).json({ verified: false, error: 'OTP expired or not sent' });
     }
 
-    if (storedOtp === otp) {
-      await redisClient.del(`otp:${email.toLowerCase()}`);
+    if (storedOtp.trim() === otp.trim()) {
+      await redisClient.del(key);
+      console.log("✅ OTP verified; key deleted");
       return res.status(200).json({ success: true });
     } else {
+      console.log("❌ Provided OTP does not match");
       return res.status(400).json({ success: false, error: 'Invalid OTP' });
     }
-  } 
-  catch (err) {
-    console.error("Redis error during OTP verification:", err);
+  } catch (err) {
+    console.error("🔥 Redis error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
-}
+};

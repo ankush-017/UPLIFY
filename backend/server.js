@@ -3,13 +3,12 @@ import dotenv from 'dotenv';
 import cors from "cors";
 import connectDB from './Config/db.js';
 import authRoutes from './Routes/authRoutes.js'
-import { connectRedis } from './Utils/redisClient.js';
 
 dotenv.config();
 
 const app = express();
 const allowedOrigins = [
-  'http://localhost:3000',
+  'http://localhost:5173',
   'https://uplify-alpha.vercel.app'
 ];
 
@@ -27,7 +26,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-await connectRedis();
 connectDB();
 
 app.get('/', (req, res) => {

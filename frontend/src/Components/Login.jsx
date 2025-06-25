@@ -188,7 +188,7 @@ export default function Login({ onClose }) {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/send-otp", { email });
+      const res = await axios.post("https://uplify.onrender.com/api/auth/send-otp", { email });
       toast.success("OTP sent to email");
       setOtpSent(true);
       setShowOtpModal(true);
@@ -200,7 +200,7 @@ export default function Login({ onClose }) {
 const handleVerifyOtp = async () => {
   console.log("Verifying OTP for:", email, "OTP:", otp);
   try {
-    const res = await axios.post("http://localhost:8080/api/auth/verify-otp", {
+    const res = await axios.post("https://uplify.onrender.com/api/auth/verify-otp", {
       email: email.toLowerCase(),
       otp
     });

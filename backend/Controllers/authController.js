@@ -64,7 +64,7 @@ export const sendOtpController = async (req, res) => {
       service: 'Gmail',
       auth: {
         user: process.env.Email,
-        pass: process.env.Password,
+        pass: process.env.password,
       },
     });
 

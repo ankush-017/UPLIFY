@@ -45,7 +45,7 @@ export default function Login({ onClose }) {
       const user = result.user;
       const idToken = await user.getIdToken();
       try {
-        const res = await axios.get(`http://localhost:8080/api/auth/role/${user.uid}`,
+        const res = await axios.get(`https://uplify.onrender.com/api/auth/role/${user.uid}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -97,7 +97,7 @@ export default function Login({ onClose }) {
         userCred = await signInWithEmailAndPassword(auth, email, password);
         const user = userCred.user;
         const idToken = await user.getIdToken();
-        const res = await axios.get(`http://localhost:8080/api/auth/role/${user.uid}`,
+        const res = await axios.get(`https://uplify.onrender.com/api/auth/role/${user.uid}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -143,7 +143,7 @@ export default function Login({ onClose }) {
     try {
       const currentUser = auth.currentUser;
       const idToken = await currentUser.getIdToken();
-      const res = await axios.post("http://localhost:8080/api/auth/register", {
+      const res = await axios.post("https://uplify.onrender.com/api/auth/register", {
         uid: pendingUser.uid,
         email: pendingUser.email,
         name: pendingUser.displayName,
@@ -188,7 +188,7 @@ export default function Login({ onClose }) {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/send-otp", { email });
+      const res = await axios.post("https://uplify.onrender.com/api/auth/send-otp", { email });
       toast.success("OTP sent to email");
       setOtpSent(true);
       setShowOtpModal(true);
@@ -199,7 +199,7 @@ export default function Login({ onClose }) {
   };
   const handleVerifyOtp = async () => {
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/verify-otp", { email, otp });
+      const res = await axios.post("https://uplify.onrender.com/api/auth/verify-otp", { email, otp });
       if (res.data.success) {
         toast.success("Email verified");
         setEmailVerified(true);

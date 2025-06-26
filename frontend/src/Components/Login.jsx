@@ -183,6 +183,7 @@ export default function Login({ onClose }) {
   };
 
   const handleSendOtp = async () => {
+    
     if (!email) {
       toast.error("Enter email first");
       return;
@@ -196,7 +197,9 @@ export default function Login({ onClose }) {
     catch (err) {
       toast.error("Failed to send OTP");
     }
+
   };
+
 const handleVerifyOtp = async () => {
   console.log("Verifying OTP for:", email, "OTP:", otp);
   try {

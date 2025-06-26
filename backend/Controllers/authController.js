@@ -44,62 +44,76 @@ export const getUserController = async (req, res) => {
 
 // SendOTP Controller
 export const sendOtpController = async (req, res) => {
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ success: false, error: 'Email required' });
 
-  const normalizedEmail = email.toLowerCase();
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ success: false, error: 'Email required' });
+  }
+
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log('Generated OTP:', otp);
 
   try {
-    const result = await redisClient.set(`otp:${normalizedEmail}`, otp, { EX: 300 });
-    console.log("🔐 Redis SET:", result, "OTP:", otp, "for", normalizedEmail);
-
-    const transporter = nodemailer.createTransport({ /* your config */ });
+    // Send OTP via Email
     await transporter.sendMail({
-      to: normalizedEmail,
-      subject: 'Your OTP',
-      text: `Your OTP is ${otp}, valid for 5 mins.`,
+      from: `"TeeFusion" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Your Password Reset OTP',
+      html: `
+        <div style="font-family: Arial, sans-serif;">
+          <h2 style="color: #2563eb;">TeeFusion Password Reset</h2>
+          <p>Your OTP code is:</p>
+          <h3 style="letter-spacing: 3px;">${otp}</h3>
+          <p>This code will expire in 5 minutes.</p>
+        </div>
+      `,
     });
 
-    res.status(200).json({ success: true, message: 'OTP sent' });
-  } catch (err) {
-    console.error("Error in sendOtp:", err);
-    res.status(500).json({ success: false, error: 'Failed to send OTP' });
+    console.log('✅ OTP Email Sent');
+    // Save OTP in Redis with 5 minutes expiry
+    await redisClient.setEx(`otp:${email}`, 300, otp);
+
+    return res.status(200).send({
+      success: true,
+      message: 'OTP sent to your email',
+    });
+  } 
+  catch (err) {
+    console.error('❌ sendOtpController Error:', err);
+    return res.status(500).send({
+      success: false,
+      message: 'Something went wrong while sending OTP',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    });
   }
 };
 
 export const verifyOtpController = async (req, res) => {
-  console.log("🚀 verifyOtpController HIT");
-  console.log("Request body:", req.body);
-
-  const { email, otp } = req.body;
-  if (!email || !otp) {
-    console.log("❌ Missing email or OTP");
-    return res.status(400).json({ error: 'Missing email or OTP' });
-  }
-
+  
   try {
-    const key = `otp:${email.toLowerCase()}`;
-    console.log("🔑 Fetching key:", key);
+    const { email, otp } = req.body;
 
-    const storedOtp = await redisClient.get(key);
-    console.log("📦 Stored OTP:", storedOtp);
-
-    if (!storedOtp) {
-      console.log("❌ OTP not found or expired");
-      return res.status(400).json({ verified: false, error: 'OTP expired or not sent' });
+    const storedOTP = await redisClient.get(`otp:${email}`);
+    if (!storedOTP || storedOTP !== otp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired OTP'
+      });
     }
-
-    if (storedOtp.trim() === otp.trim()) {
-      await redisClient.del(key);
-      console.log("✅ OTP verified; key deleted");
-      return res.status(200).json({ success: true });
-    } else {
-      console.log("❌ Provided OTP does not match");
-      return res.status(400).json({ success: false, error: 'Invalid OTP' });
-    }
-  } catch (err) {
-    console.error("🔥 Redis error:", err);
-    return res.status(500).json({ error: "Internal server error" });
+    // Mark OTP as verified (valid for 10 minutes)
+    await redisClient.setEx(`otp_verified:${email}`, 600, 'true');
+    await redisClient.del(`otp:${email}`); // Clear the OTP
+    console.log("verified");
+    return res.status(200).json({
+      success: true,
+      message: 'OTP verified successfully'
+    });
+  } 
+  catch (err) {
+    console.error('OTP Verification Error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
   }
 };

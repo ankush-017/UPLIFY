@@ -7,13 +7,7 @@ const router = express.Router();
 router.post('/register', verifyFirebaseToken, registerController);
 router.get('/role/:uid', verifyFirebaseToken, getUserController);
 router.post('/send-otp', sendOtpController);
-router.post('/verify-otp',
-    (req, res, next) => {
-        console.log("📨 Incoming call to /verify-otp");
-        next();
-    },
-    verifyOtpController
-);
+router.post('/verify-otp', verifyOtpController);
 
 
 export default router;

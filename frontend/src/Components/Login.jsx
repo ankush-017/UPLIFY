@@ -45,7 +45,7 @@ export default function Login({ onClose }) {
       const user = result.user;
       const idToken = await user.getIdToken();
       try {
-        const res = await axios.get(`https://uplify.onrender.com/api/auth/role/${user.uid}`,
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/auth/role/${user.uid}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -97,7 +97,7 @@ export default function Login({ onClose }) {
         userCred = await signInWithEmailAndPassword(auth, email, password);
         const user = userCred.user;
         const idToken = await user.getIdToken();
-        const res = await axios.get(`https://uplify.onrender.com/api/auth/role/${user.uid}`,
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/auth/role/${user.uid}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -143,7 +143,7 @@ export default function Login({ onClose }) {
     try {
       const currentUser = auth.currentUser;
       const idToken = await currentUser.getIdToken();
-      const res = await axios.post("https://uplify.onrender.com/api/auth/register", {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/register`, {
         uid: pendingUser.uid,
         email: pendingUser.email,
         name: pendingUser.displayName,
@@ -182,14 +182,17 @@ export default function Login({ onClose }) {
     }
   };
 
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+
   const handleSendOtp = async () => {
-    
+
     if (!email) {
       toast.error("Enter email first");
       return;
     }
+    setIsSendingOtp(true); // Start loading
     try {
-      const res = await axios.post("https://uplify.onrender.com/api/auth/send-otp", { email });
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/send-otp`, { email });
       toast.success("OTP sent to email");
       setOtpSent(true);
       setShowOtpModal(true);
@@ -197,31 +200,37 @@ export default function Login({ onClose }) {
     catch (err) {
       toast.error("Failed to send OTP");
     }
-
+    finally {
+      setIsSendingOtp(false); // Stop loading
+    }
   };
 
-const handleVerifyOtp = async () => {
-  console.log("Verifying OTP for:", email, "OTP:", otp);
-  try {
-    const res = await axios.post("https://uplify.onrender.com/api/auth/verify-otp", {
-      email: email.toLowerCase(),
-      otp
-    });
-    console.log("Verify OTP response:", res.data);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
-    if (res.data.success) {
-      toast.success("Email verified");
-      setEmailVerified(true);
-      setShowOtpModal(false);
-    } else {
-      toast.error("Invalid OTP");
+  const handleVerifyOtp = async () => {
+    console.log("Verifying OTP for:", email, "OTP:", otp);
+    setIsVerifyingOtp(true); // Start loading
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/verify-otp`, {
+        email: email.toLowerCase(),
+        otp,
+      });
+      console.log("Verify OTP response:", res.data);
+
+      if (res.data.success) {
+        toast.success("Email verified");
+        setEmailVerified(true);
+        setShowOtpModal(false);
+      } else {
+        toast.error("Invalid OTP");
+      }
+    } catch (err) {
+      console.log("OTP verification error:", err.response?.data || err.message);
+      toast.error("OTP verification failed");
+    } finally {
+      setIsVerifyingOtp(false); // Stop loading
     }
-  } 
-  catch (err) {
-    console.log("OTP verification error:", err.response?.data || err.message);
-    toast.error("OTP verification failed");
-  }
-};
+  };
 
   return (
     <>
@@ -321,9 +330,11 @@ const handleVerifyOtp = async () => {
                         {!emailVerified && (
                           <button
                             onClick={handleSendOtp}
-                            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition w-full sm:w-auto"
+                            disabled={isSendingOtp}
+                            className={`${isSendingOtp ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"
+                              } text-white px-4 py-2 rounded-lg transition w-full sm:w-auto`}
                           >
-                            {otpSent ? "Resend OTP" : "Send OTP"}
+                            {isSendingOtp ? "Sending..." : (otpSent ? "Resend OTP" : "Send OTP")}
                           </button>
                         )}
                       </div>
@@ -340,9 +351,11 @@ const handleVerifyOtp = async () => {
                           />
                           <button
                             onClick={handleVerifyOtp}
-                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition w-full sm:w-auto"
+                            disabled={isVerifyingOtp}
+                            className={`${isVerifyingOtp ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                              } text-white px-4 py-2 rounded-lg transition w-full sm:w-auto`}
                           >
-                            Verify OTP
+                            {isVerifyingOtp ? "Verifying..." : "Verify OTP"}
                           </button>
                         </div>
                       )}

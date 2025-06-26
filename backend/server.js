@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://uplify-alpha.vercel.app',
+  // 'https://uplify-alpha.vercel.app',
 ];
 
 app.use(cors({

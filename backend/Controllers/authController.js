@@ -5,6 +5,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.Email,   // set in your .env file
+    pass: process.env.password,   // set in your .env file
+  },
+});
+
 export const registerController = async (req, res) => {
 
   const { uid, name, email, role } = req.body
@@ -69,9 +77,9 @@ export const sendOtpController = async (req, res) => {
       `,
     });
 
-    console.log('✅ OTP Email Sent');
+    console.log('OTP Email Sent');
     // Save OTP in Redis with 5 minutes expiry
-    await redisClient.setEx(`otp:${email}`, 300, otp);
+    await redisClient.set(`otp:${email}`, otp, { ex: 300 });
 
     return res.status(200).send({
       success: true,
@@ -79,7 +87,7 @@ export const sendOtpController = async (req, res) => {
     });
   } 
   catch (err) {
-    console.error('❌ sendOtpController Error:', err);
+    console.error('sendOtpController Error:', err);
     return res.status(500).send({
       success: false,
       message: 'Something went wrong while sending OTP',
@@ -88,32 +96,46 @@ export const sendOtpController = async (req, res) => {
   }
 };
 
+// Verify OTP controller
 export const verifyOtpController = async (req, res) => {
-  
+
   try {
     const { email, otp } = req.body;
+    console.log("Received email:", email);
+    console.log("Received otp:", otp);
 
-    const storedOTP = await redisClient.get(`otp:${email}`);
-    if (!storedOTP || storedOTP !== otp) {
+    const key = `otp:${email.trim().toLowerCase()}`;
+    const storedOTP = await redisClient.get(key);
+    console.log("Stored OTP:", storedOTP);
+
+    // Trim both values
+    const trimmedOtp = otp?.toString().trim();
+    const trimmedStoredOtp = storedOTP?.toString().trim();
+
+    console.log("Comparing:", trimmedOtp, "vs", trimmedStoredOtp);
+
+    if (!trimmedStoredOtp || trimmedOtp !== trimmedStoredOtp) {
+      console.log("Mismatch or expired");
       return res.status(400).json({
         success: false,
         message: 'Invalid or expired OTP'
       });
     }
-    // Mark OTP as verified (valid for 10 minutes)
-    await redisClient.setEx(`otp_verified:${email}`, 600, 'true');
-    await redisClient.del(`otp:${email}`); // Clear the OTP
-    console.log("verified");
+
+    await redisClient.set(`otp_verified:${email.trim().toLowerCase()}`, 'true', { ex: 600 });
+    await redisClient.del(key);
+
+    console.log("OTP verified successfully");
     return res.status(200).json({
       success: true,
       message: 'OTP verified successfully'
     });
-  } 
-  catch (err) {
+  } catch (err) {
     console.error('OTP Verification Error:', err);
     return res.status(500).json({
       success: false,
       message: 'Internal server error'
     });
   }
+
 };

@@ -87,38 +87,39 @@ const Navbar = () => {
           ))}
 
           {/* Explore Dropdown - Desktop */}
-          <div className="relative">
-            <button
-              onClick={() => setIsExploreOpen(prev => !prev)}
-              className={`hover:text-blue-600 flex justify-center items-center ${darkMode ? "text-gray-200" : "text-gray-700"} transition-colors`}
-            >
-              Explore
-              {isExploreOpen ? <ChevronUp className='' /> : <ChevronDown className='mt-1' />}
+          <div
+            className="relative"
+            onMouseEnter={() => setIsExploreOpen(true)}
+            // onMouseLeave={() => setIsExploreOpen(false)}
+          >
+            <button className={`hover:text-blue-600 hover:border-b-2 hover:border-blue-600 flex items-center gap-1 ${darkMode ? "text-gray-200" : "text-gray-700"}`}>
+              Explore {isExploreOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
 
             {isExploreOpen && (
               <div
-                className={`absolute right-0 mt-5 rounded-lg shadow-xl min-w-[180px] z-50 py-2 
+                className={`absolute right-0 mt-2 rounded-lg shadow-xl min-w-[180px] z-50 py-2 
         ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}
+        onMouseLeave={()=>setIsExploreOpen(false)}
               >
                 <NavLink
                   to="/projects-libray"
                   onClick={() => setIsExploreOpen(false)}
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-blue-200 transition"
+                  className="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 transition"
                 >
                   Projects Library
                 </NavLink>
                 <NavLink
                   to="/peer-group"
                   onClick={() => setIsExploreOpen(false)}
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  className="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 transition"
                 >
                   Peer Group
                 </NavLink>
                 <NavLink
                   to="/uplify-internship"
                   onClick={() => setIsExploreOpen(false)}
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  className="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 transition"
                 >
                   Uplify Internship
                 </NavLink>

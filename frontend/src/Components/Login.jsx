@@ -10,12 +10,14 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithRedirect,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import axios from "axios";
 import { app } from "../../firebase";
 import { loginImg, google } from "../assets/image.js";
 import { motion } from "framer-motion";
+import ShowRole from "./ShowRole.jsx";
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -40,7 +42,16 @@ export default function Login({ onClose }) {
   const [showOtpModal, setShowOtpModal] = useState(false);
 
   const handleGoogleLogin = async () => {
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     try {
+      if (isMobile) {
+        // Use redirect login flow on mobile devices
+        sessionStorage.setItem("redirectInProgress", "true");
+        await signInWithRedirect(auth, provider);
+        return; // skip the rest, as redirect will handle post-login
+      }
+
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const idToken = await user.getIdToken();
@@ -139,6 +150,7 @@ export default function Login({ onClose }) {
 
   const handleRoleSelection = async (role) => {
     if (!pendingUser) return;
+    // console.log(role);
 
     try {
       const currentUser = auth.currentUser;
@@ -422,27 +434,9 @@ export default function Login({ onClose }) {
       </div>
 
       {showRoleModal && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-xl p-6 w-80 shadow-lg text-center space-y-4">
-            <h2 className="text-xl font-semibold">Who are you?</h2>
-            <p className="text-gray-600">Please select your role</p>
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={() => handleRoleSelection("student")}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                I'm a Student
-              </button>
-              <button
-                onClick={() => handleRoleSelection("company")}
-                className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700"
-              >
-                I'm a Company
-              </button>
-            </div>
-          </div>
-        </div>
+        <ShowRole handleRoleSelection={handleRoleSelection} />
       )}
+
     </>
   );
 }

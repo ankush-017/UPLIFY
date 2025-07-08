@@ -8,6 +8,7 @@ import FaqSection from '../Components/FaqSection';
 import Seo from '../Components/Seo';
 import FeaturedInternships from '../Components/featuredInternships';
 import CareerRoadmaps from '../Components/CareerRoadmaps';
+import WhyHow from '../Components/WhyHow';
 
 function Home() {
 
@@ -21,8 +22,9 @@ function Home() {
       />
       <Hero />
       <FeaturedInternships/>
-      <WhyChooseUplify />
-      <HowUplifyWorks />
+      {/* <WhyChooseUplify />
+      <HowUplifyWorks /> */}
+      <WhyHow/>
       <CoursesSection />
       <CareerRoadmaps/>
       <ResumeBuilderSection />

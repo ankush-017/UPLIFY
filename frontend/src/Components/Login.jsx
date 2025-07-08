@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { login as loginAction } from "../Store/Slice/authSlice.js";
 import { X } from "lucide-react";
 import { FaLock } from "react-icons/fa";
-import { Mail, User, Eye, EyeOff } from "lucide-react";
+import { Mail, User, Eye, EyeOff, Phone } from "lucide-react";
 import toast from 'react-hot-toast';
 import {
   getAuth,
@@ -34,25 +34,38 @@ export default function Login({ onClose }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [phone, setPhone] = useState("");
 
   // email verified
   const [emailVerified, setEmailVerified] = useState(false);
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
+  const [manual, setManual] = useState(false);
 
   const handleGoogleLogin = async () => {
 
+    setLoadingGoogle(true);
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     try {
-      if (isMobile) {
-        // Use redirect login flow on mobile devices
-        sessionStorage.setItem("redirectInProgress", "true");
-        await signInWithRedirect(auth, provider);
-        return; // skip the rest, as redirect will handle post-login
+      let result;
+      try {
+        result = await signInWithPopup(auth, provider);
+      }
+      catch (popupErr) {
+        if (isMobile) {
+          // Use redirect login flow on mobile devices
+          sessionStorage.setItem("redirectInProgress", "true");
+          await signInWithRedirect(auth, provider);
+          return; // skip the rest, as redirect will handle post-login
+        }
+        else {
+          toast.error("Google login failed");
+          return;
+        }
       }
 
-      const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const idToken = await user.getIdToken();
       try {
@@ -83,24 +96,40 @@ export default function Login({ onClose }) {
       console.error("Google login failed:", err);
       // alert(err.message);
     }
+    finally {
+      setLoadingGoogle(false);
+    }
   };
 
   const handleManualAuth = async () => {
-    try {
-      if (!email || !password || (!isLogin && (!name || !confirmPassword))) {
+    setManual(true);
+    if (isLogin) {
+      // Login form validation
+      if (!email || !password) {
         toast.error("Please fill in all required fields.");
+        setManual(false);
         return;
       }
+    } else {
+      // Registration form validation
+      if (!email || !phone || !password || !name || !confirmPassword) {
+        toast.error("Please fill in all required fields.");
+        setManual(false);
+        return;
+      }
+    }
 
-      if (!isLogin && password !== confirmPassword) {
-        toast.error("Passwords do not match.");
-        return;
-      }
+    if (!isLogin && password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
 
-      if (!emailVerified) {
-        toast.error('Please Verify Email');
-        return;
-      }
+    if (!emailVerified && !isLogin) {
+      toast.error("Please Verify Email");
+      return;
+    }
+
+    try {
       let userCred;
 
       if (isLogin) {
@@ -133,6 +162,7 @@ export default function Login({ onClose }) {
           uid: user.uid,
           email: user.email,
           displayName: name,
+          userphone: phone
         });
         setShowRoleModal(true);
       }
@@ -143,8 +173,11 @@ export default function Login({ onClose }) {
         toast.error("This email is already registered")
       }
       else {
-        toast.error("Please try again.");
+        toast.error("Check Email/Password");
       }
+    }
+    finally {
+      setManual(false);
     }
   };
 
@@ -159,6 +192,7 @@ export default function Login({ onClose }) {
         uid: pendingUser.uid,
         email: pendingUser.email,
         name: pendingUser.displayName,
+        phone: pendingUser.userphone,
         role
       },
         {
@@ -244,6 +278,27 @@ export default function Login({ onClose }) {
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    
+    e.preventDefault();
+    if (!email) return toast.error("Please enter your email");
+    const Email = email.toLowerCase().trim();
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/check-email`, { Email });
+      if (response.data.success) {
+        await sendPasswordResetEmail(getAuth(), Email);
+        toast.success("Password reset email sent");
+      }
+      else {
+        toast.error("Email Not registered");
+      }
+
+    }
+    catch (err) {
+      toast.error("Something went wrong");
+      console.error("Error:", err.message);
+    }
+  };
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center px-4">
@@ -267,7 +322,9 @@ export default function Login({ onClose }) {
               className="w-full border border-gray-300 rounded-md py-2 flex items-center justify-center gap-2 mb-4 mt-4 hover:bg-gray-50 transition"
             >
               <img src={google} width={20} height={20} alt="" />
-              <span className="text-gray-800 font-medium">Continue with Google</span>
+              <span className="text-gray-800 font-medium">
+                {loadingGoogle ? "Logging in..." : "Continue with Google"}
+              </span>
             </button>
 
             <div className="flex items-center mb-4">
@@ -304,6 +361,12 @@ export default function Login({ onClose }) {
                   >
                     {showLoginPassword ? <EyeOff /> : <Eye />}
                   </span>
+                </div>
+                <div
+                  className="flex justify-end mb-2 cursor-pointer text-blue-900 hover:underline"
+                  onClick={handleForgotPassword}
+                >
+                  <p>Forgot password?</p>
                 </div>
               </>
               ) :
@@ -372,7 +435,16 @@ export default function Login({ onClose }) {
                         </div>
                       )}
                     </div>
-
+                    <div className="flex items-center border rounded-lg px-3 py-2 mb-3 shadow-sm">
+                      <Phone className="text-blue-800" />
+                      <input
+                        type="tel"
+                        placeholder="Phone number"
+                        className="ml-2 w-full outline-none text-purple-700 placeholder:text-gray-400"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                      />
+                    </div>
                     <div className="flex items-center border rounded-lg px-3 py-2 mb-3 shadow-sm relative">
                       <FaLock size={18} className="text-blue-800" />
                       <input
@@ -409,7 +481,7 @@ export default function Login({ onClose }) {
               onClick={handleManualAuth}
               className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
             >
-              {isLogin ? "Sign In" : "Create Account"}
+              {isLogin ? `${manual ? "Signing ..." : "Sign In"}` : `${manual ? "Creating ..." : "Create Account"}`}
             </button>
 
             <p className="text-center text-sm text-gray-600 mt-4">

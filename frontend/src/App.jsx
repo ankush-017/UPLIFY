@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { app } from "../firebase";
 import ShowRole from './Components/ShowRole';
+import ScrollToTop from './Components/ScrollToTop';
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -105,6 +106,7 @@ function App() {
           },
         }}
       />
+      <ScrollToTop/>
       <Navbar />
       <Outlet />
       <Footer />

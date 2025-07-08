@@ -8,8 +8,8 @@ dotenv.config();
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: process.env.Email,   // set in your .env file
-    pass: process.env.password,   // set in your .env file
+    user: process.env.Email,
+    pass: process.env.password, 
   },
 });
 
@@ -139,3 +139,101 @@ export const verifyOtpController = async (req, res) => {
   }
 
 };
+
+// userVerifybyEmailController 
+export const userVerifybyEmailController = async (req, res) => {
+
+  const { Email } = req.body;
+  const user = await User.findOne({ email: Email });
+  if (user) {
+    res.status(200).send({
+      success: true
+    })
+  }
+  else {
+    res.status(200).send({
+      success: false
+    })
+  }
+
+}
+
+// getuserControllerbyUID
+export const getuserControllerbyUID = async (req, res) => {
+
+
+  const { uid } = req.params;
+  try {
+    const user = await User.findOne({ uid });
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).send({
+      success: true,
+      user,
+    });
+  } 
+  catch (err) {
+    console.error("Error fetching user by UID:", err);
+    return res.status(500).send({
+      success: false,
+      message: "Server error while fetching user details",
+    });
+  }
+};
+
+// updateProfileComtroller
+export const updateProfileController = async (req, res) => {
+
+  const { uid, name, email, phone } = req.body;
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { uid },
+      { name, email, phone },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+
+  } 
+  catch (err) {
+    console.error("Update Profile Error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error on update profile",
+    });
+  }
+};
+
+// allUserController
+export const allUserController = async (req,res) => {
+
+  try{
+    const alluser = await User.find({});
+    res.status(200).send({
+      success: true,
+      alluser
+    })
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).send({
+      success: false,
+    })
+  }
+  
+}

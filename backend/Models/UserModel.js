@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
         unique: true, // Ensures no duplicate Firebase users
     },
     email: { type: String, unique: true, required: true },
+    phone: {type: Number},
     password: { type: String },
     role: { type: String, enum: ['student', 'company'], default: 'student' },
 },

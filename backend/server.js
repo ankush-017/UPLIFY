@@ -18,7 +18,7 @@ app.use(cors({
     if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
       return callback(null, true);
     }
-    console.log("❌ Blocked by CORS:", origin);
+    console.log("Blocked by CORS:", origin);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
@@ -32,6 +32,7 @@ app.get('/', (req, res) => {
     res.send('server sun raha hai')
 })
 app.use('/api/auth', authRoutes);
+app.use('/api/user', authRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`server is running at port ${PORT}`));

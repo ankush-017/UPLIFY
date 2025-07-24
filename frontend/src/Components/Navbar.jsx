@@ -16,6 +16,7 @@ const Navbar = () => {
   const auth = getAuth(app);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isModal, setIsModal] = useState(false);
+  // const [isopen, setIsOpen] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
   const [isExploreOpen, setIsExploreOpen] = useState(false);
@@ -199,11 +200,11 @@ const Navbar = () => {
                   Projects Library
                 </NavLink>
                 <NavLink
-                  to="/peer-group"
+                  to="/uplify-community"
                   onClick={() => setIsExploreOpen(false)}
                   className="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 transition"
                 >
-                  Peer Group
+                  Uplify Community
                 </NavLink>
                 <NavLink
                   to="/uplify-internship"
@@ -368,14 +369,14 @@ const Navbar = () => {
                     Projects Library
                   </NavLink>
                   <NavLink
-                    to="/peer-group"
+                    to="/uplify-community"
                     onClick={() => {
                       setIsExploreOpen(false);
                       setMenuOpen(false);
                     }}
                     className="hover:text-blue-600"
                   >
-                    Peer Group
+                    Uplify Community
                   </NavLink>
                   <NavLink
                     to="/uplify-internship"

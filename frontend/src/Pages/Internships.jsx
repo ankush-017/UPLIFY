@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../superbaseClient';
-import { Briefcase, IndianRupee, MapPin, Pencil, SquareArrowRight, Trash2 } from 'lucide-react';
+import { ArrowBigRightDash, Briefcase, IndianRupee, MapPin, Pencil, SquareArrowRight, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -39,139 +39,161 @@ export default function Internships() {
   }, []);
   return (
     <section
-      className={`min-h-screen px-6 md:px-16 py-10 bg-cover bg-center relative`}
+      className={`min-h-screen bg-cover bg-center`}
       style={{
         backgroundImage: `url(${darkMode ? IBD : InternBgLight})`,
       }}
     >
-      <div className="max-w-7xl grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* ---------- Sidebar (Left) ---------- */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className={`${darkMode ? "bg-white/10" : "bg-white"} p-4 rounded-xl shadow`}>
-            <h3 className="text-lg font-semibold mb-2">📚 Resources</h3>
-            <ul className="text-sm space-y-1">
-              <li><Link to="/resources" className="text-blue-500 hover:underline">Learning Resources</Link></li>
-              <li><Link to="/resume-builder" className="text-blue-500 hover:underline">Resume Builder</Link></li>
-            </ul>
-          </div>
-
-          <div className={`${darkMode ? "bg-white/10" : "bg-white"} p-4 rounded-xl shadow`}>
-            <h3 className="text-lg font-semibold mb-2">👥 Peer Groups</h3>
-            <p className="text-sm mb-2">Join communities to grow and network.</p>
-            <Link to="/peergroups" className="text-blue-500 hover:underline text-sm">Explore Peer Groups</Link>
-          </div>
-
-          <div className={`${darkMode ? "bg-white/10" : "bg-white"} p-4 rounded-xl shadow`}>
-            <h3 className="text-lg font-semibold mb-2">🚀 Uplify Program</h3>
-            <p className="text-sm mb-2">A mentorship-driven path to real-world experience.</p>
-            <Link to="/uplify-program" className="text-blue-500 hover:underline text-sm">View Details</Link>
-          </div>
-
-          <div className={`${darkMode ? "bg-white/10" : "bg-white"} p-4 rounded-xl shadow`}>
-            <h3 className="text-lg font-semibold mb-2">📝 Blogs</h3>
-            <ul className="text-sm space-y-1">
-              <li><Link to="/blogs/internship-guide" className="text-blue-500 hover:underline">Internship Guide</Link></li>
-              <li><Link to="/blogs/career-tips" className="text-blue-500 hover:underline">Career Tips</Link></li>
-            </ul>
-          </div>
-
-          <div className={`${darkMode ? "bg-white/10" : "bg-white"} p-4 rounded-xl shadow`}>
-            <h3 className="text-lg font-semibold mb-2">📂 Project Library</h3>
-            <p className="text-sm mb-2">Find real-world project ideas to practice your skills.</p>
-            <Link to="/projects" className="text-blue-500 hover:underline text-sm">Explore Projects</Link>
-          </div>
-        </div>
-
-        {/* ---------- Main Content (Right) ---------- */}
-        <div className="lg:col-span-3 md:pl-14">
-          <div className="text-center mb-10">
-            <h2
-              className={`text-3xl md:text-4xl font-bold pb-2 bg-clip-text text-transparent 
-              ${darkMode ? "bg-gradient-to-r from-blue-500 to-purple-500" : "bg-gradient-to-r from-blue-700 to-purple-700"}`}
-            >
-              Explore Exciting Internships
-            </h2>
-            <p className={`text-sm md:text-base font-semibold ${darkMode ? 'text-gray-300' : 'text-purple-700'}`}>
-              Discover real-world opportunities tailored for students and fresh talent—boost your skills, build your career.
-            </p>
-          </div>
-
-          {loading && (
-            <div className="flex justify-center items-center">
-              <Spin size={50} />
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
-            {internships.map((job, idx) => (
-              <motion.div
-                key={job.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className={`${darkMode ? "bg-black/20" : "bg-white/20"} backdrop-blur-sm rounded-2xl shadow-md p-6 border border-cyan-600 hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
-              >
-                <div className={`mb-2 flex justify-between gap-2 text-md ${darkMode ? "text-purple-400" : "text-purple-800"} font-medium`}>
-                  <h1 className='flex justify-between items-center gap-3'><Briefcase size={16} /> {job.company}</h1>
-                  <p className='text-blue-500 text-sm'>{job.source_type}</p>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* ---------- Sidebar ---------- */}
+          <aside className="space-y-6">
+            {[ // Your sidebar blocks simplified with loop
+              {
+                title: '📚 Resources',
+                links: [
+                  { to: '/resources', label: 'Learning Resources' },
+                  { to: '/resume-builder', label: 'Resume Builder' }
+                ],
+                url: '',
+              },
+              {
+                title: '👥 Peer Groups',
+                content: 'Join communities to grow and network.',
+                links: [{ to: '/peergroups', label: 'Explore Peer Groups' }],
+                url: '',
+              },
+              {
+                title: '🚀 Uplify Program',
+                content: 'A mentorship-driven path to real-world experience.',
+                links: [{ to: '/uplify-program', label: 'View Details' }],
+                url: '',
+              },
+              {
+                title: '📝 Blogs',
+                links: [
+                  { to: '/blog/77cfc88c-6597-42fb-bc6a-812a720bdadc', label: 'Internship Guide' },
+                  { to: '/blogs/career-tips', label: 'Career Tips' }
+                ],
+                url: '/blog',
+              },
+              {
+                title: '📂 Project Library',
+                content: 'Find real-world project ideas to practice your skills.',
+                links: [{ to: '/projects', label: 'Explore Projects' }]
+              },
+              {
+                title: '📝 Make Your Resume Better',
+                content: 'Use our AI Resume Builder to create an impressive resume.',
+                links: [{to: '/resume-builder' , label: 'Build Resume →'}]
+              }
+            ].map((item, index) => (
+              <div key={index} className={`${darkMode ? "bg-white/5" : "bg-white"} p-4 rounded-xl shadow`}>
+                <div className='flex flex-row justify-between'>
+                  <h3 className={`text-lg font-semibold mb-2 ${darkMode?"text-gray-200":"text-gray-900"}`}>{item.title}</h3>
+                  <div className={`${darkMode?"text-blue-600":"text-blue-700"} cursor-pointer`} onClick={()=> navigate(item.url)}>
+                    <ArrowBigRightDash />
+                  </div>
                 </div>
-                <h3 className={`text-lg font-semibold ${darkMode ? "text-gray-300" : "text-black"} mb-2`}>{job.title}</h3>
-
-                <div className={`flex items-center text-sm ${darkMode ? "text-gray-200" : "text-gray-900"} gap-2 mb-1`}>
-                  <MapPin size={14} /> {job.location}
-                </div>
-                <div className={`flex items-center text-sm ${darkMode ? "text-gray-200" : "text-gray-900"} gap-2 mb-4`}>
-                  <IndianRupee size={14} /> {job.stipend}
-                </div>
-
-                <span className={`text-xs px-3 py-1 rounded-full font-medium mb-4 inline-block 
-                                ${job.type === 'Remote' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}`}>
-                  {job.type}
-                </span>
-
-                {job.source_type === "on-uplify" ? (
-                  <button
-                    onClick={() => {
-                      if (!isAuthenticated) {
-                        setLoginShow(true);
-                      } else {
-                        navigate(`/internships/u/apply-internships/${job.id}`);
-                      }
-                    }}
-                    className="inline-block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg font-semibold hover:opacity-90 transition"
-                  >
-                    Apply Now →
-                  </button>
-                ) : isAuthenticated ? (
-                  <Link
-                    to={job.link}
-                    className="inline-block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg font-semibold hover:opacity-90 transition"
-                  >
-                    Apply Now →
-                  </Link>
-                ) : (
-                  <button
-                    onClick={() => setLoginShow(true)}
-                    className="inline-block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg font-semibold hover:opacity-90 transition"
-                  >
-                    Apply Now →
-                  </button>
-                )}
-              </motion.div>
+                {item.content && <p className={`text-sm mb-2 ${darkMode?"text-gray-200":"text-gray-900"}`}>{item.content}</p>}
+                <ul className="text-sm space-y-1">
+                  {item.links.map((link, i) => (
+                    <li key={i}><Link to={link.to} className="text-blue-500 hover:underline">{link.label}</Link></li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </div>
-        </div>
-      </div>
+          </aside>
 
-      {loginShow && (
-        <Login
-          onClose={() => {
-            setLoginShow(false);
-            navigate('/internships');
-          }}
-        />
-      )}
+          {/* ---------- Main Content ---------- */}
+          <main className="lg:col-span-3">
+            <div className="text-center pb-10">
+              <h2 className={`text-3xl md:text-4xl font-bold bg-clip-text ${darkMode?"text-purple-600":"text-blue-700"}
+              `}>
+                Explore Exciting Internships
+              </h2>
+              <p className={`pt-2 text-base md:text-lg font-medium ${darkMode ? 'text-gray-300' : 'text-purple-700'}`}>
+                Discover real-world opportunities tailored for students and fresh talent—boost your skills, build your career.
+              </p>
+            </div>
+
+            {loading ? (
+              <div className="flex justify-center items-center h-40">
+                <Spin size="large" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {internships.map((job, idx) => (
+                  <motion.div
+                    key={job.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    viewport={{ once: true }}
+                    className={`rounded-2xl p-6 border hover:shadow-xl hover:scale-[1.02] transition-all duration-300 
+                  ${darkMode ? "bg-black/20 border-cyan-600" : "bg-white border-cyan-600 shadow-md backdrop-blur-sm"}`}
+                  >
+                    <div className="flex justify-between text-md font-medium mb-2">
+                      <h1 className={`flex items-center gap-2 ${darkMode?"text-purple-500":"text-purple-700"}`}>
+                        <Briefcase size={16} /> {job.company}
+                      </h1>
+                      <span className="text-blue-500 text-sm">{job.source_type}</span>
+                    </div>
+                    <h3 className={`text-lg font-semibold mb-2 ${darkMode ? "text-white" : "text-black"}`}>{job.title}</h3>
+                    <div className={`flex items-center text-sm gap-2 mb-1 ${darkMode ? "text-white" : "text-black"}`}>
+                      <MapPin size={14} /> {job.location}
+                    </div>
+                    <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                      <IndianRupee size={14} /> {job.stipend}
+                    </div>
+                    <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
+                    ${job.type === 'Remote' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                      {job.type}
+                    </span>
+                    {job.source_type === "on-uplify" ? (
+                      <button
+                        onClick={() => {
+                          if (!isAuthenticated) setLoginShow(true);
+                          else navigate(`/internships/u/apply-internships/${job.id}`);
+                        }}
+                        className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+                      >
+                        Apply Now →
+                      </button>
+                    ) : isAuthenticated ? (
+                      <a
+                        href={job.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full block text-center py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+                      >
+                        Apply Now →
+                      </a>
+                    ) : (
+                      <button
+                        onClick={() => setLoginShow(true)}
+                        className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+                      >
+                        Apply Now →
+                      </button>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </main>
+        </div>
+
+        {loginShow && (
+          <Login
+            onClose={() => {
+              setLoginShow(false);
+              navigate('/internships');
+            }}
+          />
+        )}
+      </div>
     </section>
   );
+
 }

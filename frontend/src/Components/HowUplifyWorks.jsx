@@ -55,7 +55,7 @@ function HowUplifyWorks() {
           >
             <h2 className={`text-3xl md:text-5xl font-bold ${darkMode ? "text-white" : "text-gray-300"
               }`}>
-              How <span className="text-blue-700">Uplify</span> Works ?
+              How <span className="text-blue-400">Uplify</span> Works ?
             </h2>
           </motion.div>
 
@@ -87,7 +87,7 @@ function HowUplifyWorks() {
             >
               <div className="bg-blue-100 p-3 rounded-full mb-4">{step.icon}</div>
               <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-              <p className={`text-sm ${darkMode ? "text-yellow-500" : "text-black"}`}>{step.desc}</p>
+              <p className={`text-sm ${darkMode ? "text-gray-300" : "text-black"}`}>{step.desc}</p>
             </motion.div>
           ))}
         </div>

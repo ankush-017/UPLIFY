@@ -55,7 +55,7 @@ function WhyChooseUplify() {
           viewport={{ once: true }}
         >
           <h2 className={`text-3xl md:text-5xl font-bold ${darkMode ? 'text-white' : 'text-gray-300'}`}>
-            Why Students & Companies <span className="text-blue-500">Love Uplify</span>?
+            Why Students & Companies <span className="text-blue-400">Love Uplify</span>?
           </h2>
           <p className="mt-4 text-lg md:text-xl font-medium text-gray-400">
             We’re more than just listings — we empower students to grow and help companies find talent that fits.
@@ -80,7 +80,7 @@ function WhyChooseUplify() {
               <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 {item.title}
               </h3>
-              <p className={`mt-2 text-sm ${darkMode ? 'text-yellow-300' : 'text-gray-800'}`}>
+              <p className={`mt-2 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>
                 {item.desc}
               </p>
             </motion.div>

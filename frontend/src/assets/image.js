@@ -11,5 +11,13 @@ import IBD from './IBD.jpg'
 import applyInternBG from './applyInternBG.jpg';
 import applyInternBGDark from './applyInternBGDark.jpg';
 import WhySide from './WhySide.png';
+import BlogbgLight from './blog-bg-light.jpg'
+import BlogbgDark from './blog-bg-dark.jpg'
+import AboutHero from './AboutHero.png'
+import AboutMission from './AboutMission.jpg'
+import Ankush from './ankush.png'
+import communityLight from './communityLight.jpg'
+import communityDark from './communityDark.jpg'
 
-export {herointern,Resumebuilder,loginImg,google,CR,heroBg,WhyHowImg,AdminBg,InternBgLight,IBD,applyInternBG,applyInternBGDark,WhySide};
+export {herointern,Resumebuilder,AboutHero,loginImg,google,CR,heroBg,WhyHowImg,AdminBg,InternBgLight,IBD,
+    applyInternBG,applyInternBGDark,WhySide,BlogbgLight,BlogbgDark, AboutMission,Ankush,communityLight,communityDark};

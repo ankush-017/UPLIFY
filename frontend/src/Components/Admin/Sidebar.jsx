@@ -38,10 +38,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 <nav className="space-y-3">
                     <Link to="/admin" className={`block px-4 py-2 rounded ${location.pathname === '/admin' ? active : 'hover:bg-gray-800'}`}>Dashboard</Link>
                     <Link to="/admin/add-internships" className={`block px-4 py-2 rounded ${location.pathname === '/admin/add-internships' ? active : 'hover:bg-gray-800'}`}>Add Internships</Link>
-                    <Link to="/admin/add-blog" className={`block px-4 py-2 rounded ${location.pathname === '/admin/add-blog' ? active : 'hover:bg-gray-800'}`}>Add Blog</Link>
-                    <Link to="/admin/add-blog" className={`block px-4 py-2 rounded ${location.pathname === '/admin/add-blog' ? active : 'hover:bg-gray-800'}`}>Add Resources</Link>
+                    <Link to="/admin/add-blogs" className={`block px-4 py-2 rounded ${location.pathname === '/admin/add-blogs' ? active : 'hover:bg-gray-800'}`}>Add Blog</Link>
+                    <Link to="/admin/add-resources" className={`block px-4 py-2 rounded ${location.pathname === '/admin/add-blog' ? active : 'hover:bg-gray-800'}`}>Add Resources</Link>
                     <Link to="/admin/all-internships" className={`block px-4 py-2 rounded ${location.pathname === '/admin/all-internships' ? active : 'hover:bg-gray-800'}`}>All Internships</Link>
-                    <Link to="/admin/add-blog" className={`block px-4 py-2 rounded ${location.pathname === '/admin/add-blog' ? active : 'hover:bg-gray-800'}`}>All Resources</Link>
+                    <Link to="/admin/all-resources" className={`block px-4 py-2 rounded ${location.pathname === '/admin/add-blog' ? active : 'hover:bg-gray-800'}`}>All Resources</Link>
                     <Link to="/admin/all-blogs" className={`block px-4 py-2 rounded ${location.pathname === '/admin/all-blogs' ? active : 'hover:bg-gray-800'}`}>All Blogs</Link>
                 </nav>
             </div>

@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from "cors";
 import connectDB from './Config/db.js';
 import authRoutes from './Routes/authRoutes.js'
+import geminiRoutes from './Routes/geminiRoutes.js'
 
 dotenv.config();
 
@@ -14,7 +15,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // Allow curl/Postman
+    if (!origin) return callback(null, true);
     if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
       return callback(null, true);
     }
@@ -31,8 +32,10 @@ connectDB();
 app.get('/', (req, res) => {
     res.send('server sun raha hai')
 })
+
 app.use('/api/auth', authRoutes);
 app.use('/api/user', authRoutes);
+app.use('/api',geminiRoutes)
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`server is running at port ${PORT}`));

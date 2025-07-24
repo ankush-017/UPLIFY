@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../../../superbaseClient.js';
-import { Briefcase, IndianRupee, MapPin, Pencil, Trash2 } from 'lucide-react';
+import { Briefcase, FileUser, IndianRupee, MapPin, Pencil, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -67,7 +67,7 @@ export default function AllInternships() {
                         viewport={{ once: true }}
                         className={`bg-black/5 backdrop-blur-sm rounded-2xl shadow-md p-6 border hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
                     >
-                        <div className={`mb-2 flex justify-between gap-2 text-md ${darkMode ? "text-purple-400" : "text-purple-800"} font-medium`}>
+                        <div className={`mb-2 flex justify-between gap-2 text-md ${darkMode ? "text-purple-400" : "text-purple-500"} font-medium`}>
                             <h1 className='flex justify-between items-center gap-3'><Briefcase size={16} /> {job.company}</h1>
                             <p className='text-blue-500 text-sm'>{job.source_type}</p>
                         </div>
@@ -88,6 +88,13 @@ export default function AllInternships() {
                         <div className="flex gap-3">
                             <Link
                                 to={`/edit-internship/${job.id}`}
+                                className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
+                            >
+                                <FileUser size={16} />
+                                View
+                            </Link>
+                            <Link
+                                to={`/admin/update-internship/${job.id}`}
                                 className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
                             >
                                 <Pencil size={16} />

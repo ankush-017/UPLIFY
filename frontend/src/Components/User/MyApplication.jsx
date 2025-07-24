@@ -29,7 +29,7 @@ function MyApplication() {
 
       if (error) {
         console.error('Error fetching applications:', error.message);
-      } 
+      }
       else {
         setApplications(data);
       }
@@ -41,9 +41,8 @@ function MyApplication() {
 
   return (
     <section
-      className={`min-h-screen px-6 py-12 ${
-        darkMode ? 'bg-[#0b0e11] text-white' : 'bg-gray-50 text-gray-800'
-      }`}
+      className={`min-h-screen px-6 py-12 ${darkMode ? 'bg-[#0b0e11] text-white' : 'bg-gray-50 text-gray-800'
+        }`}
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Left Side: Recommendations */}
@@ -56,6 +55,13 @@ function MyApplication() {
             </ul>
           </div>
 
+          <div className={`p-6 rounded-xl shadow-md ${darkMode ? 'bg-white/10' : 'bg-white'}`}>
+            <h3 className="text-lg font-semibold mb-2">📝 Blogs</h3>
+            <ul className="text-sm space-y-2">
+              <li><Link to="/blog/77cfc88c-6597-42fb-bc6a-812a720bdadc" className="text-blue-500 hover:underline">Internship Guide</Link></li>
+              <li><Link to="/resources/linkedin-setup-guide" className="text-blue-500 hover:underline">LinkedIn Setup Guide</Link></li>
+            </ul>
+          </div>
           <div className={`p-6 rounded-xl shadow-md ${darkMode ? 'bg-white/10' : 'bg-white'}`}>
             <h3 className="text-lg font-semibold mb-2">🧰 Resources</h3>
             <ul className="text-sm space-y-2">
@@ -94,34 +100,55 @@ function MyApplication() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
-                  className={`relative border rounded-xl p-6 shadow-md ${
-                    darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'
-                  }`}
+                  className={`relative rounded-2xl p-6 border shadow-md hover:shadow-xl hover:scale-[1.01] transition-all duration-300 ${darkMode
+                    ? 'bg-gradient-to-br from-[#111827] to-[#1f2937] border-gray-700 text-gray-100'
+                    : 'bg-white border-gray-200 text-gray-800'
+                    }`}
                 >
+                  {/* Applied Badge */}
                   <div className="absolute top-3 right-3">
-                    <span className="text-sm font-semibold px-3 py-1 rounded-full bg-green-100 text-green-800">
-                      Applied
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full bg-green-100 ${darkMode ? "bg-green-900 text-green-300" : "text-green-700"}`}>
+                      ✅ Applied
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-semibold mb-1">
-                    {app.internships?.title || 'Untitled'}
+                  {/* Internship Title */}
+                  <h3 className="text-xl font-bold mb-2 leading-snug line-clamp-2">
+                    {app.internships?.title || 'Untitled Internship'}
                   </h3>
-                  <p className="text-gray-500 dark:text-gray-300 mb-1">
-                    Company: {app.internships?.company || 'Unknown'}
-                  </p>
-                  <p className="text-gray-500 dark:text-gray-300 mb-1">
-                    Location: {app.internships?.location || 'Unknown'}
-                  </p>
-                  <p className="text-gray-500 dark:text-gray-300 mb-1">
-                    Stipend: {app.internships?.stipend || 'Unknown'}
-                  </p>
-                  <p className="text-gray-500 dark:text-gray-300 mb-1">
-                    Type: {app.internships?.type || 'Unknown'}
-                  </p>
+
+                  {/* Details List */}
+                  <div className=" text-sm font-medium leading-relaxed">
+                    <p>
+                      <span className={`${darkMode ? "text-gray-400" : "text-gray-600"} inline-block min-w-[90px]`}>
+                        🏢 Company:
+                      </span>
+                      <span className="ml-3">{app.internships?.company || 'Unknown'}</span>
+                    </p>
+                    <p>
+                      <span className={`${darkMode ? "text-gray-400" : "text-gray-600"} inline-block min-w-[90px]`}>
+                        📍 Location:
+                      </span>
+                      <span className="ml-1">{app.internships?.location || 'Unknown'}</span>
+                    </p>
+                    <p>
+                      <span className={`${darkMode ? "text-gray-400" : "text-gray-600"} inline-block min-w-[90px]`}>
+                        💰 Stipend:
+                      </span>
+                      <span className="ml-1">{app.internships?.stipend || 'Unknown'}</span>
+                    </p>
+                    <p>
+                      <span className={`${darkMode ? "text-gray-400" : "text-gray-600"} inline-block min-w-[90px]`}>
+                        🕒 Type:
+                      </span>
+                      <span className="ml-1">{app.internships?.type || 'Unknown'}</span>
+                    </p>
+                  </div>
+
                 </motion.div>
               ))}
             </div>
+
           )}
         </div>
       </div>

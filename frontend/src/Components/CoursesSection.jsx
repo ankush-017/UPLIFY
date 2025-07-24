@@ -1,28 +1,9 @@
 import { motion } from 'framer-motion';
-import { BookOpen, Flame, Target, Lightbulb,CircleArrowRight} from 'lucide-react';
+import { BookOpen, Flame, Target, Lightbulb,CircleArrowRight, IndianRupee, ExternalLink} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
-const courses = [
-  {
-    title: 'Web Development Bootcamp',
-    desc: 'Master HTML, CSS, JS & React. Learn from scratch with real projects.',
-    icon: <Flame className="text-blue-600" size={26} />,
-    link: 'https://www.udemy.com/course/the-web-developer-bootcamp/?referralCode=UPLIFY123',
-  },
-  {
-    title: 'Digital Marketing Mastery',
-    desc: 'Learn SEO, Google Ads, Instagram strategy, email marketing and more.',
-    icon: <Target className="text-blue-600" size={26} />,
-    link: 'https://www.coursera.org/specializations/digital-marketing?utm_source=uplify',
-  },
-  {
-    title: 'UI/UX Design Essentials',
-    desc: 'Master Figma, wireframes, user flows, and beautiful interface design.',
-    icon: <Lightbulb className="text-blue-600" size={26} />,
-    link: 'https://www.udemy.com/course/ui-ux-design/?referralCode=UPLIFY123',
-  },
-];
+import { useEffect, useState } from 'react';
+import { supabase } from '../../superbaseClient';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -35,8 +16,21 @@ const cardVariants = {
 
 function CoursesSection() {
 
+  const [courses,setCourses] = useState([]);
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
+
+  const courseFetch = async () => {
+     const {data,error} = await supabase.from('resources').select('*').limit(3);
+     if(error){
+      console.log(error);
+      return;
+     }
+     setCourses(data);
+  }
+  useEffect(()=>{
+    courseFetch();
+  },[]);
 
   return (
     <section className={`py-14 px-6 ${darkMode?"bg-gray-950":"bg-gray-50"}`}>
@@ -46,7 +40,7 @@ function CoursesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className={`text-3xl md:text-4xl font-bold ${darkMode?"text-gray-200":"text-gray-900"} mb-4`}
+          className={`text-3xl md:text-4xl font-bold ${darkMode?"text-blue-400":"text-blue-700"} mb-3`}
         >
           Upskill with Curated Courses
         </motion.h2>
@@ -56,31 +50,62 @@ function CoursesSection() {
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
           viewport={{ once: true }}
-          className={`${darkMode?"text-gray-400":"text-gray-600"}  mb-12`}
+          className={`${darkMode?"text-gray-300":"text-gray-700"}  mb-5`}
         >
           Gain in-demand skills with courses from our learning partners. Learn faster, grow smarter.
         </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-          {courses.map((item, i) => (
-            <motion.a
-              key={i}
-              href={item.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              custom={i}
-              viewport={{ once: true }}
-              className={`${darkMode?"bg-black border-gray-600":"bg-white border-gray-200"}  hover:shadow-lg border p-6 rounded-lg transition-all duration-300 flex flex-col gap-4`}
+        {courses.map((item) => {
+          const original = Number(item.originalprice);
+          const sale = Number(item.sellprice);
+          const discount =
+            original && sale
+              ? Math.round(((original - sale) / original) * 100)
+              : 0;
+
+          return (
+            <div
+              key={item.id}
+              className="bg-white/5 border border-white/10 backdrop-blur-md rounded-xl p-5 shadow-lg hover:shadow-cyan-500/20 transition-all"
             >
-              <div className="bg-blue-100 w-fit p-3 rounded-full">{item.icon}</div>
-              <h3 className={`text-lg font-semibold ${darkMode?"text-gray-200":"text-gray-800"}`}>{item.title}</h3>
-              <p className={`${darkMode?"text-gray-400":"text-gray-600"} text-sm`}>{item.desc}</p>
-              <span className="text-blue-600 font-medium text-sm mt-2">Explore Course →</span>
-            </motion.a>
-          ))}
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-full h-40 object-cover rounded-md mb-4"
+              />
+              <h2 className={`text-xl font-semibold mb-1 ${darkMode?"text-cyan-400":"text-cyan-700"}`}>
+                {item.title}
+              </h2>
+              <p className={`text-sm mb-2 ${darkMode?"text-gray-300":"text-gray-800"}`}>
+                {item.description}
+              </p>
+              <p className={`text-sm ${darkMode?"text-gray-400":"text-gray-700"} mb-1 font-semibold `}>
+                <span className={`font-bold ${darkMode?"text-blue-400":"text-blue-700"}`}>Instructor:</span> {item.author}
+              </p>
+              <p className={`text-sm ${darkMode?"text-gray-400":"text-gray-800"} mb-3 flex items-center `}>
+                <IndianRupee size={14} className={`${darkMode?"text-gray-400":"text-gray-700"}`} />
+                <span className={`line-through ${darkMode?"text-red-400":"text-red-700"}`}>{item.originalprice}</span>
+                <span className={`${darkMode?"text-gray-100":"text-gray-900"}`}>→</span>
+                <IndianRupee size={14} className={`${darkMode?"text-gray-300":"text-gray-600"}`} />
+                <span className={`${darkMode?"text-green-400":"text-green-700"} font-semibold text-base`}>{item.sellprice}</span>
+                {discount > 0 && (
+                  <span className={`ml-auto px-2 py-0.5 rounded-md text-xs ${darkMode?"bg-green-700/30 text-green-300":"bg-green-600 text-white"}`}>
+                    {discount}% OFF
+                  </span>
+                )}
+              </p>
+              <a
+                href={item.courseUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-2 text-sm ${darkMode?"text-cyan-300":"text-cyan-600"} hover:underline`}
+              >
+                View Course <ExternalLink size={16} />
+              </a>
+            </div>
+          );
+        })}
         </div>
 
         {/* View More Button */}

@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   Code2,
   BrainCircuit,
@@ -13,18 +14,20 @@ import { CR } from "../assets/image.js";
 import bgImage from "../assets/career-bg.jpg"; // your background image
 
 const roadmapData = [
-  { title: "Frontend Developer", icon: <Code2 size={26} /> },
-  { title: "Backend Developer", icon: <DatabaseZap size={26} /> },
-  { title: "Full Stack Developer", icon: <Cpu size={26} /> },
-  { title: "Android Developer", icon: <Smartphone size={26} /> },
-  { title: "AI/ML Engineer", icon: <BrainCircuit size={26} /> },
-  { title: "Data Scientist", icon: <DatabaseZap size={26} /> },
-  { title: "UI/UX Designer", icon: <Palette size={26} /> },
-  { title: "Cybersecurity Analyst", icon: <ShieldCheck size={26} /> },
+  { title: "Frontend Developer", icon: <Code2 size={26} /> , url: '/career-roadmaps/frontend'},
+  { title: "Backend Developer", icon: <DatabaseZap size={26} /> , url: '/backend'},
+  { title: "Full Stack Developer", icon: <Cpu size={26} /> ,url: '/fullstack-developer' },
+  { title: "Android Developer", icon: <Smartphone size={26} />, url: 'android-developer' },
+  { title: "AI/ML Engineer", icon: <BrainCircuit size={26} /> ,url: 'android-developer'},
+  { title: "Data Scientist", icon: <DatabaseZap size={26} /> ,url: 'android-developer'},
+  { title: "UI/UX Designer", icon: <Palette size={26} />,url: 'android-developer' },
+  { title: "Cybersecurity Analyst", icon: <ShieldCheck size={26} /> ,url: 'android-developer'},
 ];
 
 export default function CareerRoadmaps() {
+
   const darkMode = useSelector((state) => state.theme.darkMode);
+  const navigate = useNavigate()
 
   return (
     <section
@@ -79,6 +82,7 @@ export default function CareerRoadmaps() {
                 key={idx}
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300 }}
+                onClick={() => navigate(`${roadmap.url}`)}
                 className={`group relative px-5 py-3 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden
                   ${darkMode ? "bg-black/80 border-gray-200 text-gray-200" : "bg-white/80 border-gray-200 text-gray-900"}`}
               >

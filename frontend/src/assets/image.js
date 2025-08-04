@@ -20,7 +20,7 @@ import communityLight from './communityLight.jpg'
 import communityDark from './communityDark.jpg'
 import UILight from './UInternLight.jpg'
 import UIDark from './UInternDark.jpg'
-import CompanyHero from './CompanyHero.png'
+import CompanyHero from './companyHero.png'
 import postCompany from './postCompany.jpg';
 import trackBG from './trackbg.jpg';
 

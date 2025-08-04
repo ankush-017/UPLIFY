@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Button from '@mui/material/Button';
 import { MdOutlineAutoAwesome } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { CompanyHero } from '../../assets/image';
+import { CompanyHero } from '../../assets/image.js';
 import { useNavigate } from 'react-router-dom';
 
 function Hero() {

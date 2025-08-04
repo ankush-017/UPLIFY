@@ -4,6 +4,7 @@ import { communityDark, communityLight } from '../assets/image';
 import { useSelector } from 'react-redux';
 import { ArrowBigRightDash } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Seo from '../Components/Seo';
 
 const UplifyCommunity = () => {
 
@@ -12,6 +13,13 @@ const UplifyCommunity = () => {
   return (
 
     <>
+      <Seo
+        title="Uplify Community | Connect, Share & Grow Together"
+        description="Join the Uplify Community to access resources, peer groups, projects, blogs, and more. Collaborate, learn, and grow with fellow developers and learners."
+        url="https://uplify.in/community"
+        image="https://uplify.in/og-image-community.jpg"
+      />
+
       <div
         className="bg-center bg-cover min-h-screen p-4 md:p-10 backdrop-blur-md"
         style={{ backgroundImage: `url(${darkMode ? communityDark : communityLight})` }}

@@ -1,9 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-
 const storedUser = JSON.parse(localStorage.getItem("uplify_user"));
 
 const authSlice = createSlice({
-    
   name: "auth",
   initialState: {
     user: storedUser || null,

@@ -7,6 +7,8 @@ import { useParams } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { useSelector } from "react-redux";
 import { applyInternBG } from "../../../assets/image.js";
+import { Helmet } from "react-helmet-async";
+import Seo from "../../Seo.jsx";
 
 
 export default function ApplicationForm() {
@@ -79,8 +81,28 @@ export default function ApplicationForm() {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     setLoading(true);
+
+    const { data: existingApplication, error: fetchError } = await supabase
+      .from("applyapplications")
+      .select("*")
+      .eq("uid", user.uid)
+      .eq("internship_id", internshipId);
+
+    if (fetchError) {
+      toast.error("Something went wrong. Please try again.");
+      console.error(fetchError);
+      setLoading(false);
+      return;
+    }
+
+    if (existingApplication && existingApplication.length > 0) {
+      toast.success("You have already applied for this internship.");
+      setLoading(false);
+      return;
+    }
 
     const resumeUrl = await uploadResume();
 
@@ -98,7 +120,8 @@ export default function ApplicationForm() {
     if (error) {
       toast.error("Submission failed");
       console.error(error);
-    } else {
+    }
+    else {
       toast.success("Application submitted!");
       setForm({
         name: "",
@@ -108,53 +131,93 @@ export default function ApplicationForm() {
         github: "",
         portfolio: "",
         cover_letter: "",
-        internship_id: "",
-        uid: "",
       });
       setResumeFile(null);
     }
   };
 
-  return (
-    <div
-      className="flex justify-center items-center px-4 py-10 min-h-screen bg-cover bg-center"
-      style={{
-        backgroundImage: `url(${applyInternBG})`,
-        backgroundBlendMode: "overlay",
-        backgroundColor: darkMode ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.6)",
-      }}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={`w-full max-w-3xl ${darkMode ? "bg-black/70" : "bg-white/80"} backdrop-blur-md border border-white/30 shadow-2xl p-10 rounded-3xl`}
-      >
-        <h2
-          className={`text-4xl font-bold text-center mb-8 ${
-            darkMode ? "text-yellow-400" : "text-purple-700"
-          }`}
-        >
-          Internship Application
-        </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {[
-            ["name", "Full Name"],
-            ["email", "Email Address"],
-            ["phone", "Phone Number"],
-            ["linkedin", "LinkedIn Profile"],
-            ["github", "GitHub Profile"],
-            ["portfolio", "Portfolio Link"],
-          ].map(([name, label]) => (
+  return (
+    <>
+      <Seo
+        title="Apply for Internship | Uplify"
+        description="Fill out the form to apply for your desired internship on Uplify."
+        url="https://uplify.in/internships/apply/:id"
+        image="https://uplify.in/og-image-apply.jpg"
+      />
+
+      <div
+        className="flex justify-center items-center px-4 py-10 min-h-screen bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${applyInternBG})`,
+          backgroundBlendMode: "overlay",
+          backgroundColor: darkMode ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.6)",
+        }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className={`w-full max-w-3xl ${darkMode ? "bg-black/70" : "bg-white/80"} backdrop-blur-md border border-white/30 shadow-2xl p-10 rounded-3xl`}
+        >
+          <h2
+            className={`text-4xl font-bold text-center mb-8 ${darkMode ? "text-yellow-400" : "text-purple-700"
+              }`}
+          >
+            Internship Application
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {[
+              ["name", "Full Name"],
+              ["email", "Email Address"],
+              ["phone", "Phone Number"],
+              ["linkedin", "LinkedIn Profile"],
+              ["github", "GitHub Profile"],
+              ["portfolio", "Portfolio Link"],
+            ].map(([name, label]) => (
+              <TextField
+                key={name}
+                fullWidth
+                label={label}
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                required={["name", "email", "phone"].includes(name)}
+                variant="outlined"
+                InputLabelProps={{ style: { color: darkMode ? "#fff" : "#000" } }}
+                InputProps={{
+                  style: {
+                    color: darkMode ? "white" : "#4A148C",
+                  },
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: darkMode ? "#aaa" : "#ccc",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: darkMode ? "#facc15" : "#8e24aa",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab47bc",
+                    },
+                  },
+                  "& label.Mui-focused": {
+                    color: "#ab47bc",
+                  },
+                }}
+              />
+            ))}
+
             <TextField
-              key={name}
               fullWidth
-              label={label}
-              name={name}
-              value={form[name]}
+              label="Cover Letter"
+              name="cover_letter"
+              value={form.cover_letter}
               onChange={handleChange}
-              required={["name", "email", "phone"].includes(name)}
+              multiline
+              rows={4}
               variant="outlined"
               InputLabelProps={{ style: { color: darkMode ? "#fff" : "#000" } }}
               InputProps={{
@@ -179,72 +242,39 @@ export default function ApplicationForm() {
                 },
               }}
             />
-          ))}
 
-          <TextField
-            fullWidth
-            label="Cover Letter"
-            name="cover_letter"
-            value={form.cover_letter}
-            onChange={handleChange}
-            multiline
-            rows={4}
-            variant="outlined"
-            InputLabelProps={{ style: { color: darkMode ? "#fff" : "#000" } }}
-            InputProps={{
-              style: {
-                color: darkMode ? "white" : "#4A148C",
-              },
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: darkMode ? "#aaa" : "#ccc",
-                },
-                "&:hover fieldset": {
-                  borderColor: darkMode ? "#facc15" : "#8e24aa",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#ab47bc",
-                },
-              },
-              "& label.Mui-focused": {
-                color: "#ab47bc",
-              },
-            }}
-          />
+            <div className={`${darkMode ? "text-white" : "text-black"}`}>
+              <label className="block mb-2 font-semibold">
+                Upload Resume (.pdf, .docx)
+              </label>
+              <input
+                type="file"
+                onChange={handleResumeChange}
+                accept=".pdf,.doc,.docx"
+                className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-white file:bg-purple-600 hover:file:bg-purple-700 transition"
+                required
+              />
+            </div>
 
-          <div className={`${darkMode?"text-white":"text-black"}`}>
-            <label className="block mb-2 font-semibold">
-              Upload Resume (.pdf, .docx)
-            </label>
-            <input
-              type="file"
-              onChange={handleResumeChange}
-              accept=".pdf,.doc,.docx"
-              className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-white file:bg-purple-600 hover:file:bg-purple-700 transition"
-              required
-            />
-          </div>
-
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={loading}
-            fullWidth
-            sx={{
-              backgroundColor: "#ab47bc",
-              "&:hover": { backgroundColor: "#9c27b0" },
-              textTransform: "none",
-              fontWeight: "bold",
-              fontSize: "1rem",
-              py: 1.5,
-            }}
-          >
-            {loading ? "Submitting..." : "Submit Application"}
-          </Button>
-        </form>
-      </motion.div>
-    </div>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              fullWidth
+              sx={{
+                backgroundColor: "#ab47bc",
+                "&:hover": { backgroundColor: "#9c27b0" },
+                textTransform: "none",
+                fontWeight: "bold",
+                fontSize: "1rem",
+                py: 1.5,
+              }}
+            >
+              {loading ? "Submitting..." : "Submit Application"}
+            </Button>
+          </form>
+        </motion.div>
+      </div>
+    </>
   );
 }

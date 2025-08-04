@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Briefcase, MapPin, IndianRupee, SquareArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../superbaseClient.js';
 import { useSelector } from 'react-redux';
 import { Spin } from 'antd';
@@ -11,6 +11,8 @@ export default function FeaturedInternships() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(false);
+  const isAuthenticated = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -66,25 +68,47 @@ export default function FeaturedInternships() {
               <p className='text-blue-500 text-sm'>{job.source_type}</p>
             </div>
             <h3 className={`text-lg font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"} mb-2`}>{job.title}</h3>
-
+            <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-700"} gap-2 mb-4`}>
+              <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>Skills:</span> {job.skills}
+            </div>
             <div className={`flex items-center text-sm ${darkMode ? "text-gray-300" : "text-gray-500"} gap-2 mb-1`}>
               <MapPin size={14} /> {job.location}
             </div>
             <div className={`flex items-center text-sm ${darkMode ? "text-gray-300" : "text-gray-500"} gap-2 mb-4`}>
               <IndianRupee size={14} /> {job.stipend}
             </div>
-
             <span className={`text-xs px-3 py-1 rounded-full font-medium mb-4 inline-block 
               ${job.type === 'Remote' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}`}>
               {job.type}
             </span>
 
-            <Link
-              to={job.link}
-              className="inline-block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg font-semibold hover:opacity-90 transition"
-            >
-              Apply Now →
-            </Link>
+            {job.source_type === "on-uplify" ? (
+              <button
+                onClick={() => {
+                  if (!isAuthenticated) setLoginShow(true);
+                  else navigate(`/user/internships/u/apply-internships/${job.id}`);
+                }}
+                className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+              >
+                Apply Now →
+              </button>
+            ) : isAuthenticated ? (
+              <a
+                href={job.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full block text-center py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+              >
+                Apply Now →
+              </a>
+            ) : (
+              <button
+                onClick={() => setLoginShow(true)}
+                className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+              >
+                Apply Now →
+              </button>
+            )}
           </motion.div>
         ))}
       </div>

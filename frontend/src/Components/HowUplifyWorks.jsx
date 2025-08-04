@@ -42,7 +42,7 @@ function HowUplifyWorks() {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   return (
-    <section className={`pt-5 px-6 backdrop-blur-[4px] bg-black/10`}>
+    <section className={`pt-5 px-6 backdrop-blur-[2px] bg-black/10`}>
       <div className="max-w-6xl mx-auto text-center">
         <div className='flex flex-col'>
           {/* Glassy Heading Container */}
@@ -53,9 +53,9 @@ function HowUplifyWorks() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className={`text-3xl md:text-5xl font-bold ${darkMode ? "text-white" : "text-gray-300"
+            <h2 className={`text-3xl md:text-5xl font-bold ${darkMode ? "text-white" : "text-gray-100"
               }`}>
-              How <span className="text-blue-400">Uplify</span> Works ?
+              How <span className="text-blue-500">Uplify</span> Works ?
             </h2>
           </motion.div>
 
@@ -65,7 +65,7 @@ function HowUplifyWorks() {
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             viewport={{ once: true }}
-            className={`inline-block px-4 py-2 font-bold text-lg md:text-xl rounded-lg ${darkMode ? "text-gray-300" : "text-gray-400"
+            className={`inline-block px-4 py-2 font-bold text-lg md:text-xl rounded-lg ${darkMode ? "text-gray-300" : "text-gray-300"
               }`}
           >
             Everything you need to grow your career — in one place.
@@ -77,7 +77,7 @@ function HowUplifyWorks() {
           {steps.map((step, idx) => (
             <motion.div
               key={idx}
-              className={`flex flex-col items-center text-center px-6 py-6 rounded-xl shadow-lg backdrop-blur-sm ${darkMode ? " text-gray-200 bg-black/40" : " bg-white/50 text-gray-800"
+              className={`flex flex-col items-center text-center px-6 py-6 rounded-xl shadow-lg backdrop-blur-sm ${darkMode ? " text-gray-200 bg-black/40 border-2 border-blue-500" : " bg-white text-gray-800 border-blue-700 border-[3px]"
                 }`}
               variants={fadeUp}
               initial="hidden"
@@ -85,6 +85,13 @@ function HowUplifyWorks() {
               custom={idx}
               viewport={{ once: true, amount: 0.2 }}
             >
+              {/* Glowing background pulse */}
+              <div
+                className="absolute inset-0 rounded-2xl blur-2xl opacity-30 group-hover:opacity-60 transition"
+                style={{
+                  background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)',
+                }}
+              ></div>
               <div className="bg-blue-100 p-3 rounded-full mb-4">{step.icon}</div>
               <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
               <p className={`text-sm ${darkMode ? "text-gray-300" : "text-black"}`}>{step.desc}</p>

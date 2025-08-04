@@ -21,16 +21,16 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const [isExploreOpen, setIsExploreOpen] = useState(false);
 
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const { uid } = JSON.parse(localStorage.getItem('uplify_user') || '{}');
-  const userRole = user?.role || "student";
+  const { isAuthenticated , user} = useSelector((state) => state.auth);
+  const uid = user?.uid;
+  // const userRole = user?.role || "student";
   const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout());
     toast.success("Logout Successfully");
     setMenuOpen(false);
-    navigate("/");
+    navigate("/guest");
   };
 
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -57,32 +57,26 @@ const Navbar = () => {
       : `${darkMode ? 'text-gray-200' : 'text-gray-700'} hover:text-blue-600`;
 
   const guestLinks = [
-    { name: 'Home', path: '/' },
+    { name: 'Home', path: '/guest' },
     { name: 'Internships', path: '/internships' },
     { name: 'Resources', path: '/resources' },
     { name: 'Blogs', path: '/blog' },
   ];
 
   const studentLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Internships', path: '/internships' },
-    { name: 'My Applications', path: '/applications' },
-    { name: 'Resources', path: '/resources' },
-    { name: 'Blogs', path: '/blog' },
+    { name: 'Home', path: '/user' },
+    { name: 'Internships', path: '/user/internships' },
+    { name: 'My Applications', path: '/user/applications' },
+    { name: 'Resources', path: '/user/resources' },
+    { name: 'Blogs', path: '/user/blog' },
   ];
 
   const companyLinks = [
-    { name: 'Dashboard', path: '/company/dashboard' },
-    { name: 'Post Internship', path: '/company/post' },
-    { name: 'Applications', path: '/company/applications' },
-    { name: 'Company Profile', path: '/company/profile' },
+    { name: 'Internship', path: '/company/internship' },
+    { name: 'Post Internship', path: '/company/post-internship' },
+    { name: 'Track Applications', path: '/company/track-application' },
+    { name: 'About Us', path: '/about' },
   ];
-
-  const linksToRender = isAuthenticated
-    ? userRole === 'student' || userRole === 'admin'
-      ? studentLinks
-      : companyLinks
-    : guestLinks;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -153,6 +147,7 @@ const Navbar = () => {
     }
   };
 
+  let who;
 
   useEffect(() => {
     if (uid) {
@@ -160,16 +155,26 @@ const Navbar = () => {
     }
   }, [uid]);
 
+    const linksToRender = isAuthenticated
+    ? role === 'student' || role === 'admin'
+      ? studentLinks
+      : companyLinks
+    : guestLinks;
+
+    if(role === 'student' || role === 'admin') who = 'user';
+    else if(role === 'company') who = 'company';
+    else who = 'guest';
+
   return (
     <>
-      <nav className={`${darkMode ? 'bg-gray-900' : 'bg-gray-100'} shadow-sm sticky top-0 z-50 px-6 py-4 flex items-center justify-between`}>
+      <nav className={`${darkMode ? 'bg-gray-900' : 'bg-gray-50'} shadow-sm sticky top-0 z-50 px-6 py-4 flex items-center justify-between`}>
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to={`/${(who === 'company' || who === 'user')?who:'guest'}`} className="flex items-center gap-2">
           <img src={logo} alt="Uplify" className="h-8" />
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden lg:flex text-b items-center gap-6 text-[16px]">
+        <div className="hidden lg:flex text-b items-center font-semibold gap-6 text-[16px]">
           {linksToRender.map((item) => (
             <NavLink key={item.path} to={item.path} className={navLinkClass}>
               {item.name}
@@ -177,45 +182,50 @@ const Navbar = () => {
           ))}
 
           {/* Explore Dropdown - Desktop */}
-          <div
-            className="relative"
-            onMouseEnter={() => setIsExploreOpen(true)}
-          // onMouseLeave={() => setIsExploreOpen(false)}
-          >
-            <button className={`hover:text-blue-600 hover:border-b-2 hover:border-blue-600 flex items-center gap-1 ${darkMode ? "text-gray-200" : "text-gray-700"}`}>
-              Explore {isExploreOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
-
-            {isExploreOpen && (
+          {
+            (role === 'student' || role === 'admin' || !isAuthenticated) &&
+            (
               <div
-                className={`absolute right-0 mt-2 rounded-lg shadow-xl min-w-[180px] z-50 py-2 
-        ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}
-                onMouseLeave={() => setIsExploreOpen(false)}
+                className="relative"
+                onMouseEnter={() => setIsExploreOpen(true)}
+              // onMouseLeave={() => setIsExploreOpen(false)}
               >
-                <NavLink
-                  to="/projects-libray"
-                  onClick={() => setIsExploreOpen(false)}
-                  className="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 transition"
-                >
-                  Projects Library
-                </NavLink>
-                <NavLink
-                  to="/uplify-community"
-                  onClick={() => setIsExploreOpen(false)}
-                  className="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 transition"
-                >
-                  Uplify Community
-                </NavLink>
-                <NavLink
-                  to="/uplify-internship"
-                  onClick={() => setIsExploreOpen(false)}
-                  className="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 transition"
-                >
-                  Uplify Internship
-                </NavLink>
+                <button className={`hover:text-blue-600 hover:border-b-2 hover:border-blue-600 flex items-center gap-1 ${darkMode ? "text-gray-200" : "text-gray-700"}`}>
+                  Explore {isExploreOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+
+                {isExploreOpen && (
+                  <div
+                    className={`absolute right-0 mt-6 rounded-lg shadow-xl min-w-[180px] z-50 py-2 
+        ${darkMode ? 'bg-gray-800 text-white border border-gray-700' : 'bg-white text-black border border-gray-200'}`}
+                    onMouseLeave={() => setIsExploreOpen(false)}
+                  >
+                    <NavLink
+                      to="/user/projects-libray"
+                      onClick={() => setIsExploreOpen(false)}
+                      className={`block px-4 py-2 ${darkMode ? "hover:bg-blue-800" : "hover:bg-blue-200"} transition`}
+                    >
+                      Projects Library
+                    </NavLink>
+                    <NavLink
+                      to="/user/uplify-community"
+                      onClick={() => setIsExploreOpen(false)}
+                      className={`block px-4 py-2 ${darkMode ? "hover:bg-blue-800" : "hover:bg-blue-200"}  transition`}
+                    >
+                      Uplify Community
+                    </NavLink>
+                    <NavLink
+                      to="/user/uplify-internship"
+                      onClick={() => setIsExploreOpen(false)}
+                      className={`block px-4 py-2 ${darkMode ? "hover:bg-blue-800" : "hover:bg-blue-200"} transition`}
+                    >
+                      Uplify Internship
+                    </NavLink>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            )
+          }
         </div>
 
         {/* Desktop Actions */}
@@ -341,6 +351,7 @@ const Navbar = () => {
                 </div>
               </div>
             )}
+            {/* All Nav in Mobile view */}
             {linksToRender.map((item) => (
               <NavLink key={item.path} to={item.path} className={navLinkClass}>
                 {item.name}
@@ -359,7 +370,7 @@ const Navbar = () => {
               {isExploreOpen && (
                 <div className="flex flex-col space-y-2 pl-4 mt-2">
                   <NavLink
-                    to="/projects-libray"
+                    to="/user/projects-libray"
                     onClick={() => {
                       setIsExploreOpen(false);
                       setMenuOpen(false);
@@ -369,7 +380,7 @@ const Navbar = () => {
                     Projects Library
                   </NavLink>
                   <NavLink
-                    to="/uplify-community"
+                    to="/user/uplify-community"
                     onClick={() => {
                       setIsExploreOpen(false);
                       setMenuOpen(false);
@@ -379,7 +390,7 @@ const Navbar = () => {
                     Uplify Community
                   </NavLink>
                   <NavLink
-                    to="/uplify-internship"
+                    to="/user/uplify-internship"
                     onClick={() => {
                       setIsExploreOpen(false);
                       setMenuOpen(false);

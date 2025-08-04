@@ -11,7 +11,7 @@ router.post('/verify-otp', verifyOtpController);
 router.get('/getuser/:uid', getuserControllerbyUID);
 router.post('/check-email', userVerifybyEmailController);
 router.put('/update-profile',verifyFirebaseToken, updateProfileController);
-router.get('/getuser/:uid',getuserControllerbyUID);
+// router.get('/getuser/:uid', getuserControllerbyUID);
 router.get('/',allUserController);
 
 export default router;

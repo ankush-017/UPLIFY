@@ -152,7 +152,7 @@ const CommunityPost = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto md:px-4 pb-2 pt-4">
+    <div className="max-w-4xl mx-auto md:px-4 pb-2">
       <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8 text-blue-700">
         Uplify Community Posts
       </h1>
@@ -253,7 +253,7 @@ const CommunityPost = () => {
 
       <div className="mt-10 flex justify-center">
         <button
-          onClick={() => navigate('/uplify-community/make-post')}
+          onClick={() => navigate('/user/uplify-community/make-post')}
           className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition duration-200 shadow-md"
         >
           ✍️ Make a Post

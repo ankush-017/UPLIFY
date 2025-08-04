@@ -3,8 +3,8 @@ import Navbar from './Components/Navbar';
 import Footer from './Components/Footer';
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { useEffect,useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { getAuth, getRedirectResult, GoogleAuthProvider } from "firebase/auth";
 import { login as loginAction } from "./Store/Slice/authSlice";
 import toast from "react-hot-toast";
@@ -12,15 +12,43 @@ import axios from "axios";
 import { app } from "../firebase";
 import ShowRole from './Components/ShowRole';
 import ScrollToTop from './Components/ScrollToTop';
+import FooterCompany from './Components/CompanyComponent/FooterCompany';
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 function App() {
 
+  const { isAuthenticated} = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
   const [pendingUser, setPendingUser] = useState(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
+  const [role, setRole] = useState(null);
+  const [loading,setLoading] = useState(false);
+  const user = JSON.parse(localStorage.getItem('uplify_user'));
+  const uid = user?.uid;
+   const checkUserAdmin = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/getuser/${uid}`);
+            // console.log("User fetched:", res.data); 
+
+            const role = res?.data?.user?.role;
+            // console.log(role)
+            if (role === 'student' || role === 'admin') {
+                setRole(role);
+            }
+        } catch (err) {
+            console.error("Error in UserAdmin:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (uid) checkUserAdmin();
+        else setLoading(false); // No user found
+    }, [uid]);
 
   const handleRoleSelection = async (role) => {
     if (!pendingUser) return;
@@ -37,8 +65,8 @@ function App() {
           Authorization: `Bearer ${idToken}`,
         },
       });
-
-      dispatch(loginAction({ uid: pendingUser.uid, role }));
+      // admin.auth().setCustomUserClaims(uid, { role: role });
+      dispatch(loginAction({ uid: pendingUser.uid }));
       setShowRoleModal(false);
       setPendingUser(null);
       toast.success("Registration Successful");
@@ -47,6 +75,7 @@ function App() {
       console.error("Role selection error:", err);
     }
   };
+
 
 
   useEffect(() => {
@@ -66,7 +95,8 @@ function App() {
             const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/auth/role/${user.uid}`, {
               headers: { Authorization: `Bearer ${idToken}` },
             });
-            dispatch(loginAction({ uid: user.uid, role: res.data.role }));
+            // admin.auth().setCustomUserClaims(uid, { role: res?.data?.role });
+            dispatch(loginAction({ uid: user.uid }));
             toast.dismiss(loadingToastId);
             toast.success("Login Successful");
           }
@@ -92,7 +122,7 @@ function App() {
     handleRedirect();
   }, []);
 
-
+  
   return (
     <>
       <Toaster
@@ -106,10 +136,12 @@ function App() {
           },
         }}
       />
-      <ScrollToTop/>
+      <ScrollToTop />
       <Navbar />
       <Outlet />
-      <Footer />
+
+      {(role === 'student' || role === 'admin' || !isAuthenticated) ? <Footer /> : <FooterCompany/>}
+
       {showRoleModal && (
         <ShowRole
           handleRoleSelection={handleRoleSelection}
@@ -119,4 +151,5 @@ function App() {
     </>
   )
 }
+
 export default App;

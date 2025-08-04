@@ -40,7 +40,7 @@ function ProtectedRoute() {
       <Login
         onClose={() => {
           setLoginShow(false);
-          navigate('/');
+          navigate('/guest');
         }}
       />
     )

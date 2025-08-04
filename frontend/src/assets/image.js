@@ -18,6 +18,12 @@ import AboutMission from './AboutMission.jpg'
 import Ankush from './ankush.png'
 import communityLight from './communityLight.jpg'
 import communityDark from './communityDark.jpg'
+import UILight from './UInternLight.jpg'
+import UIDark from './UInternDark.jpg'
+import CompanyHero from './CompanyHero.png'
+import postCompany from './postCompany.jpg';
+import trackBG from './trackbg.jpg';
 
 export {herointern,Resumebuilder,AboutHero,loginImg,google,CR,heroBg,WhyHowImg,AdminBg,InternBgLight,IBD,
-    applyInternBG,applyInternBGDark,WhySide,BlogbgLight,BlogbgDark, AboutMission,Ankush,communityLight,communityDark};
+    applyInternBG,applyInternBGDark,WhySide,BlogbgLight,BlogbgDark, AboutMission,Ankush,communityLight,communityDark,UILight,UIDark,
+    CompanyHero,postCompany,trackBG};

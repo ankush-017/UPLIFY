@@ -12,12 +12,14 @@ import {
   signInWithEmailAndPassword,
   signInWithRedirect,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import axios from "axios";
 import { app } from "../../firebase";
 import { loginImg, google } from "../assets/image.js";
 import { motion } from "framer-motion";
 import ShowRole from "./ShowRole.jsx";
+import { useNavigate } from "react-router-dom";
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -43,6 +45,8 @@ export default function Login({ onClose }) {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [manual, setManual] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
 
@@ -76,9 +80,10 @@ export default function Login({ onClose }) {
             },
           }
         );
-        dispatch(loginAction({ uid: user.uid, role: res.data.role }));
+        dispatch(loginAction({ uid: user.uid}));
         toast.success("Login Successfully");
         onClose();
+        navigate('/');
       }
       catch (err) {
         // first time login
@@ -144,14 +149,16 @@ export default function Login({ onClose }) {
             },
           }
         );
+        // admin.auth().setCustomUserClaims(uid, { role: res?.data?.role });
         dispatch(loginAction({
           uid: user.uid,
           // name: user.displayName || name || "",
           // email: user.email,
-          role: res.data.role,
+          // role: res.data.role,
         }));
         toast.success("Login Successfully");
         onClose();
+        navigate('/')
       }
       else {
         // Register
@@ -201,12 +208,13 @@ export default function Login({ onClose }) {
           },
         }
       );
-
-      dispatch(loginAction({ uid: pendingUser.uid, role }));
+      // admin.auth().setCustomUserClaims(uid, { role: role });
+      dispatch(loginAction({ uid: pendingUser.uid}));
       setPendingUser(null);
       setShowRoleModal(false);
       toast.success("Register Successfully");
       onClose();
+      navigate('/')
     }
     catch (err) {
       console.error("Registration failed:", err);
@@ -254,14 +262,14 @@ export default function Login({ onClose }) {
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
   const handleVerifyOtp = async () => {
-    console.log("Verifying OTP for:", email, "OTP:", otp);
+    // console.log("Verifying OTP for:", email, "OTP:", otp);
     setIsVerifyingOtp(true); // Start loading
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/verify-otp`, {
         email: email.toLowerCase(),
         otp,
       });
-      console.log("Verify OTP response:", res.data);
+      // console.log("Verify OTP response:", res.data);
 
       if (res.data.success) {
         toast.success("Email verified");

@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { supabase } from '../../../superbaseClient.js';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function MakePost() {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const darkMode = useSelector((state) => state.theme.darkMode);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,6 +66,7 @@ function MakePost() {
       toast.success('Post submitted!');
       setMessage('');
       setImage(null);
+      navigate('/user/uplify-community');
     } catch (err) {
       toast.error('Something went wrong');
       console.error(err);

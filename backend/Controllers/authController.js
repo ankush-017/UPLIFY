@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
     user: process.env.Email,
-    pass: process.env.password, 
+    pass: process.env.password,
   },
 });
 
@@ -48,7 +48,7 @@ export const getUserController = async (req, res) => {
   catch (err) {
     res.status(500).json({ message: err.message });
   }
-};
+}
 
 // SendOTP Controller
 export const sendOtpController = async (req, res) => {
@@ -64,17 +64,30 @@ export const sendOtpController = async (req, res) => {
   try {
     // Send OTP via Email
     await transporter.sendMail({
-      from: `"TeeFusion" <${process.env.EMAIL_USER}>`,
+      from: `"Uplify" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: 'Your Password Reset OTP',
       html: `
-        <div style="font-family: Arial, sans-serif;">
-          <h2 style="color: #2563eb;">TeeFusion Password Reset</h2>
-          <p>Your OTP code is:</p>
-          <h3 style="letter-spacing: 3px;">${otp}</h3>
-          <p>This code will expire in 5 minutes.</p>
-        </div>
-      `,
+  <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; background-color: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+    <h2 style="color: #2563eb; text-align: center;">🔐 Confirm Your Email</h2>
+    <p style="font-size: 16px; color: #374151;">
+      Thank you for choosing <strong>Uplify</strong>! To continue, please confirm your email address by entering the OTP code below.
+    </p>
+    <div style="text-align: center; margin: 30px 0;">
+      <div style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: #ffffff; font-size: 24px; letter-spacing: 6px; border-radius: 6px;">
+        ${otp}
+      </div>
+    </div>
+    <p style="font-size: 14px; color: #6b7280;">
+      This OTP is valid for <strong>5 minutes</strong>. If you did not request this, you can safely ignore this email.
+    </p>
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+    <p style="font-size: 12px; color: #9ca3af; text-align: center;">
+      © ${new Date().getFullYear()} Uplify. All rights reserved.
+    </p>
+  </div>
+`,
+
     });
 
     console.log('OTP Email Sent');
@@ -85,7 +98,7 @@ export const sendOtpController = async (req, res) => {
       success: true,
       message: 'OTP sent to your email',
     });
-  } 
+  }
   catch (err) {
     console.error('sendOtpController Error:', err);
     return res.status(500).send({
@@ -175,7 +188,7 @@ export const getuserControllerbyUID = async (req, res) => {
       success: true,
       user,
     });
-  } 
+  }
   catch (err) {
     console.error("Error fetching user by UID:", err);
     return res.status(500).send({
@@ -209,7 +222,7 @@ export const updateProfileController = async (req, res) => {
       user: updatedUser,
     });
 
-  } 
+  }
   catch (err) {
     console.error("Update Profile Error:", err);
     return res.status(500).json({
@@ -220,20 +233,20 @@ export const updateProfileController = async (req, res) => {
 };
 
 // allUserController
-export const allUserController = async (req,res) => {
+export const allUserController = async (req, res) => {
 
-  try{
+  try {
     const alluser = await User.find({});
     res.status(200).send({
       success: true,
       alluser
     })
   }
-  catch(err){
+  catch (err) {
     console.log(err);
     res.status(500).send({
       success: false,
     })
   }
-  
+
 }

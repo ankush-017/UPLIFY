@@ -14,14 +14,14 @@ import { CR } from "../assets/image.js";
 import bgImage from "../assets/career-bg.jpg"; // your background image
 
 const roadmapData = [
-  { title: "Frontend Developer", icon: <Code2 size={26} /> , url: '/career-roadmaps/frontend'},
-  { title: "Backend Developer", icon: <DatabaseZap size={26} /> , url: '/backend'},
-  { title: "Full Stack Developer", icon: <Cpu size={26} /> ,url: '/fullstack-developer' },
-  { title: "Android Developer", icon: <Smartphone size={26} />, url: 'android-developer' },
-  { title: "AI/ML Engineer", icon: <BrainCircuit size={26} /> ,url: 'android-developer'},
-  { title: "Data Scientist", icon: <DatabaseZap size={26} /> ,url: 'android-developer'},
-  { title: "UI/UX Designer", icon: <Palette size={26} />,url: 'android-developer' },
-  { title: "Cybersecurity Analyst", icon: <ShieldCheck size={26} /> ,url: 'android-developer'},
+  { title: "Frontend Developer", icon: <Code2 size={26} /> , url: '/user/career-roadmaps/frontend'},
+  { title: "Backend Developer", icon: <DatabaseZap size={26} /> , url: '/user/career-roadmaps/backend'},
+  { title: "Full Stack Developer", icon: <Cpu size={26} /> ,url: '/user/career-roadmaps/fullstack-developer' },
+  { title: "Android Developer", icon: <Smartphone size={26} />, url: '/user/career-roadmaps/android-developer' },
+  { title: "AI/ML Engineer", icon: <BrainCircuit size={26} /> ,url: '/user/career-roadmaps/ai-ml-engineer'},
+  { title: "Data Scientist", icon: <DatabaseZap size={26} /> ,url: '/user/career-roadmaps/data-scientist'},
+  { title: "UI/UX Designer", icon: <Palette size={26} />,url: '/user/career-roadmaps/ui-ux-designer' },
+  { title: "Cybersecurity Analyst", icon: <ShieldCheck size={26} /> ,url: '/user/career-roadmaps/cybersecuirty-analyst'},
 ];
 
 export default function CareerRoadmaps() {

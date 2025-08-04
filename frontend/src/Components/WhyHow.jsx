@@ -20,7 +20,7 @@ function WhyHow() {
       }}
     >
       {/* Blur overlay */}
-      <div className={`absolute inset-0 ${darkMode ? "bg-black/60" : "bg-black/30"} backdrop-blur-sm`}></div>
+      <div className={`absolute inset-0 ${darkMode ? "bg-black/60" : "bg-black/30"} `}></div>
 
       {/* Content on top of blur */}
       <div className="relative z-10 px-4 sm:px-8 md:px-16 lg:px-24">

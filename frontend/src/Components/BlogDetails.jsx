@@ -11,6 +11,7 @@ import 'highlight.js/styles/github.css';
 import { useSelector } from 'react-redux';
 import { BlogbgDark, BlogbgLight } from '../assets/image.js';
 import { ArrowBigRightDash } from 'lucide-react';
+import Seo from './Seo.jsx';
 
 const BlogDetails = () => {
 
@@ -58,9 +59,16 @@ const BlogDetails = () => {
         );
     }
 
-    //   const pageTitle = `${post.title} — arcAI.engineer Blog`;
+    //   const pageTitle = `${post.title}`;
     return (
         <>
+            <Seo
+                title={`${post.title} | Uplify Blog`}
+                description={post.metaDescription || post.fullContent?.slice(0, 150) || 'Read this insightful article on Uplify Blog.'}
+                url={`https://uplify.in/blogs/${post.id}`}
+                image={post.image || 'https://uplify.in/default-blog-cover.jpg'}
+            />
+
             <div className="min-h-screen py-5 pb-20 bg-center bg-cover bg-no-repeat" style={{ backgroundImage: `url(${BlogbgDark})` }}>
                 <motion.div
                     className=" mx-auto"

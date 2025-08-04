@@ -1,8 +1,6 @@
 import React from 'react'
 import Hero from '../Components/Hero';
-import HowUplifyWorks from '../Components/HowUplifyWorks';
 import CoursesSection from '../Components/CoursesSection';
-import WhyChooseUplify from '../Components/WhyChooseUplify';
 import ResumeBuilderSection from '../Components/ResumeBuilderSection';
 import FaqSection from '../Components/FaqSection';
 import Seo from '../Components/Seo';
@@ -11,6 +9,8 @@ import CareerRoadmaps from '../Components/CareerRoadmaps';
 import WhyHow from '../Components/WhyHow';
 
 function Home() {
+
+  
 
   return (
     <>
@@ -22,13 +22,12 @@ function Home() {
       />
       <Hero />
       <FeaturedInternships/>
-      {/* <WhyChooseUplify />
-      <HowUplifyWorks /> */}
       <WhyHow/>
       <CoursesSection />
       <CareerRoadmaps/>
       <ResumeBuilderSection />
       <FaqSection />
+      
     </>
   )
 }

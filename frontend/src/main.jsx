@@ -7,13 +7,12 @@ import Home from './Pages/Home.jsx'
 import Internships from './Pages/Internships.jsx'
 import About from './Pages/About.jsx'
 import Apply from './Pages/Apply.jsx'
-import Contact from './Pages/Contact.jsx'
+
 import Login from './Components/Login.jsx'
 import Resources from './Components/Resources.jsx'
 import store from './Store/store.js'
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async'
-import CareerRoadMap from './Pages/CareerRoadMap.jsx'
 import BuildResume from './Pages/BuildResume.jsx'
 import ProjectLibrary from './Pages/ProjectLibrary.jsx'
 import UplifyInternship from './Pages/UplifyInternship.jsx'
@@ -37,14 +36,44 @@ import UpdateResources from './Components/Admin/Resources/UpdateResources.jsx'
 import MakePost from './Components/User/MakePost.jsx'
 import UplifyCommunity from './Pages/UplifyCommunity.jsx'
 import Frontend from './Components/Career/Frontend.jsx'
+import Backend from './Components/Career/Backend.jsx'
+import FullStackDeveloper from './Components/Career/FullStackDeveloper.jsx'
+import AndroidDeveloper from './Components/Career/AndroidDeveloper.jsx'
+import AIML from './Components/Career/AIML.jsx'
+import DataScientist from './Components/Career/DataScientist.jsx'
+import UiUx from './Components/Career/UiUx.jsx'
+import CyberSecuirtyAnalyst from './Components/Career/CyberSecuirtyAnalyst.jsx'
+import CareerRoadmaps from './Components/CareerRoadmaps.jsx'
+import ViewApplicant from './Components/Admin/Internships/ViewApplicant.jsx'
+import UserAdmin from './Components/UserAdmin.jsx'
+import CompanyCheck from './Components/CompanyCheck.jsx'
+import HomeCompany from './CompanyPage/HomeCompany.jsx'
+import RoleRouter from './Components/RoleRouter.jsx'
+import InternshipCompany from './CompanyPage/InternshipCompany.jsx'
+import PostInternship from './CompanyPage/PostInternship.jsx'
+import TrackApplication from './CompanyPage/TrackApplication.jsx'
+import JobApplicant from './CompanyPage/JobApplicant.jsx'
+import UpdateInternCompany from './CompanyPage/UpdateInternCompany.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
-      <Route path="/" element={<App />}>
+    <Route path="/" element={<App />}>
+      {/* Redirect logic only */}
+      <Route index element={<RoleRouter />} />
+
+      {/* Auth Pages */}
+      <Route path='guest' element={<Home/>} />
+      <Route path="login" element={<Login />} />
+      <Route path="internships" element={<Internships />} />
+      <Route path="resources" element={<Resources />} />
+      <Route path="blog" element={<Blogs />} />
+      <Route path="blog/:id" element={<BlogDetails />} />
+      <Route path="about" element={<About />} />
+
+      {/* Student/User Routes */}
+      <Route path="user" element={<UserAdmin />}>
         <Route index element={<Home />} />
         <Route path="internships" element={<Internships />} />
-        <Route path="about" element={<About />} />
         <Route path="apply" element={<Apply />} />
         <Route path="blog" element={<Blogs />} />
         <Route path="blog/:id" element={<BlogDetails />} />
@@ -52,37 +81,55 @@ const router = createBrowserRouter(
         <Route path="uplify-internship" element={<UplifyInternship />} />
         <Route path="projects-libray" element={<ProjectLibrary />} />
         <Route path="resume-builder" element={<BuildResume />} />
+        <Route path="career-roadmaps" element={<CareerRoadmaps />} />
         <Route path="career-roadmaps/frontend" element={<Frontend />} />
-        <Route path="login" element={<Login />} />
+        <Route path="career-roadmaps/backend" element={<Backend />} />
+        <Route path="career-roadmaps/fullstack-developer" element={<FullStackDeveloper />} />
+        <Route path="career-roadmaps/android-developer" element={<AndroidDeveloper />} />
+        <Route path="career-roadmaps/ai-ml-engineer" element={<AIML />} />
+        <Route path="career-roadmaps/data-scientist" element={<DataScientist />} />
+        <Route path="career-roadmaps/ui-ux-designer" element={<UiUx />} />
+        <Route path="career-roadmaps/cybersecuirty-analyst" element={<CyberSecuirtyAnalyst />} />
+        <Route path="internships/u/apply-internships/:id" element={<ApplicationForm />} />
+      </Route>
 
-        {/* Admin Login Need */}
-        <Route element={<AdminProtectedRoute />}>
-          <Route path='admin' element={<AdminDashboard />} >
-            <Route index element={<Dashboard />} />
-            <Route path='add-internships' element={<AddInternships />} />
-            <Route path='all-internships' element={<AllInternships />} />
-            <Route path='add-blogs' element={<AddBlog/>} />
-            <Route path='all-blogs' element={<AllBlogs/>} />
-            <Route path='add-resources' element={<AddResources/>} />
-            <Route path='all-resources' element={<AllResources/>} />
-            <Route path='update-blog/:id' element={<UpdateBlog/>} />
-            <Route path='update-internship/:id' element={<UpdateInternship/>} />
-            <Route path='update-resource/:id' element={<UpdateResources/>} />
-          </Route>
-        </Route>
+      {/* Company Routes */}
+      <Route path="company" element={<CompanyCheck />}>
+        <Route index element={<HomeCompany />} />
+        <Route path='internship' element={<InternshipCompany />} />
+        <Route path='post-internship' element={<PostInternship />} />
+        <Route path='track-application' element={<TrackApplication />} />
+        <Route path='job-applicants/:id' element={<JobApplicant />} />
+        <Route path='update-internship/:id' element={<UpdateInternCompany />} />
+      </Route>
 
-        {/* Login Need */}
-        <Route element={<ProtectedRoute />}>
-            <Route path='/internships/u/apply-internships/:id' element={<ApplicationForm />} />
-            <Route path="uplify-community" element={<UplifyCommunity />} />
-            <Route path='/uplify-community/make-post' element={<MakePost/>} />
-            <Route path='/applications' element={<MyApplication />} />
+      {/* Admin Routes (Protected) */}
+      <Route element={<AdminProtectedRoute />}>
+        <Route path="admin" element={<AdminDashboard />}>
+          <Route index element={<Dashboard />} />
+          <Route path="add-internships" element={<AddInternships />} />
+          <Route path="all-internships" element={<AllInternships />} />
+          <Route path="add-blogs" element={<AddBlog />} />
+          <Route path="all-blogs" element={<AllBlogs />} />
+          <Route path="add-resources" element={<AddResources />} />
+          <Route path="all-resources" element={<AllResources />} />
+          <Route path="update-blog/:id" element={<UpdateBlog />} />
+          <Route path="update-internship/:id" element={<UpdateInternship />} />
+          <Route path="update-resource/:id" element={<UpdateResources />} />
+          <Route path="job-applicants/:id" element={<ViewApplicant />} />
         </Route>
       </Route>
+
+      {/* Authenticated User Routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="user/uplify-community" element={<UplifyCommunity />} />
+        <Route path="user/uplify-community/make-post" element={<MakePost />} />
+        <Route path="user/applications" element={<MyApplication />} />
+      </Route>
     </Route>
+
   )
 )
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HelmetProvider>

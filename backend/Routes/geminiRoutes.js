@@ -1,9 +1,9 @@
-// routes/geminiRoutes.js
 import express from 'express';
-import { handleGeminiPrompt } from '../Controllers/geminiController.js';
+import { evaluateResumeController, handleGeminiPrompt } from '../Controllers/geminiController.js';
 
 const router = express.Router();
 
 router.post("/gemini", handleGeminiPrompt);
+router.post("/gemini/evaluate-resume",evaluateResumeController);
 
 export default router;

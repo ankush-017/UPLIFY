@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     lg:translate-x-0 lg:static lg:block border-r-2 border-gray-600 shadow-md`}
             >
                 {/* Close button on mobile */}
-                <div className="lg:hidden flex justify-end mb-4">
+                <div className="lg:hidden mt-16 flex justify-end mb-4">
                     <button onClick={() => setIsOpen(false)}>
                         <X className="text-white w-5 h-5" />
                     </button>

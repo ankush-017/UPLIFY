@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-// import { Helmet } from 'react-helmet-async';
 import { supabase } from '../../superbaseClient.js';
 import { BlogbgDark, BlogbgLight } from '../assets/image.js';
 import { useSelector } from 'react-redux';
-import Seo from '../Components/Seo.jsx';
 
 const BlogCard = ({ id, title, excerpt, date, author, category, image }) => (
   <>
-    <Seo
-      title="Latest Tech & Coding Blogs | Uplify"
-      description="Explore the latest blogs on web development, programming tips, career guidance, and technology trends curated by Uplify."
-      url="https://www.uplify.in/blogs"
-      image="https://www.uplify.in/assets/blog-banner.png"
-    />
     <motion.div
       className={` bg-gray-800 rounded-xl overflow-hidden shadow-lg backdrop-blur-sm border border-white/10 `}
       whileHover={{ scale: 1.02 }}

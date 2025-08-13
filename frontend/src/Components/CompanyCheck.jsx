@@ -10,7 +10,6 @@ function CompanyCheck() {
     const uid = user?.uid;
     const [auth, setAuth] = useState(false);
     const [loading, setLoading] = useState(true);
-    const { isAuthenticated } = useSelector((state) => state.auth);
 
     const checkUserAdmin = async () => {
         try {
@@ -19,7 +18,7 @@ function CompanyCheck() {
 
             const role = res?.data?.user?.role;
             // console.log(role)
-            if (role === 'student' || role === 'admin') {
+            if (role === 'company') {
                 setAuth(true);
             }
         } catch (err) {
@@ -34,12 +33,9 @@ function CompanyCheck() {
         else setLoading(false); // No user found
     }, [uid]);
 
-    if(!auth && !isAuthenticated){
-        setAuth(true);
-    }
-
     if (loading) return <div className="h-screen flex justify-center items-center"><Spin /></div>;
 
-    return !auth ? <Outlet /> : <></>
+    return auth ? <Outlet /> : <></>
 }
+
 export default CompanyCheck;

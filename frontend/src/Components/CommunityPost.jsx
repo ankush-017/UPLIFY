@@ -152,106 +152,108 @@ const CommunityPost = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto md:px-4 pb-2">
+    <div>
       <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8 text-blue-700">
         Uplify Community Posts
       </h1>
+      <div className="max-w-4xl h-screen overflow-y-auto mx-auto md:px-4 pb-2">
 
-      {posts.length === 0 ? (
-        <p className="text-center text-gray-500 dark:text-gray-400">No posts available.</p>
-      ) : (
-        <div className="grid gap-6">
-          {posts.map(p => (
-            <div
-              key={p.id}
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700"
-            >
-              <div className="md:flex items-start">
-                <div className="flex-1 p-6">
-                  <p className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                    {p.message}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    Posted on {new Date(p.created_at).toLocaleString()}
-                  </p>
 
-                  {/* Likes & Comment Count */}
-                  <div className="mt-4 flex items-center gap-4">
-                    <button
-                      onClick={() => handleLike(p.id)}
-                      className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200"
-                    >
-                      👍 {likes[p.id] || 0} Like
-                    </button>
+        {posts.length === 0 ? (
+          <p className="text-center text-gray-500 dark:text-gray-400">No posts available.</p>
+        ) : (
+          <div className="grid gap-6">
+            {posts.map(p => (
+              <div
+                key={p.id}
+                className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+              >
+                <div className="md:flex items-start">
+                  <div className="flex-1 p-6">
+                    <p className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                      {p.message}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Posted on {new Date(p.created_at).toLocaleString()}
+                    </p>
 
-                    <button
-                      onClick={() =>
-                        setShowComments(prev => ({
-                          ...prev,
-                          [p.id]: !prev[p.id],
-                        }))
-                      }
-                      className="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200"
-                    >
-                      💬 {comments[p.id]?.length || 0} Comment{(comments[p.id]?.length || 0) !== 1 ? 's' : ''}
-                    </button>
-                  </div>
-                  {/* Comment List + Input — toggleable */}
-                  {showComments[p.id] && (
-                    <div className="mt-6">
-                      <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Comments:</h3>
+                    {/* Likes & Comment Count */}
+                    <div className="mt-4 flex items-center gap-4">
+                      <button
+                        onClick={() => handleLike(p.id)}
+                        className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200"
+                      >
+                        👍 {likes[p.id] || 0} Like
+                      </button>
 
-                      {comments[p.id]?.map(c => (
-                        <div key={c.id} className="mb-2">
-                          <p className="text-sm text-gray-800 dark:text-gray-200">
-                            <span className="font-medium text-blue-600 dark:text-blue-400">
-                              {c.user_name || 'Unknown'}
-                            </span>
-                            <span className="ml-1 text-gray-700 dark:text-gray-300">
-                              {c.comment_text}
-                            </span>
-                          </p>
+                      <button
+                        onClick={() =>
+                          setShowComments(prev => ({
+                            ...prev,
+                            [p.id]: !prev[p.id],
+                          }))
+                        }
+                        className="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200"
+                      >
+                        💬 {comments[p.id]?.length || 0} Comment{(comments[p.id]?.length || 0) !== 1 ? 's' : ''}
+                      </button>
+                    </div>
+                    {/* Comment List + Input — toggleable */}
+                    {showComments[p.id] && (
+                      <div className="mt-6">
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Comments:</h3>
+
+                        {comments[p.id]?.map(c => (
+                          <div key={c.id} className="mb-2">
+                            <p className="text-sm text-gray-800 dark:text-gray-200">
+                              <span className="font-medium text-blue-600 dark:text-blue-400">
+                                {c.user_name || 'Unknown'}
+                              </span>
+                              <span className="ml-1 text-gray-700 dark:text-gray-300">
+                                {c.comment_text}
+                              </span>
+                            </p>
+                          </div>
+                        ))}
+
+                        <div className="mt-2 flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="Add a comment..."
+                            className="flex-1 px-2 py-1 text-white rounded border bg-gray-800"
+                            value={newComments[p.id] || ''}
+                            onChange={e =>
+                              setNewComments(prev => ({ ...prev, [p.id]: e.target.value }))
+                            }
+                          />
+                          <button
+                            onClick={() => handleAddComment(p.id)}
+                            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                          >
+                            Send
+                          </button>
                         </div>
-                      ))}
-
-                      <div className="mt-2 flex gap-2">
-                        <input
-                          type="text"
-                          placeholder="Add a comment..."
-                          className="flex-1 px-2 py-1 text-white rounded border bg-gray-800"
-                          value={newComments[p.id] || ''}
-                          onChange={e =>
-                            setNewComments(prev => ({ ...prev, [p.id]: e.target.value }))
-                          }
-                        />
-                        <button
-                          onClick={() => handleAddComment(p.id)}
-                          className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                        >
-                          Send
-                        </button>
                       </div>
+                    )}
+
+                  </div>
+
+                  {p.image && (
+                    <div className="md:w-44 p-2 w-full md:h-auto h-56 overflow-hidden">
+                      <img
+                        src={p.image}
+                        alt="post"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   )}
-
                 </div>
-
-                {p.image && (
-                  <div className="md:w-44 p-2 w-full md:h-auto h-56 overflow-hidden">
-                    <img
-                      src={p.image}
-                      alt="post"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div className="mt-10 flex justify-center">
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="mt-7 flex justify-center">
         <button
           onClick={() => navigate('/user/uplify-community/make-post')}
           className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition duration-200 shadow-md"

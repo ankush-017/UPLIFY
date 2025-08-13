@@ -43,82 +43,53 @@ export default function Resources() {
               title: '📚 Resources',
               links: [
                 { to: '/resources', label: 'Learning Resources' },
-                { to: '/resume-builder', label: 'Resume Builder' },
               ],
-              url: '',
+              url: '/user/resources',
             },
             {
-              title: '👥 Peer Groups',
+              title: '👥 Community Post',
               content: 'Join communities to grow and network.',
-              links: [{ to: '/peergroups', label: 'Explore Peer Groups' }],
+              links: [{ to: '/user/uplify-community', label: 'Explore Community' }],
+              url: '/user/uplify-community',
             },
             {
               title: '🚀 Uplify Program',
               content: 'A mentorship-driven path to real-world experience.',
-              links: [{ to: '/uplify-program', label: 'View Details' }],
+              links: [{ to: '/user/uplify-internship', label: 'View Real-World Internships' }],
+              url: '/user/uplify-internship',
             },
             {
               title: '📝 Blogs',
               links: [
-                {
-                  to: '/blog/77cfc88c-6597-42fb-bc6a-812a720bdadc',
-                  label: 'Internship Guide',
-                },
-                { to: '/blogs/career-tips', label: 'Career Tips' },
+                { to: '/blog/d5d074b3-2b2b-416d-8d24-84b30a0d8445', label: 'How to Make a Professional Resume' },
+                { to: '/blogs/cc75a1f9-c63e-458d-8073-8591b958db39', label: 'The Ultimate 6-Month Guide to Mastering Data Structures and Algorithms (DSA)' }
               ],
               url: '/blog',
             },
             {
               title: '📂 Project Library',
               content: 'Find real-world project ideas to practice your skills.',
-              links: [{ to: '/projects', label: 'Explore Projects' }],
+              links: [{ to: '/user/projects-libray', label: 'Explore Projects' }],
+              url: '/user/projects-libray'
             },
             {
               title: '📝 Make Your Resume Better',
               content: 'Use our AI Resume Builder to create an impressive resume.',
-              links: [{ to: '/resume-builder', label: 'Build Resume →' }],
-            },
+              links: [{ to: '/user/resume-builder', label: 'Build Resume →' }],
+              url: '/user/resume-builder'
+            }
           ].map((item, index) => (
-            <div
-              key={index}
-              className={`${darkMode ? 'bg-white/5' : 'bg-white'
-                } p-4 rounded-xl shadow`}
-            >
-              <div className="flex flex-row justify-between items-center">
-                <h3
-                  className={`text-lg font-semibold mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-900'
-                    }`}
-                >
-                  {item.title}
-                </h3>
-                {item.url && (
-                  <div
-                    className={`${darkMode ? 'text-blue-600' : 'text-blue-700'
-                      } cursor-pointer`}
-                    onClick={() => navigate(item.url)}
-                  >
-                    <ArrowBigRightDash />
-                  </div>
-                )}
+            <div key={index} className={`${darkMode ? "bg-white/5" : "bg-white"} p-4 rounded-xl shadow`}>
+              <div className='flex flex-row justify-between'>
+                <h3 className={`text-lg font-semibold mb-2 ${darkMode ? "text-gray-200" : "text-gray-900"}`}>{item.title}</h3>
+                {/* <div className={`${darkMode ? "text-blue-600" : "text-blue-700"} cursor-pointer`} onClick={() => navigate(item.url)}>
+                  <ArrowBigRightDash />
+                </div> */}
               </div>
-              {item.content && (
-                <p
-                  className={`text-sm mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-900'
-                    }`}
-                >
-                  {item.content}
-                </p>
-              )}
+              {item.content && <p className={`text-sm mb-2 ${darkMode ? "text-gray-200" : "text-gray-900"}`}>{item.content}</p>}
               <ul className="text-sm space-y-1">
                 {item.links.map((link, i) => (
-                  <li key={i}>
-                    <Link
-                      to={link.to}
-                      className="text-blue-500 hover:underline"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
+                  <li key={i}><Link to={link.to} className="text-blue-500 hover:underline">{link.label}</Link></li>
                 ))}
               </ul>
             </div>

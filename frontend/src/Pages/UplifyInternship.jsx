@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useSelector } from 'react-redux'
 import { UIDark, UILight } from '../assets/image';
-import Seo from '../Components/Seo';
 
 export default function UplifyInternship() {
 
@@ -111,12 +110,6 @@ export default function UplifyInternship() {
 
   return (
     <>
-      <Seo
-        title="Uplify Internship Program | Uplify"
-        description="Join the Uplify Internship Program to gain hands-on experience, work on real projects, and grow your skills with expert mentorship."
-        url="https://uplify.in/uplify-internship"
-        image="https://uplify.in/og-image-uplify-internship.jpg"
-      />
 
       <div
         className={`min-h-screen ${darkMode ? "text-white" : "text-gray-900"} bg-center backdrop-blur-md bg-cover bg-no-repeat py-10 px-4`}

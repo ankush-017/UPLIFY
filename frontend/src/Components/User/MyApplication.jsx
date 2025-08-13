@@ -58,23 +58,15 @@ function MyApplication() {
             <div className={`p-6 rounded-xl shadow-md ${darkMode ? 'bg-white/10' : 'bg-white'}`}>
               <h3 className="text-lg font-semibold mb-2">📚 Recommended Blogs</h3>
               <ul className="text-sm space-y-2">
-                <li><Link to="/blogs/how-to-get-internship" className="text-blue-500 hover:underline">How to Get Your First Internship</Link></li>
-                <li><Link to="/blogs/resume-tips" className="text-blue-500 hover:underline">Top Resume Tips for Students</Link></li>
-              </ul>
-            </div>
-
-            <div className={`p-6 rounded-xl shadow-md ${darkMode ? 'bg-white/10' : 'bg-white'}`}>
-              <h3 className="text-lg font-semibold mb-2">📝 Blogs</h3>
-              <ul className="text-sm space-y-2">
-                <li><Link to="/blog/77cfc88c-6597-42fb-bc6a-812a720bdadc" className="text-blue-500 hover:underline">Internship Guide</Link></li>
-                <li><Link to="/resources/linkedin-setup-guide" className="text-blue-500 hover:underline">LinkedIn Setup Guide</Link></li>
+                <li><Link to="/blog/d5d074b3-2b2b-416d-8d24-84b30a0d8445" className="text-blue-500 hover:underline">How to Make a Professional Resume</Link></li>
+                <li><Link to="/blogs/cc75a1f9-c63e-458d-8073-8591b958db39" className="text-blue-500 hover:underline">The Ultimate 6-Month Guide to Mastering Data Structures and Algorithms (DSA)</Link></li>
               </ul>
             </div>
             <div className={`p-6 rounded-xl shadow-md ${darkMode ? 'bg-white/10' : 'bg-white'}`}>
               <h3 className="text-lg font-semibold mb-2">🧰 Resources</h3>
               <ul className="text-sm space-y-2">
-                <li><Link to="/resources/free-resume-templates" className="text-blue-500 hover:underline">Free Resume Templates</Link></li>
-                <li><Link to="/resources/linkedin-setup-guide" className="text-blue-500 hover:underline">LinkedIn Setup Guide</Link></li>
+                <li><Link to="/user/resources" className="text-blue-500 hover:underline">Complete web development course</Link></li>
+                <li><Link to="/user/resources" className="text-blue-500 hover:underline">Mastering Data Structures & Algorithms using C and C++</Link></li>
               </ul>
             </div>
 
@@ -82,7 +74,7 @@ function MyApplication() {
               <h3 className="text-lg font-semibold mb-2">📝 Make Your Resume Better</h3>
               <p className="text-sm mb-3">Use our AI Resume Builder to create an impressive resume.</p>
               <Link
-                to="/resume-builder"
+                to="/user/resume-builder"
                 className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
               >
                 Build Resume →

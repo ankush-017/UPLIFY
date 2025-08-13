@@ -359,6 +359,7 @@ const Navbar = () => {
             ))}
 
             {/* Mobile Explore Dropdown */}
+            {(role === 'student' || role === 'admin' || !isAuthenticated) &&(
             <div className="">
               <button
                 onClick={() => setIsExploreOpen((prev) => !prev)}
@@ -401,7 +402,7 @@ const Navbar = () => {
                   </NavLink>
                 </div>
               )}
-            </div>
+            </div>)}
 
             {!isAuthenticated ? (
               <button

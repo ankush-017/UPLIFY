@@ -1,11 +1,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import axios from "axios";
 import dotenv from 'dotenv'
 
 dotenv.config();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
 export const handleGeminiPrompt = async (req, res) => {
   try {
@@ -16,18 +17,18 @@ export const handleGeminiPrompt = async (req, res) => {
       return res.status(400).json({ error: "Prompt is required" });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
-
-    // console.log("Model loaded");
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+    // console.log(result.text);
+    const text = result.text;
 
     console.log("Response from Gemini:");
     res.status(200).json({ response: text });
 
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Gemini API Error:", error);
     res.status(500).json({ error: "Something went wrong with Gemini API" });
   }
@@ -37,24 +38,22 @@ export const evaluateResumeController = async (req, res) => {
   try {
     const { resumeUrl, skills } = req.body;
 
-    // 1. Fetch PDF from URL
+    // Fetch PDF from URL
     const response = await axios.get(resumeUrl, {
       responseType: 'arraybuffer',
     });
 
     console.log("Resume fetched successfully");
 
-    // 2. Convert response data to Buffer
+    // Convert response data to Buffer
     const buffer = Buffer.from(response.data);
 
-    // 3. Extract text from the PDF
+    // Extract text from the PDF
     const pdfText = await pdfParse(buffer);
     const resumeText = pdfText.text;
 
     // console.log("Extracted Resume Text:\n", resumeText);
 
-    // 3. Prepare prompt
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
     const prompt = `
 You're an AI recruiter.
 
@@ -76,11 +75,14 @@ Respond only in this JSON format:
   "explanation": string
 }
 `;
-    // 4. Get AI response
-    const result = await model.generateContent(prompt);
-    let content = result.response.text().trim();
+    // get AI response
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+    let content = result.text.trim();
 
-    // 5. Remove Markdown formatting if present
+    // Remove Markdown formatting if present
     if (content.startsWith('```')) {
       content = content.replace(/```(?:json)?/, '').replace(/```$/, '').trim();
     }

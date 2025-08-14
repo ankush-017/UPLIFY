@@ -20,9 +20,14 @@ export default function Internships() {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   // Fetch internships from Supabase
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
   const fetchInternships = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('internships').select('*').order('created_at', { ascending: false }); 
+    const { data, error } = await supabase.from('internships').select('*')
+      .gte('created_at', thirtyDaysAgo.toISOString())
+      .order('created_at', { ascending: false });
     if (error) {
       setLoading(false);
       console.error('Error fetching:', error.message);
@@ -147,76 +152,103 @@ export default function Internships() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {internships.map((job, idx) => (
-                    <motion.div
-                      key={job.id}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: idx * 0.1 }}
-                      viewport={{ once: true }}
-                      className={`rounded-2xl p-6 border hover:shadow-xl hover:scale-[1.02] transition-all duration-300 
-                  ${darkMode ? "bg-black/20 border-cyan-600" : "bg-gray-100 border-cyan-600 shadow-md backdrop-blur-sm"}`}
-                    >
-                      <div className="flex justify-between text-md font-medium mb-2">
-                        <h1 className={`flex items-center gap-2 ${darkMode ? "text-purple-500" : "text-purple-700"}`}>
-                          <Briefcase size={16} /> {job.company}
-                        </h1>
-                        <span className="text-blue-500 text-sm">{job.source_type}</span>
-                      </div>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? "text-white" : "text-black"}`}>{job.title}</h3>
-                      <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-700"} gap-2 mb-4`}>
-                        <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>Skills:</span> {job.skills}
-                      </div>
-                      <div className={`flex items-center text-sm gap-2 mb-1 ${darkMode ? "text-white" : "text-black"}`}>
-                        <MapPin size={14} /> {job.location}
-                      </div>
-                      <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                        <IndianRupee size={14} /> {job.stipend}
-                      </div>
-                      <div>
-                        <div className='flex flex-row justify-between'>
-                          <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
-                    ${job.type === 'Remote' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                            {job.type}
+                  {internships.length === 0 ? (
+                    <div className="text-center flex items-center justify-center text-gray-600 text-lg">
+                      No internships available.
+                    </div>
+                  ) : (
+                    internships.map((job, idx) => (
+                      <motion.div
+                        key={job.id}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: idx * 0.1 }}
+                        viewport={{ once: true }}
+                        className={`rounded-2xl p-6 border hover:shadow-xl hover:scale-[1.02] transition-all duration-300 
+            ${darkMode ? "bg-black/20 border-cyan-600" : "bg-gray-100 border-cyan-600 shadow-md backdrop-blur-sm"}`}
+                      >
+                        {/* Company + Source */}
+                        <div className="flex justify-between text-md font-medium mb-2">
+                          <h1 className={`flex items-center gap-2 ${darkMode ? "text-purple-500" : "text-purple-700"}`}>
+                            <Briefcase size={16} /> {job.company}
+                          </h1>
+                          <span className="text-blue-500 text-sm">{job.source_type}</span>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className={`text-lg font-semibold mb-2 ${darkMode ? "text-white" : "text-black"}`}>
+                          {job.title}
+                        </h3>
+
+                        {/* Skills */}
+                        <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-700"} gap-2 mb-4`}>
+                          <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                            Skills:
                           </span>
-                          <div>
-                            <p className={`text-xs mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                              Posted {timeAgo(job.created_at)}
-                            </p>
+                          {job.skills}
+                        </div>
+
+                        {/* Location */}
+                        <div className={`flex items-center text-sm gap-2 mb-1 ${darkMode ? "text-white" : "text-black"}`}>
+                          <MapPin size={14} /> {job.location}
+                        </div>
+
+                        {/* Stipend */}
+                        <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                          <IndianRupee size={14} /> {job.stipend}
+                        </div>
+
+                        {/* Type + Posted Date */}
+                        <div>
+                          <div className="flex flex-row justify-between">
+                            <span
+                              className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
+                  ${job.type === "Remote" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}
+                            >
+                              {job.type}
+                            </span>
+                            <div>
+                              <p className={`text-xs mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                                Posted {timeAgo(job.created_at)}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      {job.source_type === "on-uplify" ? (
-                        <button
-                          onClick={() => {
-                            if (!isAuthenticated) setLoginShow(true);
-                            else navigate(`/user/internships/u/apply-internships/${job.id}`);
-                          }}
-                          className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
-                        >
-                          Apply Now →
-                        </button>
-                      ) : isAuthenticated ? (
-                        <a
-                          href={job.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full block text-center py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
-                        >
-                          Apply Now →
-                        </a>
-                      ) : (
-                        <button
-                          onClick={() => setLoginShow(true)}
-                          className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
-                        >
-                          Apply Now →
-                        </button>
-                      )}
-                    </motion.div>
-                  ))}
+
+                        {/* Apply Button */}
+                        {job.source_type === "on-uplify" ? (
+                          <button
+                            onClick={() => {
+                              if (!isAuthenticated) setLoginShow(true);
+                              else navigate(`/user/internships/u/apply-internships/${job.id}`);
+                            }}
+                            className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+                          >
+                            Apply Now →
+                          </button>
+                        ) : isAuthenticated ? (
+                          <a
+                            href={job.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full block text-center py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+                          >
+                            Apply Now →
+                          </a>
+                        ) : (
+                          <button
+                            onClick={() => setLoginShow(true)}
+                            className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
+                          >
+                            Apply Now →
+                          </button>
+                        )}
+                      </motion.div>
+                    ))
+                  )}
                 </div>
               )}
+
             </main>
           </div>
 

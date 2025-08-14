@@ -48,6 +48,26 @@ function TrackApplication() {
     fetchApplications();
   }, []);
 
+  const timeAgo = (date) => {
+    const now = new Date();
+    const posted = new Date(date);
+    const diffMs = now - posted;
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+
+    if (years > 0) return `${years} year${years > 1 ? 's' : ''} ago`;
+    if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`;
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    return 'Just now';
+  };
+
   return (
     <div
       className={`min-h-screen px-4 py-10 bg-cover bg-center bg-no-repeat relative transition-all duration-300 ${darkMode ? 'bg-black text-white' : 'bg-gray-100 text-black'
@@ -61,7 +81,7 @@ function TrackApplication() {
       </div>
 
       <div className="relative z-10">
-        <h1 className={`text-2xl md:text-4xl font-bold text-center mb-10 ${darkMode?"text-purple-600 border-purple-700 ":"text-white border-gray-200 "} border-b-2 pb-4`}>Track Your Applications</h1>
+        <h1 className={`text-2xl md:text-4xl font-bold text-center mb-10 ${darkMode ? "text-purple-600 border-purple-700 " : "text-white border-gray-200 "} border-b-2 pb-4`}>Track Your Applications</h1>
 
         {loading ? (
           <div className="flex justify-center items-center py-24">
@@ -88,7 +108,7 @@ function TrackApplication() {
                   <span className="text-blue-400">{job.source_type}</span>
                 </div>
 
-                <h3 className={`text-xl font-semibold mb-3 ${darkMode?"text-white":"text-gray-200"}`}>{job.title}</h3>
+                <h3 className={`text-xl font-semibold mb-3 ${darkMode ? "text-white" : "text-gray-200"}`}>{job.title}</h3>
                 <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-400"} gap-2 mb-4`}>
                   <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-300"}`}>Skills:</span> {job.skills}
                 </div>
@@ -99,14 +119,17 @@ function TrackApplication() {
                   <IndianRupee size={14} /> {job.stipend || 'N/A'}
                 </div>
 
-                <span
-                  className={`text-xs px-3 py-1 rounded-full font-semibold mb-4 inline-block ${job.type === 'Remote'
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-yellow-100 text-yellow-700'
-                    }`}
-                >
-                  {job.type}
-                </span>
+                <div className='flex flex-row justify-between'>
+                  <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
+                    ${job.type === 'Remote' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                    {job.type}
+                  </span>
+                  <div>
+                    <p className={`text-xs mb-3 ${darkMode ? "text-gray-200" : "text-gray-300"}`}>
+                      Posted {timeAgo(job.created_at)}
+                    </p>
+                  </div>
+                </div>
 
                 <div className="flex gap-3 mt-4 flex-wrap">
                   {job.source_type === 'on-uplify' && (

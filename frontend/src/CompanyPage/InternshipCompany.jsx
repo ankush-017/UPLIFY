@@ -35,6 +35,26 @@ function InternshipCompany() {
     fetchInterns();
   }, []);
 
+  const timeAgo = (date) => {
+    const now = new Date();
+    const posted = new Date(date);
+    const diffMs = now - posted;
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+
+    if (years > 0) return `${years} year${years > 1 ? 's' : ''} ago`;
+    if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`;
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    return 'Just now';
+  };
+
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-blue-50'}`}>
       {/* Bell-shaped Header */}
@@ -88,13 +108,17 @@ function InternshipCompany() {
                 <div className="flex items-center text-sm gap-2 mb-4">
                   <IndianRupee size={14} /> {job.stipend}
                 </div>
-                <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
-                  ${job.type === 'Remote'
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                    : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                  }`}>
-                  {job.type}
-                </span>
+                <div className='flex flex-row justify-between'>
+                  <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
+                    ${job.type === 'Remote' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                    {job.type}
+                  </span>
+                  <div>
+                    <p className={`text-xs mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                      Posted {timeAgo(job.created_at)}
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>

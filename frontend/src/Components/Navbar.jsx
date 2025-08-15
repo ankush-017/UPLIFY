@@ -58,21 +58,21 @@ const Navbar = () => {
 
   const guestLinks = [
     { name: 'Home', path: '/guest' },
-    { name: 'Internships', path: '/internships' },
+    { name: 'Jobs & Internships', path: '/job-internships' },
     { name: 'Resources', path: '/resources' },
     { name: 'Blogs', path: '/blog' },
   ];
 
   const studentLinks = [
     { name: 'Home', path: '/user' },
-    { name: 'Internships', path: '/user/internships' },
+    { name: 'Jobs & Internships', path: '/user/job-internships' },
     { name: 'My Applications', path: '/user/applications' },
     { name: 'Resources', path: '/user/resources' },
     { name: 'Blogs', path: '/user/blog' },
   ];
 
   const companyLinks = [
-    { name: 'Internship', path: '/company/internship' },
+    { name: 'Jobs & Internships', path: '/company/job-internship' },
     { name: 'Post Internship', path: '/company/post-internship' },
     { name: 'Track Applications', path: '/company/track-application' },
     { name: 'About Us', path: '/about' },

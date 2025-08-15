@@ -56,10 +56,10 @@ function Hero() {
 
                 {/* CTAs */}
                 <div className="mt-8 flex flex-col sm:flex-row flex-wrap gap-4 justify-center items-center">
-                    <Link to="/internships">
+                    <Link to="/job-internships">
                         <button className="bg-gradient-to-r from-blue-700 to-cyan-600 hover:from-blue-800 hover:to-cyan-700 transition-all duration-300 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center gap-2">
                             <Rocket size={18} />
-                            Browse Internships
+                            Browse Jobs & Internships
                         </button>
                     </Link>
 

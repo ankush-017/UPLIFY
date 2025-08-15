@@ -164,7 +164,7 @@ export default function Internships() {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: idx * 0.1 }}
                         viewport={{ once: true }}
-                        className={`rounded-2xl p-6 border hover:shadow-xl hover:scale-[1.02] transition-all duration-300 
+                        className={`rounded-2xl p-6 flex flex-col justify-center border hover:shadow-xl hover:scale-[1.02] transition-all duration-300 
             ${darkMode ? "bg-black/20 border-cyan-600" : "bg-gray-100 border-cyan-600 shadow-md backdrop-blur-sm"}`}
                       >
                         {/* Company + Source */}
@@ -181,22 +181,37 @@ export default function Internships() {
                         </h3>
 
                         {/* Skills */}
-                        <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-700"} gap-2 mb-4`}>
-                          <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                            Skills:
-                          </span>
-                          {job.skills}
-                        </div>
+                        {job.skills && (
+                          <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-700"} gap-2 mb-4`}>
+                            <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                              Skills:
+                            </span>
+                            {job.skills}
+                          </div>
+                        )}
 
                         {/* Location */}
-                        <div className={`flex items-center text-sm gap-2 mb-1 ${darkMode ? "text-white" : "text-black"}`}>
-                          <MapPin size={14} /> {job.location}
-                        </div>
+                        {job.location && (
+                          <div className={`flex items-center text-sm gap-2 mb-1 ${darkMode ? "text-white" : "text-black"}`}>
+                            <MapPin size={14} /> {job.location}
+                          </div>
+                        )}
 
                         {/* Stipend */}
-                        <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                          <IndianRupee size={14} /> {job.stipend}
-                        </div>
+                        {job.stipend && (
+                          <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                            <IndianRupee size={14} /> {job.stipend}
+                          </div>
+                        )}
+
+                        {/* Job-Type */}
+                        {job.job_type && (
+                          <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                            <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                              Type:
+                            </span>  {job.job_type}
+                          </div>
+                        )}
 
                         {/* Type + Posted Date */}
                         <div>
@@ -220,7 +235,7 @@ export default function Internships() {
                           <button
                             onClick={() => {
                               if (!isAuthenticated) setLoginShow(true);
-                              else navigate(`/user/internships/u/apply-internships/${job.id}`);
+                              else navigate(`/user/job-internships/u/apply-internships/${job.id}`);
                             }}
                             className="w-full py-2 mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90"
                           >
@@ -256,7 +271,7 @@ export default function Internships() {
             <Login
               onClose={() => {
                 setLoginShow(false);
-                navigate('/internships');
+                navigate('/job-internships');
               }}
             />
           )}

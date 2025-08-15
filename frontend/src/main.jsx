@@ -69,7 +69,7 @@ const router = createBrowserRouter(
       {/* Auth Pages */}
       <Route path='guest' element={<Home />} />
       <Route path="login" element={<Login />} />
-      <Route path="internships" element={<Internships />} />
+      <Route path="job-internships" element={<Internships />} />
       <Route path="resources" element={<Resources />} />
       <Route path="blog" element={<Blogs />} />
       <Route path="blog/:id" element={<BlogDetails />} />
@@ -79,7 +79,7 @@ const router = createBrowserRouter(
       <Route element={<UserProtected />}>
         <Route path="user">
           <Route index element={<Home />} />
-          <Route path="internships" element={<Internships />} />
+          <Route path="job-internships" element={<Internships />} />
           <Route path="apply" element={<Apply />} />
           <Route path="blog" element={<Blogs />} />
           <Route path="blog/:id" element={<BlogDetails />} />
@@ -96,14 +96,14 @@ const router = createBrowserRouter(
           <Route path="career-roadmaps/data-scientist" element={<DataScientist />} />
           <Route path="career-roadmaps/ui-ux-designer" element={<UiUx />} />
           <Route path="career-roadmaps/cybersecuirty-analyst" element={<CyberSecuirtyAnalyst />} />
-          <Route path="internships/u/apply-internships/:id" element={<ApplicationForm />} />
+          <Route path="job-internships/u/apply-internships/:id" element={<ApplicationForm />} />
         </Route>
       </Route>
 
       {/* Company Routes */}
       <Route path="company" element={<CompanyCheck />}>
         <Route index element={<HomeCompany />} />
-        <Route path='internship' element={<InternshipCompany />} />
+        <Route path='job-internship' element={<InternshipCompany />} />
         <Route path='post-internship' element={<PostInternship />} />
         <Route path='track-application' element={<TrackApplication />} />
         <Route path='job-applicants/:id' element={<JobApplicant />} />

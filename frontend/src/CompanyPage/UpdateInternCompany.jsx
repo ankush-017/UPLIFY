@@ -107,43 +107,143 @@ function UpdateInternCompany() {
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                {[
-                  { name: 'title', placeholder: 'Internship Title' },
-                  { name: 'company', placeholder: 'Company Name' },
-                  { name: 'location', placeholder: 'Location (e.g., Remote)' },
-                  { name: 'stipend', placeholder: 'Stipend (e.g., ₹10,000/month)' },
-                  { name: 'link', placeholder: 'Link (e.g., /internship/1)' },
-                  { name: 'skills', placeholder: '(e.g., Reactjs, Nodejs)' },
-                ].map(({ name, placeholder }) => (
-                  <div key={name} className="space-y-2">
-                    <label htmlFor={name} className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
-                      {name}
-                    </label>
-                    <input
-                      type="text"
-                      name={name}
-                      value={form[name] || ''}
-                      onChange={handleChange}
-                      placeholder={placeholder}
-                      className={`w-full px-4 py-3 rounded-lg outline-none transition
-                        ${darkMode
-                          ? 'bg-white/10 text-white placeholder:text-gray-400'
-                          : 'bg-gray-100 text-black placeholder:text-gray-500'}`}
-                       {...(name !== 'link' && { required: true })}
-                    />
-                  </div>
-                ))}
-
+                {/* Title */}
                 <div className="space-y-2">
-                  <label htmlFor="Type" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                  <label htmlFor="title" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                    Title
+                  </label>
+                  <input
+                    id="title"
+                    type="text"
+                    name="title"
+                    value={form.title}
+                    onChange={handleChange}
+                    placeholder="Title"
+                    className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-white/10 text-white placeholder:text-gray-400' : 'bg-gray-100 text-gray-800 placeholder:text-gray-500'
+                      }`}
+                    required
+                  />
+                </div>
+
+                {/* Company */}
+                <div className="space-y-2">
+                  <label htmlFor="company" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                    Company
+                  </label>
+                  <input
+                    id="company"
+                    type="text"
+                    name="company"
+                    value={form.company}
+                    onChange={handleChange}
+                    placeholder="Company"
+                    className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-white/10 text-white placeholder:text-gray-400' : 'bg-gray-100 text-gray-800 placeholder:text-gray-500'
+                      }`}
+                    required
+                  />
+                </div>
+
+                {/* Location */}
+                <div className="space-y-2">
+                  <label htmlFor="location" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                    Location
+                  </label>
+                  <input
+                    id="location"
+                    type="text"
+                    name="location"
+                    value={form.location}
+                    onChange={handleChange}
+                    placeholder="Location"
+                    className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-white/10 text-white placeholder:text-gray-400' : 'bg-gray-100 text-gray-800 placeholder:text-gray-500'
+                      }`}
+                  />
+                </div>
+
+                {/* Stipend */}
+                <div className="space-y-2">
+                  <label htmlFor="stipend" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                    Stipend
+                  </label>
+                  <input
+                    id="stipend"
+                    type="text"
+                    name="stipend"
+                    value={form.stipend}
+                    onChange={handleChange}
+                    placeholder="Stipend"
+                    className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-white/10 text-white placeholder:text-gray-400' : 'bg-gray-100 text-gray-800 placeholder:text-gray-500'
+                      }`}
+                  />
+                </div>
+
+                {/* Link */}
+                <div className="space-y-2">
+                  <label htmlFor="link" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                    Link
+                  </label>
+                  <input
+                    id="link"
+                    type="text"
+                    name="link"
+                    value={form.link}
+                    onChange={handleChange}
+                    placeholder="Link"
+                    className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-white/10 text-white placeholder:text-gray-400' : 'bg-gray-100 text-gray-800 placeholder:text-gray-500'
+                      }`}
+                  />
+                </div>
+
+                {/* Skills */}
+                <div className="space-y-2">
+                  <label htmlFor="skills" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                    Skills
+                  </label>
+                  <input
+                    id="skills"
+                    type="text"
+                    name="skills"
+                    value={form.skills}
+                    onChange={handleChange}
+                    placeholder="Skills (e.g., React, Node.js)"
+                    className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-white/10 text-white placeholder:text-gray-400' : 'bg-gray-100 text-gray-800 placeholder:text-gray-500'
+                      }`}
+                  />
+                </div>
+
+                {/* Job Type */}
+                <div className="space-y-2">
+                  <label htmlFor="job_type" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                    Job Type
+                  </label>
+                  <select
+                    id="job_type"
+                    name="job_type"
+                    value={form.job_type}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-100 text-gray-800'
+                      }`}
+                    required
+                  >
+                    <option value="">Select Job Type</option>
+                    <option value="Internship">Internship</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                  </select>
+                </div>
+
+                {/* Type */}
+                <div className="space-y-2">
+                  <label htmlFor="type" className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
                     Type
                   </label>
                   <select
+                    id="type"
                     name="type"
                     value={form.type || ''}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-lg outline-none
-                      ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-100 text-black'}`}
+                    className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-100 text-black'
+                      }`}
                     required
                   >
                     <option value="Remote">Remote</option>
@@ -152,33 +252,41 @@ function UpdateInternCompany() {
                   </select>
                 </div>
 
-                <div className="flex gap-6 mt-4">
-                  {['on-uplify', 'forwarded'].map((option) => (
-                    <label key={option} className={`flex items-center gap-2 cursor-pointer ${darkMode ? 'text-white' : 'text-black'}`}>
-                      <input
-                        type="radio"
-                        name="source_type"
-                        value={option}
-                        checked={form.source_type === option}
-                        onChange={handleChange}
-                        className={`appearance-none w-5 h-5 border rounded-full 
-                          ${option === 'on-uplify'
-                            ? 'checked:border-purple-500 checked:bg-purple-600'
-                            : 'checked:border-yellow-500 checked:bg-yellow-400'} transition-all duration-200`}
-                      />
-                      <span className="text-sm capitalize">{option.replace('-', ' ')}</span>
-                    </label>
-                  ))}
+                {/* Source Type */}
+                <div className="space-y-2">
+                  <label className={`block text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-500'}`}>
+                    Source Type
+                  </label>
+                  <div className="flex gap-6 mt-1">
+                    {['on-uplify', 'forwarded'].map((option) => (
+                      <label key={option} className={`flex items-center gap-2 cursor-pointer ${darkMode ? 'text-white' : 'text-black'}`}>
+                        <input
+                          type="radio"
+                          name="source_type"
+                          value={option}
+                          checked={form.source_type === option}
+                          onChange={handleChange}
+                          className={`appearance-none w-5 h-5 border rounded-full 
+              ${option === 'on-uplify'
+                              ? 'checked:border-purple-500 checked:bg-purple-600'
+                              : 'checked:border-yellow-500 checked:bg-yellow-400'} transition-all duration-200`}
+                        />
+                        <span className="text-sm capitalize">{option.replace('-', ' ')}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
+                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition disabled:opacity-50"
                 >
-                  {loading ? 'Updating...' : 'Update Internship'}
+                  {loading ? 'Updating...' : 'Update Job & Internship'}
                 </button>
               </form>
+
             </motion.div>
           </div>
         </div>

@@ -18,7 +18,7 @@ export default function AllInternships() {
     // Fetch internships from Supabase
     const fetchInternships = async () => {
         setLoading(true);
-        const { data, error } = await supabase.from('internships').select('*').order('created_at', { ascending: false }); 
+        const { data, error } = await supabase.from('internships').select('*').order('created_at', { ascending: false });
         if (error) {
             setLoading(false);
             console.error('Error fetching:', error.message);
@@ -87,22 +87,45 @@ export default function AllInternships() {
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: idx * 0.1 }}
                             viewport={{ once: true }}
-                            className={`bg-black/5 backdrop-blur-sm rounded-2xl shadow-md p-6 border hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
+                            className={`bg-black/5 backdrop-blur-sm flex justify-center flex-col rounded-2xl shadow-md p-6 border hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
                         >
                             <div className={`mb-2 flex justify-between gap-2 text-md ${darkMode ? "text-purple-400" : "text-purple-500"} font-medium`}>
                                 <h1 className='flex justify-between items-center gap-3'><Briefcase size={16} /> {job.company}</h1>
                                 <p className='text-blue-500 text-sm'>{job.source_type}</p>
                             </div>
                             <h3 className={`text-lg font-semibold text-white mb-2`}>{job.title}</h3>
-                            <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-300"} gap-2 mb-4`}>
-                                <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-400"}`}>Skills:</span> {job.skills}
-                            </div>
-                            <div className={`flex items-center text-sm text-gray-300 gap-2 mb-1`}>
-                                <MapPin size={14} /> {job.location}
-                            </div>
-                            <div className={`flex items-center text-sm text-gray-300 gap-2 mb-4`}>
-                                <IndianRupee size={14} /> {job.stipend}
-                            </div>
+                            {/* Skills */}
+                            {job.skills && (
+                                <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-400"} gap-2 mb-4`}>
+                                    <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-300"}`}>
+                                        Skills:
+                                    </span>
+                                    {job.skills}
+                                </div>
+                            )}
+
+                            {/* Location */}
+                            {job.location && (
+                                <div className={`flex items-center text-sm gap-2 mb-1 ${darkMode ? "text-white" : "text-white"}`}>
+                                    <MapPin size={14} /> {job.location}
+                                </div>
+                            )}
+
+                            {/* Stipend */}
+                            {job.stipend && (
+                                <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-300"}`}>
+                                    <IndianRupee size={14} /> {job.stipend}
+                                </div>
+                            )}
+
+                            {/* Job-Type */}
+                            {job.job_type && (
+                                <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-300"}`}>
+                                    <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-300"}`}>
+                                        Type:
+                                    </span>  {job.job_type}
+                                </div>
+                            )}
 
                             <div className='flex flex-row justify-between'>
                                 <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 

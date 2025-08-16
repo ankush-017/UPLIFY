@@ -36,7 +36,7 @@ export default function FeaturedInternships() {
 
     fetchInternships();
   }, []);
-  
+
   const timeAgo = (date) => {
     const now = new Date();
     const posted = new Date(date);
@@ -89,24 +89,52 @@ export default function FeaturedInternships() {
               <p className='text-blue-500 text-sm'>{job.source_type}</p>
             </div>
             <h3 className={`text-lg font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"} mb-2`}>{job.title}</h3>
-            <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-700"} gap-2 mb-4`}>
-              <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>Skills:</span> {job.skills}
-            </div>
-            <div className={`flex items-center text-sm ${darkMode ? "text-gray-300" : "text-gray-500"} gap-2 mb-1`}>
-              <MapPin size={14} /> {job.location}
-            </div>
-            <div className={`flex items-center text-sm ${darkMode ? "text-gray-300" : "text-gray-500"} gap-2 mb-4`}>
-              <IndianRupee size={14} /> {job.stipend}
-            </div>
-            <div className='flex flex-row justify-between'>
-              <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
-                    ${job.type === 'Remote' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                {job.type}
-              </span>
-              <div>
-                <p className={`text-xs mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                  Posted {timeAgo(job.created_at)}
-                </p>
+            {/* Skills */}
+            {job.skills && (
+              <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-700"} gap-2 mb-4`}>
+                <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                  Skills:
+                </span>
+                {job.skills}
+              </div>
+            )}
+
+            {/* Location */}
+            {job.location && (
+              <div className={`flex items-center text-sm gap-2 mb-1 ${darkMode ? "text-white" : "text-black"}`}>
+                <MapPin size={14} /> {job.location}
+              </div>
+            )}
+
+            {/* Stipend */}
+            {job.stipend && (
+              <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <IndianRupee size={14} /> {job.stipend}
+              </div>
+            )}
+
+            {/* Job-Type */}
+            {job.job_type && (
+              <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                  Type:
+                </span>  {job.job_type}
+              </div>
+            )}
+            {/* Type + Posted Date */}
+            <div>
+              <div className="flex flex-row justify-between">
+                <span
+                  className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
+                  ${job.type === "Remote" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}
+                >
+                  {job.type}
+                </span>
+                <div>
+                  <p className={`text-xs mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                    Posted {timeAgo(job.created_at)}
+                  </p>
+                </div>
               </div>
             </div>
             {job.source_type === "on-uplify" ? (

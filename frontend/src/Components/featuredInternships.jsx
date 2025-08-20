@@ -82,7 +82,7 @@ export default function FeaturedInternships() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: idx * 0.1 }}
             viewport={{ once: true }}
-            className={`${darkMode ? "bg-gray-900 border-gray-500" : "bg-white border-gray-100"} rounded-2xl shadow-md p-6 border hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
+            className={`${darkMode ? "bg-gray-900 border-gray-500" : "bg-white border-gray-100"} rounded-2xl shadow-md p-6 flex justify-center flex-col border hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
           >
             <div className={`mb-2 flex justify-between gap-2 text-md ${darkMode ? "text-purple-400" : "text-purple-800"} font-medium`}>
               <h1 className='flex justify-between items-center gap-3'><Briefcase size={16} /> {job.company}</h1>

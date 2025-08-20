@@ -170,7 +170,7 @@ export default function FeaturedInternships() {
 
       <div className="mt-10 flex items-center justify-center">
         <Link
-          to="/internships"
+          to="/job-internships"
           className="gap-2 flex items-center bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-lg shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
         >
           <span className="font-semibold">View all internships </span>

@@ -92,7 +92,13 @@ export const sendOtpController = async (req, res) => {
 
     console.log('OTP Email Sent');
     // Save OTP in Redis with 5 minutes expiry
-    await redisClient.set(`otp:${email}`, otp, { ex: 300 });
+    try {
+      await redisClient.set(`otp:${email}`, otp, { ex: 300 });
+      console.log("✅ OTP stored successfully");
+    } catch (error) {
+      console.error("❌ Error storing OTP in Redis:", error);
+    }
+
 
     return res.status(200).send({
       success: true,

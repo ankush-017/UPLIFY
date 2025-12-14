@@ -1,102 +1,171 @@
 import { motion } from 'framer-motion';
 import { Target, ShieldCheck, Brain, FileCheck } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { WhySide } from '../assets/image.js';
 
 const benefits = [
   {
-    title: 'Tailored Internships',
-    desc: 'Find roles suited to your skills, interests, and goals — not just random listings.',
-    icon: <Target className="text-blue-600" size={28} />,
+    title: 'Personalized Internships',
+    tag: 'Fit Your Goals',
+    desc: 'Access internships curated to match your skills, passions, and career aspirations for maximum impact.',
+    icon: Target,
   },
   {
-    title: 'Verified Companies',
-    desc: 'Every company on Uplify is manually reviewed to ensure safety and authenticity.',
-    icon: <ShieldCheck className="text-blue-600" size={28} />,
+    title: 'Trusted Companies',
+    tag: 'Verified & Reliable',
+    desc: 'All companies are carefully vetted to ensure you engage with reputable employers and meaningful opportunities.',
+    icon: ShieldCheck,
   },
   {
-    title: 'Skill-Driven Applications',
-    desc: 'Stand out based on what you know, not just what’s written on your resume.',
-    icon: <Brain className="text-blue-600" size={28} />,
+    title: 'Skill-Based Shortlisting',
+    tag: 'Showcase Your Talent',
+    desc: 'Let your abilities speak! Get selected based on real skills, not just CVs or keywords.',
+    icon: Brain,
   },
   {
-    title: 'Certificate Transparency',
-    desc: 'Companies issue certificates directly. Uplify helps with easy verification.',
-    icon: <FileCheck className="text-blue-600" size={28} />,
+    title: 'Instant Certificate Verification',
+    tag: 'Proof That Counts',
+    desc: 'Receive verified certificates from companies instantly, boosting credibility and career growth.',
+    icon: FileCheck,
   },
 ];
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i) => ({
+const container = {
+  visible: { transition: { staggerChildren: 0.2 } },
+};
+
+const card = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.15, duration: 0.6, ease: 'easeOut' },
-  }),
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
 };
 
 function WhyChooseUplify() {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   return (
-    <section className="relative py-16 px-6 md:px-12 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-black/20 to-transparent backdrop-blur-sm z-0"></div>
+    <section className="relative py-2 pt-10 px-6 md:px-12 overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-40 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl" />
+      </div>
 
       <div className="relative max-w-7xl mx-auto z-10">
         {/* Heading */}
         <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 22 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
         >
-          <h2 className={`text-3xl md:text-5xl font-extrabold ${darkMode ? 'text-white' : 'text-gray-200'}`}>
-            Why Students & Companies <span className="text-blue-500">Love Uplify</span>?
+          <h2
+            className={`text-4xl md:text-5xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'
+              }`}
+          >
+            Why <span className="text-blue-500">Students & Companies</span> Love Uplify
           </h2>
-          <p className="mt-4 text-lg md:text-xl font-medium text-gray-300 max-w-3xl mx-auto">
-            We're more than just listings — we empower students to grow and help companies find talent that fits.
+          <p
+            className={`mt-5 text-lg max-w-3xl mx-auto leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}
+          >
+            Uplify connects talented students with the right opportunities while ensuring trust,
+            transparency, and skill-based recognition at every step.
           </p>
+
+          {/* Divider */}
+          <div className="mt-10 flex justify-center items-center gap-3">
+            <span className="h-[2px] w-32 bg-gradient-to-r from-transparent to-blue-500" />
+            <span className="h-2 w-2 rounded-full bg-blue-500" />
+            <span className="h-[2px] w-32 bg-gradient-to-l from-transparent to-blue-500" />
+          </div>
         </motion.div>
 
-        {/* Benefits Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 z-10">
-          {benefits.map((item, i) => (
-            <motion.div
-              key={i}
-              variants={fadeIn}
-              initial="hidden"
-              whileInView="visible"
-              custom={i}
-              viewport={{ once: true }}
-              className={`relative p-6 rounded-2xl  shadow-xl transition duration-300
-                ${darkMode ? 'bg-black/30 border-blue-500 border-2' : 'bg-white border-blue-700 border-[3px] '}`}
-            >
-              {/* Glowing background pulse */}
-              <div
-                className="absolute inset-0 rounded-2xl blur-2xl opacity-30 group-hover:opacity-60 transition"
-                style={{
-                  background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)',
-                }}
-              ></div>
+        {/* Cards */}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-12"
+        >
+          {benefits.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={i}
+                variants={card}
+                whileHover={{ y: -10, scale: 1.03 }}
+                className="group relative rounded-3xl p-[2px]"
+              >
+                {/* Glowing border */}
+                <div
+                  className={`absolute inset-0 rounded-3xl blur-md transition-opacity duration-300
+                  ${darkMode
+                      ? 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80'
+                      : 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-60'
+                    } group-hover:opacity-100`}
+                />
 
-              <div className="relative z-10">
-                <div className={`${darkMode ? 'bg-blue-200' : 'bg-blue-100'} p-3 rounded-full inline-flex items-center justify-center mb-4`}>
-                  {item.icon}
+                {/* Card */}
+                <div
+                  className={`relative h-full rounded-md p-8 backdrop-blur-xl transition-all
+                  ${darkMode
+                      ? 'bg-black/65 border border-white/10'
+                      : 'bg-white/90 border border-gray-200 shadow-xl shadow-blue-500/10'
+                    }`}
+                >
+                  {/* Top accent line */}
+                  <div className="absolute inset-x-0 top-0 h-1 overflow-hidden rounded-t-3xl">
+                    <div
+                      className="h-full w-0 group-hover:w-full transition-all duration-300
+                      bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10">
+                    <motion.div
+                      animate={{ scale: [1, 1.15, 1] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className={`inline-flex p-4 rounded-xl mb-5
+                      ${darkMode
+                          ? 'bg-blue-500/20 text-blue-400'
+                          : 'bg-blue-100 text-blue-600'
+                        }`}
+                    >
+                      <Icon size={28} />
+                    </motion.div>
+
+                    <h3
+                      className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'
+                        }`}
+                    >
+                      {item.title}
+                    </h3>
+
+                    <p className="text-xs mt-1 mb-3 text-blue-500 font-medium uppercase tracking-wide">
+                      {item.tag}
+                    </p>
+
+                    <p
+                      className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                        }`}
+                    >
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
-                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  {item.title}
-                </h3>
-                <p className={`mt-2 text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>
-                  {item.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
     </section>
   );
 }
-
 export default WhyChooseUplify;

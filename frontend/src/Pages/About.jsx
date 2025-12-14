@@ -252,7 +252,7 @@ export default function About() {
               Ankush Kumar
             </h3>
             <p className={`${darkMode ? "text-indigo-400" : "text-indigo-700"} text-sm font-medium`}>
-              Founder & Software Engineer
+              Founder & CEO
             </p>
             <p className={`text-lg md:text-xl leading-relaxed mt-4 max-w-2xl ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
               Ankush is a B.Tech CSE student at MMMUT and a passionate full-stack developer with a strong interest in AI/ML. He built <span className="font-semibold text-indigo-500">Uplify</span> with a clear mission — to help students like himself navigate the tech world with clarity, confidence, and a supportive community that fosters growth.

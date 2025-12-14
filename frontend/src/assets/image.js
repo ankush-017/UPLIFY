@@ -23,7 +23,8 @@ import UIDark from './UInternDark.jpg'
 import CompanyHero from './companyHero.png'
 import postCompany from './postCompany.jpg';
 import trackBG from './trackbg.jpg';
+import whyWhite from './WhyWhite.jpg';
 
 export {herointern,Resumebuilder,AboutHero,loginImg,google,CR,heroBg,WhyHowImg,AdminBg,InternBgLight,IBD,
     applyInternBG,applyInternBGDark,WhySide,BlogbgLight,BlogbgDark, AboutMission,Ankush,communityLight,communityDark,UILight,UIDark,
-    CompanyHero,postCompany,trackBG};
+    CompanyHero,postCompany,trackBG,whyWhite};

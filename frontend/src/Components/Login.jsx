@@ -252,6 +252,7 @@ export default function Login({ onClose }) {
       setShowOtpModal(true);
     }
     catch (err) {
+      // console.error("Send OTP error:", err.response?.data || err.message);
       toast.error("Failed to send OTP");
     }
     finally {

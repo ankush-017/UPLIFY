@@ -167,7 +167,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`${darkMode ? 'bg-gray-900' : 'bg-gray-50'} shadow-sm sticky top-0 z-50 px-6 py-4 flex items-center justify-between`}>
+      <nav className={`${darkMode ? 'bg-black' : 'bg-gray-50'} shadow-sm sticky top-0 z-50 px-6 py-4 flex items-center justify-between`}>
         {/* Logo */}
         <Link to={`/${(who === 'company' || who === 'user')?who:'guest'}`} className="flex items-center gap-2">
           <img src={logo} alt="Uplify" className="h-8" />

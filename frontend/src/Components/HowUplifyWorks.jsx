@@ -1,106 +1,182 @@
 import { motion } from 'framer-motion';
-import { Rocket, GraduationCap, FileText, BadgeCheck, CircleArrowRight } from 'lucide-react';
-import { toggleTheme } from '../Store/Slice/ThemeSlice.js'
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  Rocket,
+  GraduationCap,
+  FileText,
+  BadgeCheck,
+  CircleArrowRight,
+} from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const steps = [
   {
-    title: 'Browse Internships',
-    icon: <Rocket className="text-blue-600" size={26} />,
-    desc: 'Explore internships posted by verified companies across different industries.',
+    title: 'Discover Verified Opportunities',
+    icon: Rocket,
+    desc: 'Browse internships & jobs handpicked for your skills and career goals, from trusted companies.',
   },
   {
-    title: 'Upskill with Courses',
-    icon: <GraduationCap className="text-blue-600" size={26} />,
-    desc: 'Learn with hand-picked affiliate courses to improve your knowledge.',
+    title: 'Upskill Smartly',
+    icon: GraduationCap,
+    desc: 'Access curated courses, practical projects, and resources to boost your employability.',
   },
   {
-    title: 'Build Your Resume',
-    icon: <FileText className="text-blue-600" size={26} />,
-    desc: 'Use Uplify’s built-in resume builder to create a job-ready profile.',
+    title: 'Build a Standout Resume',
+    icon: FileText,
+    desc: 'Craft an ATS-friendly resume with our tools and showcase your true potential.',
   },
   {
-    title: 'Apply & Earn Certificate',
-    icon: <BadgeCheck className="text-blue-600" size={26} />,
-    desc: 'Apply to internships and receive certificates from the companies after completion.',
+    title: 'Apply Confidently & Get Certified',
+    icon: BadgeCheck,
+    desc: 'Submit applications knowing the company is verified and earn instant certificates for your achievements.',
   },
 ];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i) => ({
+const container = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.2 },
+  },
+};
+
+const card = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.15, duration: 0.5, ease: 'easeOut' },
-  }),
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
 };
 
 function HowUplifyWorks() {
-
-  const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   return (
-    <section className={`pt-5 px-6 backdrop-blur-[2px] bg-black/10`}>
-      <div className="max-w-6xl mx-auto text-center">
-        <div className='flex flex-col'>
-          {/* Glassy Heading Container */}
-          <motion.div
-            className={`inline-block px-6 py-2 rounded-xl`}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className={`text-3xl md:text-5xl font-bold ${darkMode ? "text-white" : "text-gray-100"
-              }`}>
-              How <span className="text-blue-500">Uplify</span> Works ?
-            </h2>
-          </motion.div>
+    <section className="relative pt-20 pb-14 px-6 md:px-12 overflow-hidden">
+      {/* Glassy Aurora background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-32 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl" />
+      </div>
 
-          {/* Glassy Subtext */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            viewport={{ once: true }}
-            className={`inline-block px-4 py-2 font-bold text-lg md:text-xl rounded-lg ${darkMode ? "text-gray-300" : "text-gray-300"
-              }`}
+      <div className="relative max-w-7xl mx-auto z-10">
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-3xl mx-auto"
+        >
+          <h2
+            className={`text-4xl md:text-5xl font-extrabold tracking-tight ${
+              darkMode ? 'text-white' : 'text-gray-900'
+            }`}
           >
-            Everything you need to grow your career — in one place.
-          </motion.p>
-        </div>
+            How <span className="text-blue-500">Uplify</span> Helps You Grow
+          </h2>
+          <p
+            className={`mt-4 text-lg ${
+              darkMode ? 'text-gray-300' : 'text-gray-600'
+            }`}
+          >
+            Step-by-step guidance to find opportunities, upskill, and get recognized by top companies.
+          </p>
+
+          {/* Divider */}
+          <div className="mt-10 flex justify-center items-center gap-3">
+            <span className="h-[2px] w-32 bg-gradient-to-r from-transparent to-blue-500" />
+            <span className="h-2 w-2 rounded-full bg-blue-500" />
+            <span className="h-[2px] w-32 bg-gradient-to-l from-transparent to-blue-500" />
+          </div>
+        </motion.div>
 
         {/* Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mt-10 pb-10">
-          {steps.map((step, idx) => (
-            <motion.div
-              key={idx}
-              className={`flex flex-col items-center text-center px-6 py-6 rounded-xl shadow-lg backdrop-blur-sm ${darkMode ? " text-gray-200 bg-black/40 border-2 border-blue-500" : " bg-white text-gray-800 border-blue-700 border-[3px]"
-                }`}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              custom={idx}
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              {/* Glowing background pulse */}
-              <div
-                className="absolute inset-0 rounded-2xl blur-2xl opacity-30 group-hover:opacity-60 transition"
-                style={{
-                  background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)',
-                }}
-              ></div>
-              <div className="bg-blue-100 p-3 rounded-full mb-4">{step.icon}</div>
-              <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-              <p className={`text-sm ${darkMode ? "text-gray-300" : "text-black"}`}>{step.desc}</p>
-            </motion.div>
-          ))}
-        </div>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mt-20"
+        >
+          {steps.map((step, idx) => {
+            const Icon = step.icon;
+            return (
+              <motion.div
+                key={idx}
+                variants={card}
+                whileHover={{ y: -10, scale: 1.03 }}
+                className="group relative rounded-3xl p-[2px]"
+              >
+                {/* Gradient glow */}
+                <div
+                  className={`absolute inset-0 rounded-3xl blur-md transition-opacity duration-300
+                  ${darkMode
+                    ? 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80'
+                    : 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-60'
+                  } group-hover:opacity-100`}
+                />
+
+                {/* Card */}
+                <div
+                  className={`relative h-full rounded-2xl p-8 backdrop-blur-xl transition-all
+                  ${darkMode
+                    ? 'bg-black/65 border border-white/10 text-white'
+                    : 'bg-white/90 border border-gray-200 shadow-xl shadow-blue-500/10'
+                  }`}
+                >
+                  {/* Step number */}
+                  <span className="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-blue-600 text-white text-sm flex items-center justify-center font-bold shadow-lg">
+                    {idx + 1}
+                  </span>
+
+                  {/* Icon with rotation when card is hovered */}
+                  <motion.div
+                    className="inline-flex p-4 rounded-2xl bg-blue-500/20 text-blue-400 mb-6"
+                    animate={{ rotate: 0 }}
+                    whileHover={{ rotate: 360, scale: 1.25 }}
+                    transition={{ type: 'spring', stiffness: 250, damping: 12 }}
+                  >
+                    <Icon size={28} />
+                  </motion.div>
+
+                  {/* Text */}
+                  <h3 className="text-xl font-semibold">{step.title}</h3>
+                  <p
+                    className={`mt-3 text-sm leading-relaxed ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}
+                  >
+                    {step.desc}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          viewport={{ once: true }}
+          className="mt-14 flex justify-center"
+        >
+          <Link
+            to="/about"
+            className="group relative flex items-center gap-3 px-10 py-4 rounded-full 
+            bg-gradient-to-r from-blue-600 to-cyan-500 text-white 
+            font-semibold shadow-2xl overflow-hidden"
+          >
+            <span className="absolute inset-0 bg-white/30 blur-xl opacity-0 group-hover:opacity-100 transition" />
+            <span className="relative z-10">Explore Uplify</span>
+            <CircleArrowRight className="relative z-10 group-hover:translate-x-1 transition" />
+          </Link>
+        </motion.div>
       </div>
     </section>
-
   );
 }
 

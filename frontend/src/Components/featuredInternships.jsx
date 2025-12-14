@@ -59,7 +59,7 @@ export default function FeaturedInternships() {
 
   return (
     <section className={`py-10 px-6 lg:px-20 ${darkMode
-      ? "bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white"
+      ? "bg-black text-white"
       : "bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 text-gray-900"
       }`}>
 

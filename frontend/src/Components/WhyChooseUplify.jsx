@@ -67,7 +67,7 @@ function WhyChooseUplify() {
             className={`text-4xl md:text-5xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'
               }`}
           >
-            Why <span className="text-blue-500">Students & Companies</span> Love Uplify
+            Why <span className={`${darkMode ? "text-blue-500" : 'text-blue-700'}`}>Students & Companies</span> Love Uplify
           </h2>
           <p
             className={`mt-5 text-lg max-w-3xl mx-auto leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'

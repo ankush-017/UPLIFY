@@ -74,7 +74,7 @@ function HowUplifyWorks() {
               darkMode ? 'text-white' : 'text-gray-900'
             }`}
           >
-            How <span className="text-blue-500">Uplify</span> Helps You Grow
+            How <span className={` ${darkMode ? 'text-blue-500' : 'text-blue-700'} `}>Uplify</span> Helps You Grow
           </h2>
           <p
             className={`mt-4 text-lg ${

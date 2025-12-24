@@ -60,7 +60,7 @@ export default function FeaturedInternships() {
         <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-yellow-500 to-green-500 text-transparent bg-clip-text">
           Featured Internships
         </h2>
-        <p className="mt-3 text-gray-600 max-w-xl mx-auto">
+        <p className={`mt-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'} max-w-xl mx-auto`}>
           Hand-picked opportunities from fast-growing startups & companies
         </p>
       </div>
@@ -106,13 +106,13 @@ export default function FeaturedInternships() {
 
             {/* Skills */}
             {job.skills && (
-              <p className="text-sm text-gray-600 mb-3">
+              <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-3`}>
                 <span className="font-medium">Skills:</span> {job.skills}
               </p>
             )}
 
             {/* Meta */}
-            <div className="space-y-2 text-sm text-gray-600">
+            <div className={`space-y-2 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               {job.location && (
                 <div className="flex items-center gap-2">
                   <MapPin size={14} /> {job.location}

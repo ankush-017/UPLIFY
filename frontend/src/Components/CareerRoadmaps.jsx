@@ -47,10 +47,10 @@ export default function CareerRoadmaps() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-3xl md:text-4xl font-bold text-center w-[300px] md:w-[380px] mb-10 px-6 py-3 rounded-xl shadow-lg backdrop-blur-md border-blue-700 border-2 
+          className="text-3xl md:text-4xl font-bold text-center w-[300px] md:w-[380px] mb-10 px-6 py-3 rounded-xl shadow-lg backdrop-blur-md border-green-700 border-2 
   bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364] text-white"
         >
-          <span className="text-blue-400 drop-shadow-md">Career</span>{" "}
+          <span className="text-yellow-500 drop-shadow-md">Career</span>{" "}
           <span className="text-white">Roadmaps</span>
         </motion.h2>
 
@@ -84,12 +84,12 @@ export default function CareerRoadmaps() {
                 transition={{ type: "spring", stiffness: 300 }}
                 onClick={() => navigate(`${roadmap.url}`)}
                 className={`group relative px-5 py-3 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden
-                  ${darkMode ? "bg-black/80 border-gray-200 text-gray-200" : "bg-white/80 border-gray-200 text-gray-900"}`}
+                  ${darkMode ? "bg-black/80 border-green-400 text-gray-200" : "bg-white/80 border-green-400 text-gray-900"}`}
               >
                 {/* Glowing border effect */}
                 <div className="absolute inset-0 z-0 rounded-2xl border-2 border-transparent group-hover:border-blue-500 group-hover:blur-md transition-all duration-300" />
                 <div className="relative z-10 flex w-[250px] items-center gap-3">
-                  <div className="p-3 bg-gradient-to-tr from-blue-500 to-purple-600 text-white rounded-full shadow-lg">
+                  <div className="p-3 bg-gradient-to-tr from-green-500 to-green-600 text-white rounded-full shadow-lg">
                     {roadmap.icon}
                   </div>
                   <h3 className="text-lg font-semibold">{roadmap.title}</h3>

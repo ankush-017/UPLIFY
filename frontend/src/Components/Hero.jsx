@@ -4,28 +4,32 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MdOutlineAutoAwesome } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { CompanyHero } from '../assets/image.js';
+import HeroV from '../assets/HeroVd.mp4';
 
 function Hero() {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   return (
     <section
-      className={`relative min-h-[90vh] flex items-center justify-center text-center px-4 pt-14 pb-16 md:pt-36 md:pb-28 overflow-hidden ${
-        darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
-      }`}
+      className={`relative min-h-[90vh] flex items-center justify-center text-center
+                  px-4 pt-14 pb-16 md:pt-36 md:pb-28 overflow-hidden`}
     >
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={CompanyHero}
-          alt="Company Background"
-          className="w-full h-full object-cover object-center"
+      {/* 🎥 VIDEO BACKGROUND */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <video
+          src={HeroV}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" />
+
+        {/* Dark overlay for readability */}
+        <div className={`absolute inset-0 ${darkMode ? 'bg-black/60' : 'bg-black/40'} backdrop-blur-sm`} />
       </div>
 
-      {/* Content */}
+      {/* CONTENT */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -39,28 +43,30 @@ function Hero() {
           transition={{ duration: 0.9 }}
           className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium
                      text-gray-900 bg-gradient-to-r from-yellow-400 to-green-400
-                     px-5 py-2 rounded-full shadow-md mb-5"
+                     px-5 py-2 rounded-full shadow-md mb-6"
         >
           <MdOutlineAutoAwesome className="text-base sm:text-lg" />
           Empowering Future Careers with Intelligence
         </motion.div>
 
         {/* Heading */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-yellow-500 drop-shadow-lg">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl
+                       font-extrabold leading-tight text-yellow-400 drop-shadow-lg">
           Discover Internships. Build Skills. <br />
           Launch Your Career with{' '}
           <span className="text-green-400">Uplify</span>
         </h1>
 
         {/* Subtext */}
-        <p className="mt-6 text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-6 text-base sm:text-lg md:text-xl
+                      text-gray-300 max-w-2xl mx-auto leading-relaxed">
           Find internships from top companies, enhance your skills with curated
           content, and build your resume — all in one place.{' '}
           <span className="text-yellow-400 font-semibold">Uplify</span> helps you
           become job-ready.
         </p>
 
-        {/* CTA Buttons */}
+        {/* CTA BUTTONS */}
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link to="/job-internships">
             <button
@@ -90,14 +96,28 @@ function Hero() {
             </button>
           </Link>
 
-          <Link to="/user/resume-builder">
+          <Link to="/user/resume-builder" className="relative group">
+
+            {/* TRENDING TAG */}
+            <span
+              className="absolute -top-3 -right-3 z-20
+               text-[10px] font-bold tracking-wide
+               px-2.5 py-1 rounded-full
+               bg-gradient-to-r from-pink-400 to-red-500
+               text-gray-900 shadow-lg
+               animate-pulse"
+            >
+              TRENDING
+            </span>
+
             <button
-              className="w-64 h-12 border-2 border-green-400 text-green-400
-                         hover:bg-green-400 hover:text-gray-900
-                         transition-all duration-300
-                         rounded-xl font-semibold shadow-lg
-                         hover:shadow-xl transform hover:scale-105
-                         flex items-center justify-center gap-2"
+              className="w-64 h-12 relative
+               border-2 border-green-400 text-green-400
+               hover:bg-green-400 hover:text-gray-900
+               transition-all duration-300
+               rounded-xl font-semibold shadow-lg
+               hover:shadow-xl transform hover:scale-105
+               flex items-center justify-center gap-2"
             >
               <FileText size={18} />
               Build Resume
@@ -108,4 +128,5 @@ function Hero() {
     </section>
   );
 }
+
 export default Hero;

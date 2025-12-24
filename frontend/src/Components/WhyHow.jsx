@@ -11,12 +11,6 @@ function WhyHow() {
   return (
     <section
       className="relative overflow-hidden"
-      style={{
-        backgroundImage: `url(${darkMode ? WhyHowImg : whyWhite})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
     >
       {/* Overlay (important for readability) */}
       <div
@@ -28,18 +22,9 @@ function WhyHow() {
       />
 
       {/* Content */}
-      <div className="relative z-10 pt-16 px-4 sm:px-8 md:px-16 lg:px-24">
+      <div className="relative z-10">
         <WhyChooseUplify />
         <HowUplifyWorks />
-
-        {/* Optional fade spacer animation */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="h-8"
-        />
       </div>
     </section>
   );

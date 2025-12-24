@@ -1,5 +1,10 @@
 import { motion } from 'framer-motion';
-import { BookOpen, Flame, Target, Lightbulb,CircleArrowRight, IndianRupee, ExternalLink} from 'lucide-react';
+import {
+  BookOpen,
+  IndianRupee,
+  ExternalLink,
+  CircleArrowRight,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -10,121 +15,145 @@ const cardVariants = {
   visible: (i) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.2, duration: 0.5 },
+    transition: { delay: i * 0.15, duration: 0.45 },
   }),
 };
 
 function CoursesSection() {
 
-  const [courses,setCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
-
   const courseFetch = async () => {
-     const {data,error} = await supabase.from('resources').select('*').limit(3);
-     if(error){
-      console.log(error);
-      return;
-     }
-     setCourses(data);
+    const { data, error } = await supabase.from('resources').select('*').limit(3);
+    if (error) { console.log(error); return; } setCourses(data);
   }
-  useEffect(()=>{
+  useEffect(() => {
     courseFetch();
-  },[]);
+  }, []);
 
   return (
-    <section className={`py-14 px-6 ${darkMode?"bg-gray-950":"bg-gray-50"}`}>
-      <div className="max-w-6xl mx-auto text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className={`text-3xl md:text-4xl font-bold ${darkMode?"text-blue-400":"text-blue-700"} mb-3`}
-        >
+    <section
+      className={`py-10 px-6 ${darkMode
+        ? 'bg-black text-white'
+        : 'bg-gradient-to-br from-yellow-50 via-green-50 to-white'
+        }`}
+    >
+      <div className="max-w-7xl mx-auto text-center mb-12">
+        <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-yellow-500 to-green-500 text-transparent bg-clip-text">
           Upskill with Curated Courses
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          viewport={{ once: true }}
-          className={`${darkMode?"text-gray-300":"text-gray-700"}  mb-5`}
+        </h2>
+        <p
+          className={`mt-3 max-w-2xl mx-auto ${darkMode ? 'text-gray-300' : 'text-gray-600'
+            }`}
         >
-          Gain in-demand skills with courses from our learning partners. Learn faster, grow smarter.
-        </motion.p>
+          Learn from trusted instructors and gain skills that actually convert into opportunities.
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-        {courses.map((item) => {
-          const original = Number(item.originalprice);
-          const sale = Number(item.sellprice);
-          const discount =
-            original && sale
-              ? Math.round(((original - sale) / original) * 100)
-              : 0;
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {courses.map((item, idx) => {
+          // const original = Number(item.originalprice);
+          // const sale = Number(item.sellprice);
+          // const discount =
+          //   original && sale
+          //     ? Math.round(((original - sale) / original) * 100)
+          //     : 0;
 
           return (
-            <div
+            <motion.div
               key={item.id}
-              className="bg-white/5 border border-white/10 backdrop-blur-md rounded-xl p-5 shadow-lg hover:shadow-cyan-500/20 transition-all"
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={idx}
+              className="relative group h-full"
             >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-full h-40 object-cover rounded-md mb-4"
-              />
-              <h2 className={`text-xl font-semibold mb-1 ${darkMode?"text-cyan-400":"text-cyan-700"}`}>
-                {item.title}
-              </h2>
-              <p className={`text-sm mb-2 ${darkMode?"text-gray-300":"text-gray-800"}`}>
-                {item.description}
-              </p>
-              <p className={`text-sm ${darkMode?"text-gray-400":"text-gray-700"} mb-1 font-semibold `}>
-                <span className={`font-bold ${darkMode?"text-blue-400":"text-blue-700"}`}>Instructor:</span> {item.author}
-              </p>
-              <p className={`text-sm ${darkMode?"text-gray-400":"text-gray-800"} mb-3 flex items-center `}>
-                <IndianRupee size={14} className={`${darkMode?"text-gray-400":"text-gray-700"}`} />
-                <span className={`line-through ${darkMode?"text-red-400":"text-red-700"}`}>{item.originalprice}</span>
-                <span className={`${darkMode?"text-gray-100":"text-gray-900"}`}>→</span>
-                <IndianRupee size={14} className={`${darkMode?"text-gray-300":"text-gray-600"}`} />
-                <span className={`${darkMode?"text-green-400":"text-green-700"} font-semibold text-base`}>{item.sellprice}</span>
-                {discount > 0 && (
-                  <span className={`ml-auto px-2 py-0.5 rounded-md text-xs ${darkMode?"bg-green-700/30 text-green-300":"bg-green-600 text-white"}`}>
-                    {discount}% OFF
-                  </span>
-                )}
-              </p>
-              <a
-                href={item.courseUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`inline-flex items-center gap-2 text-sm ${darkMode?"text-cyan-300":"text-cyan-600"} hover:underline`}
+              {/* Glow Border */}
+              <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-yellow-300 via-green-300 to-emerald-400 opacity-25 blur group-hover:opacity-50 transition" />
+
+              {/* Card */}
+              <div
+                className={`relative rounded-3xl p-5 border backdrop-blur-xl h-full flex flex-col
+      ${darkMode
+                    ? 'bg-gray-900/85 border-gray-700'
+                    : 'bg-white/85 border-gray-200'
+                  }
+      shadow-sm group-hover:shadow-2xl transition-all`}
               >
-                View Course <ExternalLink size={16} />
-              </a>
-            </div>
+                {/* Image */}
+                <div className="relative overflow-hidden rounded-2xl mb-4">
+                  {/* Featured badge ON image */}
+                  <span className="absolute top-1 right-1 z-10 text-xs font-semibold px-3 py-1 rounded-full
+                       bg-green-400 text-gray-900 shadow">
+                    Featured
+                  </span>
+
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-40 object-cover group-hover:scale-105 transition duration-500"
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="flex flex-col flex-grow">
+                  {/* Title */}
+                  <h3 className="text-lg font-semibold leading-snug mb-1">
+                    {item.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p
+                    className={`text-sm mb-4 line-clamp-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'
+                      }`}
+                  >
+                    {item.description}
+                  </p>
+
+                  {/* Instructor */}
+                  <p className="text-sm mb-6">
+                    <span className="font-medium text-green-500">
+                      Instructor:
+                    </span>{' '}
+                    {item.author}
+                  </p>
+
+                  {/* CTA pinned to bottom */}
+                  <a
+                    href={item.courseUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-auto inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl
+                   bg-yellow-400 hover:bg-yellow-300
+                   text-gray-900 font-semibold
+                   shadow-md hover:shadow-lg transition"
+                  >
+                    View Course
+                    <ExternalLink size={16} />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
           );
         })}
-        </div>
+      </div>
 
-        {/* View More Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          viewport={{ once: true }}
-          className="mt-10 flex justify-center"
+      {/* View More */}
+      <div className="mt-14 flex justify-center">
+        <Link
+          to="/resources"
+          className="flex items-center gap-2 px-7 py-3 rounded-xl
+                     bg-gradient-to-r from-yellow-500 to-green-500
+                     text-gray-900 font-semibold shadow-lg
+                     hover:scale-105 transition"
         >
-          <Link
-            to="/resources"
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-6 py-3 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
-          >
-            <BookOpen size={20} className="text-white" />
-            <span className="font-semibold">View More Resources</span>
-            <CircleArrowRight />
-          </Link>
-        </motion.div>
+          <BookOpen size={18} />
+          View all resources
+          <CircleArrowRight />
+        </Link>
       </div>
     </section>
   );

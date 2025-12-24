@@ -18,27 +18,27 @@ const benefits = [
   {
     title: 'Skill-Based Shortlisting',
     tag: 'Showcase Your Talent',
-    desc: 'Let your abilities speak! Get selected based on real skills, not just CVs or keywords.',
+    desc: 'Let your abilities speak. Get selected based on real skills, not just resumes or keywords.',
     icon: Brain,
   },
   {
     title: 'Instant Certificate Verification',
     tag: 'Proof That Counts',
-    desc: 'Receive verified certificates from companies instantly, boosting credibility and career growth.',
+    desc: 'Receive verified certificates instantly from companies, boosting credibility and career growth.',
     icon: FileCheck,
   },
 ];
 
 const container = {
-  visible: { transition: { staggerChildren: 0.2 } },
+  visible: { transition: { staggerChildren: 0.15} },
 };
 
 const card = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 35 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: { duration: 0.55, ease: 'easeOut' },
   },
 };
 
@@ -46,12 +46,17 @@ function WhyChooseUplify() {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   return (
-    <section className="relative py-2 pt-10 px-6 md:px-12 overflow-hidden">
-      {/* Decorative background */}
+    <section
+      className={`relative py-16 overflow-hidden ${
+        darkMode
+          ? 'bg-gray-950'
+          : 'bg-gradient-to-br from-yellow-50 via-green-50 to-white'
+      }`}
+    >
+      {/* Soft background glow */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-40 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl" />
+        <div className="absolute -top-40 left-1/4 w-96 h-96 bg-yellow-400/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-green-400/20 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-7xl mx-auto z-10">
@@ -60,28 +65,31 @@ function WhyChooseUplify() {
           initial={{ opacity: 0, y: 22 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.7 }}
           className="text-center mb-20"
         >
           <h2
-            className={`text-4xl md:text-5xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'
-              }`}
+            className={`text-4xl md:text-5xl font-bold tracking-tight ${
+              darkMode ? 'text-gray-100' : 'text-gray-900'
+            }`}
           >
-            Why <span className={`${darkMode ? "text-blue-500" : 'text-blue-700'}`}>Students & Companies</span> Love Uplify
+            Why <span className="text-green-500">Students & Companies</span> Choose Uplify
           </h2>
+
           <p
-            className={`mt-5 text-lg max-w-3xl mx-auto leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'
-              }`}
+            className={`mt-5 text-lg max-w-3xl mx-auto leading-relaxed ${
+              darkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
           >
-            Uplify connects talented students with the right opportunities while ensuring trust,
-            transparency, and skill-based recognition at every step.
+            Uplify connects talented students with the right opportunities while
+            ensuring trust, transparency, and skill-based recognition.
           </p>
 
           {/* Divider */}
-          <div className="mt-10 flex justify-center items-center gap-3">
-            <span className="h-[2px] w-32 bg-gradient-to-r from-transparent to-blue-500" />
-            <span className="h-2 w-2 rounded-full bg-blue-500" />
-            <span className="h-[2px] w-32 bg-gradient-to-l from-transparent to-blue-500" />
+          <div className="mt-6 flex justify-center items-center gap-3">
+            <span className="h-[2px] w-32 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
+            <span className="h-2 w-2 rounded-full bg-green-400" />
+            <span className="h-[2px] w-32 bg-gradient-to-r from-transparent via-yellow-400 to-transparent" />
           </div>
         </motion.div>
 
@@ -91,7 +99,7 @@ function WhyChooseUplify() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-12"
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-10"
         >
           {benefits.map((item, i) => {
             const Icon = item.icon;
@@ -99,66 +107,53 @@ function WhyChooseUplify() {
               <motion.div
                 key={i}
                 variants={card}
-                whileHover={{ y: -10, scale: 1.03 }}
-                className="group relative rounded-3xl p-[2px]"
+                whileHover={{ y: -8 }}
+                className="relative group rounded-3xl p-[1.5px]"
               >
-                {/* Glowing border */}
+                {/* Gradient border */}
                 <div
-                  className={`absolute inset-0 rounded-3xl blur-md transition-opacity duration-300
-                  ${darkMode
-                      ? 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80'
-                      : 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-60'
-                    } group-hover:opacity-100`}
+                  className="absolute inset-0 rounded-3xl blur-md opacity-40
+                             bg-gradient-to-br from-yellow-400 to-green-500
+                             group-hover:opacity-70 transition"
                 />
 
                 {/* Card */}
                 <div
-                  className={`relative h-full rounded-md p-8 backdrop-blur-xl transition-all
-                  ${darkMode
-                      ? 'bg-black/65 border border-white/10'
-                      : 'bg-white/90 border border-gray-200 shadow-xl shadow-blue-500/10'
+                  className={`relative h-full rounded-3xl p-7 backdrop-blur-xl
+                    ${
+                      darkMode
+                        ? 'bg-gray-900/80 border border-gray-700'
+                        : 'bg-white/85 border border-gray-200 shadow-xl shadow-green-500/10'
                     }`}
                 >
-                  {/* Top accent line */}
-                  <div className="absolute inset-x-0 top-0 h-1 overflow-hidden rounded-t-3xl">
-                    <div
-                      className="h-full w-0 group-hover:w-full transition-all duration-300
-                      bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
-                    />
+                  {/* Icon */}
+                  <div
+                    className="inline-flex p-4 rounded-2xl mb-5
+                               bg-gradient-to-br from-yellow-400 to-green-500
+                               text-gray-900 shadow-md"
+                  >
+                    <Icon size={26} />
                   </div>
 
-                  {/* Content */}
-                  <div className="relative z-10">
-                    <motion.div
-                      animate={{ scale: [1, 1.15, 1] }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                      className={`inline-flex p-4 rounded-xl mb-5
-                      ${darkMode
-                          ? 'bg-blue-500/20 text-blue-400'
-                          : 'bg-blue-100 text-blue-600'
-                        }`}
-                    >
-                      <Icon size={28} />
-                    </motion.div>
+                  <h3
+                    className={`text-lg font-semibold ${
+                      darkMode ? 'text-gray-100' : 'text-gray-900'
+                    }`}
+                  >
+                    {item.title}
+                  </h3>
 
-                    <h3
-                      className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'
-                        }`}
-                    >
-                      {item.title}
-                    </h3>
+                  <p className="text-xs mt-1 mb-3 font-semibold uppercase tracking-wide text-green-500">
+                    {item.tag}
+                  </p>
 
-                    <p className="text-xs mt-1 mb-3 text-blue-500 font-medium uppercase tracking-wide">
-                      {item.tag}
-                    </p>
-
-                    <p
-                      className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'
-                        }`}
-                    >
-                      {item.desc}
-                    </p>
-                  </div>
+                  <p
+                    className={`text-sm leading-relaxed ${
+                      darkMode ? 'text-gray-400' : 'text-gray-700'
+                    }`}
+                  >
+                    {item.desc}
+                  </p>
                 </div>
               </motion.div>
             );
@@ -168,4 +163,5 @@ function WhyChooseUplify() {
     </section>
   );
 }
+
 export default WhyChooseUplify;

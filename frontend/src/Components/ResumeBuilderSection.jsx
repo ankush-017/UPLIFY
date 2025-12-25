@@ -33,8 +33,8 @@ function ResumeBuilderSection() {
   return (
     <section
       className={`py-20 px-6 ${darkMode
-          ? 'bg-gray-950'
-          : 'bg-gradient-to-br from-yellow-50 via-green-50 to-white'
+        ? 'bg-gray-950'
+        : 'bg-gradient-to-br from-yellow-50 via-green-50 to-white'
         }`}
     >
       <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-14">
@@ -163,15 +163,54 @@ function ResumeBuilderSection() {
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
           viewport={{ once: true }}
-          className="flex-1 w-full max-w-lg mx-auto relative"
+          className="relative flex-1 w-full max-w-lg mx-auto"
         >
-          <div className="absolute -inset-5 bg-gradient-to-br from-yellow-400/20 to-green-500/20 blur-3xl rounded-3xl" />
+          {/* Glow Background */}
+          <div className="absolute -inset-6 bg-gradient-to-br from-yellow-400/25 to-green-500/25 blur-3xl rounded-3xl" />
 
+          {/* Main Image */}
           <img
             src={Resumebuilder}
             alt="Resume Builder Preview"
-            className="relative rounded-3xl shadow-2xl"
+            className="relative rounded-3xl shadow-2xl border border-white/10"
           />
+
+          {/* Floating Download Card */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            className="absolute -bottom-6 -left-6 bg-white/80 dark:bg-black/70 
+               backdrop-blur-xl border border-white/20 
+               rounded-2xl px-4 py-3 shadow-xl w-[220px]"
+          >
+            <div className="flex items-center gap-3">
+              {/* Icon */}
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-green-500 flex items-center justify-center shadow-md">
+                <FileText className="text-gray-900" size={18} />
+              </div>
+
+              {/* Text */}
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  Resume Ready
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Auto-generated PDF
+                </p>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="mt-3 h-1.5 w-full bg-gray-200/60 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: '100%' }}
+                transition={{ duration: 1.8, ease: 'easeInOut' }}
+                className="h-full bg-gradient-to-r from-yellow-400 to-green-500 rounded-full"
+              />
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

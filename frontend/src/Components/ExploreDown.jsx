@@ -68,7 +68,7 @@ const ExploreDropdown = ({ role, isAuthenticated, darkMode }) => {
   return (
     <div
       className="relative"
-      onMouseEnter={() => setIsExploreOpen(true)}
+      // onMouseEnter={() => setIsExploreOpen(true)}
     //   onMouseLeave={() => setIsExploreOpen(false)}
     >
       {/* Explore Button */}

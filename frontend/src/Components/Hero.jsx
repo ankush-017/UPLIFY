@@ -50,12 +50,15 @@ function Hero() {
         </motion.div>
 
         {/* Heading */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl
-                       font-extrabold leading-tight text-yellow-400 drop-shadow-lg">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl 
+               font-extrabold leading-tight 
+               bg-gradient-to-r from-yellow-400 to-yellow-500 
+               bg-clip-text text-transparent drop-shadow-lg">
           Discover Internships. Build Skills. <br />
           Launch Your Career with{' '}
           <span className="text-green-400">Uplify</span>
         </h1>
+
 
         {/* Subtext */}
         <p className="mt-6 text-base sm:text-lg md:text-xl

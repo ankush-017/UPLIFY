@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Menu, X, Moon, Sun, ChevronDown, ChevronUp,
-  LogOut, UserPen, LayoutDashboard
+  LogOut, UserPen, LayoutDashboard,
+  ChevronRight
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +15,7 @@ import axios from 'axios';
 import { getAuth } from "firebase/auth";
 import { app } from '../../firebase.js';
 import ExploreDropdown from './ExploreDown.jsx';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const auth = getAuth(app);
@@ -410,14 +412,173 @@ const Navbar = () => {
         </div>
 
         {/* Mobile */}
-        <div className="lg:hidden flex gap-3">
-          <button onClick={handleThemeToggle}>
-            {darkMode ? <Sun size={26} /> : <Moon size={26} />}
+        <div className="lg:hidden flex items-center gap-4">
+          {/* Theme Toggle: Glowing Neon Style */}
+          <button
+            onClick={handleThemeToggle}
+            className={`p-2.5 rounded-xl border-2 transition-all duration-300 ${darkMode
+              ? 'border-yellow-500/30 bg-yellow-500/5 text-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.1)]'
+              : 'border-emerald-500/20 bg-emerald-50 text-emerald-600'
+              }`}
+          >
+            {darkMode ? <Sun size={22} className="animate-pulse" /> : <Moon size={22} />}
           </button>
-          <button onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <X size={30} /> : <Menu size={34} />}
+
+          {/* Menu Toggle */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className={`transition-transform duration-300 ${menuOpen ? 'rotate-90' : 'rotate-0'}`}
+          >
+            {menuOpen ? (
+              <X size={32} className={darkMode ? 'text-yellow-400' : 'text-emerald-600'} />
+            ) : (
+              <Menu size={36} className={darkMode ? 'text-emerald-400' : 'text-slate-900'} />
+            )}
           </button>
         </div>
+
+        {/* --- Premium Mobile Dropdown --- */}
+        <AnimatePresence>
+          {menuOpen && (
+            <>
+              {/* Dark Dim Backdrop (No blur on navbar because this is z-index 45) */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMenuOpen(false)}
+                className="fixed inset-0 bg-black/60 z-[45] lg:hidden"
+              />
+
+              {/* Premium Menu Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                className={`fixed top-24 left-4 right-4 rounded-[2.5rem] border-2 shadow-2xl flex flex-col z-[50] overflow-hidden ${darkMode ? 'bg-[#050a05] border-emerald-500/30' : 'bg-white border-emerald-100'
+                  }`}
+              >
+                <div className="overflow-y-auto max-h-[80vh] px-6 py-8 space-y-5 custom-scrollbar">
+
+                  {/* USER PROFILE SECTION */}
+                  {isAuthenticated && (
+                    <div className="space-y-3">
+                      <div
+                        onClick={() => { setIsProfileModal(true); setMenuOpen(false); }}
+                        className={`flex items-center justify-between p-4 rounded-3xl border cursor-pointer transition-all active:scale-95 ${darkMode ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-emerald-50/50 border-emerald-100 hover:bg-emerald-100/50"
+                          }`}
+                      >
+                        <div className='flex items-center gap-4'>
+                          <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-yellow-500 text-white font-black text-xl shadow-lg uppercase">
+                            {name?.charAt(0)}
+                          </div>
+                          <div className="flex flex-col">
+                            <p className={`text-lg font-black tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}>{name}</p>
+                            <p className="text-[10px] uppercase tracking-widest text-emerald-500 font-bold">Member Profile</p>
+                          </div>
+                        </div>
+                        <UserPen size={20} className={darkMode ? "text-emerald-400" : "text-emerald-600"} />
+                      </div>
+
+                      {/* ADMIN DASHBOARD SPECIAL CARD */}
+                      {role === 'admin' && (
+                        <button
+                          onClick={() => { handleDashboard(); setMenuOpen(false); }}
+                          className="w-full flex items-center justify-between p-4 rounded-3xl bg-gradient-to-r from-yellow-500 to-yellow-600 text-black shadow-lg shadow-yellow-500/20 active:scale-95 transition-all"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="p-2 bg-black/10 rounded-xl">
+                              <LayoutDashboard size={24} />
+                            </div>
+                            <span className="font-black uppercase tracking-widest text-xs">Admin Dashboard</span>
+                          </div>
+                          <ChevronRight size={20} />
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* NAVIGATION LINKS */}
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/60 px-4 mb-2">Navigation</p>
+                    {linksToRender.map((item) => (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setMenuOpen(false)}
+                        className={({ isActive }) => `px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${isActive
+                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                            : darkMode ? 'text-white/70 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:bg-emerald-50'
+                          }`}
+                      >
+                        {item.name}
+                      </NavLink>
+                    ))}
+                  </div>
+
+                  {/* EXPLORE SECTION */}
+                  {(role === 'student' || role === 'admin' || !isAuthenticated) && (
+                    <div className={`rounded-[2rem] overflow-hidden ${darkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
+                      <button
+                        onClick={() => setIsExploreOpen((prev) => !prev)}
+                        className={`w-full flex justify-between items-center px-6 py-5 font-black uppercase tracking-widest text-[10px] ${darkMode ? 'text-yellow-400' : 'text-emerald-700'
+                          }`}
+                      >
+                        Explore Uplify
+                        <motion.div animate={{ rotate: isExploreOpen ? 180 : 0 }}>
+                          <ChevronDown size={18} />
+                        </motion.div>
+                      </button>
+
+                      <AnimatePresence>
+                        {isExploreOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="flex flex-col space-y-1 px-4 pb-4"
+                          >
+                            {['Projects Library', 'Uplify Community', 'Uplify Internship'].map((text) => (
+                              <NavLink
+                                key={text}
+                                to={`/user/${text.toLowerCase().replace(/\s+/g, '-')}`}
+                                onClick={() => { setMenuOpen(false); }}
+                                className={`px-4 py-3 rounded-xl text-[11px] font-bold transition-all ${darkMode ? 'text-white/80 hover:text-emerald-400 hover:bg-white/5' : 'text-slate-500 hover:text-emerald-600 hover:bg-white'
+                                  }`}
+                              >
+                                {text}
+                              </NavLink>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+
+                  {/* AUTH SECTION */}
+                  <div className="pt-2">
+                    {!isAuthenticated ? (
+                      <button
+                        onClick={() => { setIsModal(true); setMenuOpen(false); }}
+                        className="w-full py-5 rounded-2xl bg-emerald-500 text-white font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-emerald-500/30 active:scale-95 transition-all"
+                      >
+                        Access Account
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => { handleLogout(); setMenuOpen(false); }}
+                        className={`w-full py-5 rounded-2xl border-2 font-black uppercase tracking-[0.2em] text-xs transition-all flex justify-center items-center gap-3 ${darkMode ? "border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white" : "border-red-100 text-red-600 hover:bg-red-600 hover:text-white"
+                          }`}
+                      >
+                        <LogOut size={18} /> Secure Logout
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </nav>
 
       {isModal && <Login onClose={() => setIsModal(false)} />}

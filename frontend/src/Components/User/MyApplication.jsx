@@ -77,7 +77,7 @@ function MyApplication() {
         <div className="max-w-6xl mx-auto px-4 py-8 md:py-12 relative z-10">
           
           {/* --- SLIM HEADER --- */}
-          <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-10">
+          <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-3">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
               <div className="flex items-center gap-2 mb-2">
                 <ShieldCheck size={14} className="text-yellow-500" />
@@ -148,7 +148,7 @@ function MyApplication() {
             <main className="lg:col-span-9">
               
               {/* --- STICKY MOBILE FILTERS --- */}
-              <div className="sticky top-0 z-40 lg:hidden -mx-4 px-4 bg-inherit/80 backdrop-blur-md pb-4 pt-2 border-b border-white/5 mb-4">
+              <div className="sticky top-0 z-40 lg:hidden -mx-4 px-4 bg-inherit/80 backdrop-blur-md pb-4 border-b border-white/5 mb-4">
                 <div className="flex overflow-x-auto gap-2 no-scrollbar scroll-smooth">
                   {filters.map((name) => (
                     <button
@@ -202,7 +202,7 @@ function MyApplication() {
                             <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
                           </div>
                           <div className="overflow-hidden">
-                            <p className="text-yellow-500 text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1.5">{app.internships?.company}</p>
+                            <p className="text-green-500 text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1.5">{app.internships?.company}</p>
                             <h3 className="text-base font-black tracking-tight truncate uppercase italic leading-none group-hover:text-emerald-500 transition-colors">
                               {app.internships?.title}
                             </h3>
@@ -214,7 +214,7 @@ function MyApplication() {
                           <div className={`w-fit px-3 py-1 rounded-lg border text-[8px] font-black uppercase tracking-widest ${
                             app.internships?.type?.includes('Full') 
                             ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' 
-                            : 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500'
+                            : 'bg-yellow-500/10 border-yellow-500/20 text-green-500'
                           }`}>
                             {app.internships?.type}
                           </div>

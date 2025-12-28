@@ -6,7 +6,6 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider, R
 import Home from './Pages/Home.jsx'
 import Internships from './Pages/Internships.jsx'
 import About from './Pages/About.jsx'
-import Apply from './Pages/Apply.jsx'
 
 import Login from './Components/Login.jsx'
 import Resources from './Components/Resources.jsx'
@@ -80,7 +79,7 @@ const router = createBrowserRouter(
         <Route path="user">
           <Route index element={<Home />} />
           <Route path="job-internships" element={<Internships />} />
-          <Route path="apply" element={<Apply />} />
+          {/* <Route path="apply" element={<Apply />} /> */}
           <Route path="blog" element={<Blogs />} />
           <Route path="blog/:id" element={<BlogDetails />} />
           <Route path="resources" element={<Resources />} />

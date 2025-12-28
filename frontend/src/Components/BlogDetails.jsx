@@ -71,7 +71,7 @@ const BlogDetails = () => {
         { title: 'Learning Hub', to: '/resources', icon: Zap, color: 'text-emerald-500' },
         { title: 'Community', to: '/user/uplify-community', icon: User, color: 'text-amber-500' },
         { title: 'Internships', to: '/user/uplify-internship', icon: Rocket, color: 'text-emerald-500' },
-        { title: 'AI Builder', to: '/user/resume-builder', icon: Sparkles, color: 'text-amber-500' },
+        { title: 'Resume Builder', to: '/user/resume-builder', icon: Sparkles, color: 'text-amber-500' },
     ];
 
     return (

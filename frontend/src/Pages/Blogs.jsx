@@ -154,8 +154,8 @@ const Blogs = () => {
           >
             <div className="relative z-10">
               <Sparkles className="mx-auto mb-4 text-yellow-400" size={32} />
-              <h2 className="text-2xl md:text-3xl font-black mb-4 tracking-tight leading-tight">Master your Craft with <span className='text-yellow-500'> Uplify Masterclasses.</span></h2>
-              <p className="mb-8 text-xs md:text-sm opacity-70 max-w-lg mx-auto font-medium leading-relaxed italic">
+              <h2 className={`text-2xl md:text-3xl font-black mb-4 ${darkMode?"text-white":"text-white"} tracking-tight leading-tight`}>Master your Craft with <span className='text-yellow-500'> Uplify Masterclasses.</span></h2>
+              <p className={`mb-8 text-xs md:text-sm opacity-70 ${darkMode?"text-white":"text-white"} max-w-lg mx-auto font-medium leading-relaxed italic`}>
                 Step away from tutorials and build real industry systems under expert guidance.
               </p>
               

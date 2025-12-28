@@ -1,96 +1,115 @@
-import React from 'react'
+import React, { useState } from 'react';
 import CommunityPost from '../Components/CommunityPost';
 import { communityDark, communityLight } from '../assets/image';
 import { useSelector } from 'react-redux';
-import { ArrowBigRightDash } from 'lucide-react';
+import { 
+  Trophy, Flame, MessageSquare, 
+  Briefcase, Clock, Search, 
+  TrendingUp, Calendar, FileText
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Seo from '../Components/Seo';
 
 const UplifyCommunity = () => {
-
   const darkMode = useSelector((state) => state.theme.darkMode);
+  const [activeFilter, setActiveFilter] = useState('All Time');
+
+  const timeFilters = [
+    { label: 'Today', value: '1 day' },
+    { label: 'Last 48h', value: '2 days' },
+    { label: 'This Week', value: '1 week' },
+    { label: 'This Month', value: '1 month' },
+    { label: 'All Time', value: 'all' },
+  ];
 
   return (
+    <div
+      className="bg-fixed bg-cover min-h-screen p-4 md:p-8 transition-all duration-700 ease-in-out"
+      style={{ 
+        backgroundImage: `url(${darkMode ? communityDark : communityLight})`,
+        backgroundColor: darkMode ? '#020617' : '#f8fafc' 
+      }}
+    >
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* --- PREMIUM SIDEBAR (Left) --- */}
+        <aside className="lg:col-span-3 space-y-6 hidden lg:block">
+          
+          {/* SEARCH BAR */}
+          <div className={`group flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-300 ${
+            darkMode ? 'bg-black/40 border-white/10 focus-within:border-emerald-500/50' : 'bg-white/60 border-black/5 focus-within:border-emerald-500 shadow-sm'
+          }`}>
+            <Search size={18} className={darkMode ? 'text-emerald-500/50' : 'text-slate-400'} />
+            <input 
+              type="text" 
+              placeholder="Search insights..." 
+              className="bg-transparent border-none outline-none text-sm w-full"
+              style={{ color: darkMode ? 'white' : '#0f172a' }}
+            />
+          </div>
 
-    <>
-      <div
-        className="bg-center bg-cover min-h-screen p-4 md:p-10 backdrop-blur-md"
-        style={{ backgroundImage: `url(${darkMode ? communityDark : communityLight})` }}
-      >
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-
-          {/* Sidebar */}
-          <aside className="space-y-6 col-span-1 backdrop-blur-md bg-transparent px-2 mt-3 md:px-0">
-            {[
-              {
-                title: '📚 Resources',
-                links: [
-                  { to: '/resources', label: 'Learning Resources' },
-                ],
-                url: '/user/resources',
-              },
-              {
-                title: '👥 Community Post',
-                content: 'Join communities to grow and network.',
-                links: [{ to: '/user/uplify-community', label: 'Explore Community' }],
-                url: '/user/uplify-community',
-              },
-              {
-                title: '🚀 Uplify Program',
-                content: 'A mentorship-driven path to real-world experience.',
-                links: [{ to: '/user/uplify-internship', label: 'View Real-World Internships' }],
-                url: '/user/uplify-internship',
-              },
-              {
-                title: '📝 Blogs',
-                links: [
-                  { to: '/blog/d5d074b3-2b2b-416d-8d24-84b30a0d8445', label: 'How to Make a Professional Resume' },
-                  { to: '/blogs/cc75a1f9-c63e-458d-8073-8591b958db39', label: 'The Ultimate 6-Month Guide to Mastering Data Structures and Algorithms (DSA)' }
-                ],
-                url: '/blog',
-              },
-              {
-                title: '📂 Project Library',
-                content: 'Find real-world project ideas to practice your skills.',
-                links: [{ to: '/user/projects-libray', label: 'Explore Projects' }],
-                url: '/user/projects-libray'
-              },
-              {
-                title: '📝 Make Your Resume Better',
-                content: 'Use our AI Resume Builder to create an impressive resume.',
-                links: [{ to: '/user/resume-builder', label: 'Build Resume →' }],
-                url: '/user/resume-builder'
-              }
-            ].map((item, index) => (
-              <div key={index} className={`${darkMode ? "bg-white/5" : "bg-white"} p-4 rounded-xl shadow`}>
-                <div className='flex flex-row justify-between'>
-                  <h3 className={`text-lg font-semibold mb-2 ${darkMode ? "text-gray-200" : "text-gray-900"}`}>{item.title}</h3>
-                  {/* <div className={`${darkMode ? "text-blue-600" : "text-blue-700"} cursor-pointer`} onClick={() => navigate(item.url)}>
-                                  <ArrowBigRightDash />
-                                </div> */}
-                </div>
-                {item.content && <p className={`text-sm mb-2 ${darkMode ? "text-gray-200" : "text-gray-900"}`}>{item.content}</p>}
-                <ul className="text-sm space-y-1">
-                  {item.links.map((link, i) => (
-                    <li key={i}><Link to={link.to} className="text-blue-500 hover:underline">{link.label}</Link></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </aside>
-
-          {/* Community Post */}
-          <div className="col-span-1 md:col-span-2 flex items-center justify-center">
-            <div className="backdrop-blur-lg bg-white/50 dark:bg-white/10 p-3 md:p-3 rounded-2xl w-full shadow-xl">
-              <CommunityPost />
+          {/* TIME FILTERS */}
+          <div className={`p-5 rounded-[2rem] backdrop-blur-xl border transition-all ${
+            darkMode ? 'bg-emerald-950/20 border-emerald-500/10' : 'bg-white/80 border-slate-200 shadow-xl shadow-slate-200/40'
+          }`}>
+            <div className="flex items-center gap-2 mb-4 px-1 text-emerald-500 font-black text-[10px] uppercase tracking-[0.2em]">
+              <Clock size={14} /> Feed Chronology
+            </div>
+            <div className="grid grid-cols-1 gap-2">
+              {timeFilters.map((filter) => (
+                <button
+                  key={filter.label}
+                  onClick={() => setActiveFilter(filter.label)}
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all duration-300 ${
+                    activeFilter === filter.label
+                      ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                      : (darkMode ? 'hover:bg-white/5 text-slate-400' : 'hover:bg-emerald-50 text-slate-600')
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <Calendar size={14} opacity={0.6} /> {filter.label}
+                  </span>
+                  {activeFilter === filter.label && <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                </button>
+              ))}
             </div>
           </div>
 
-        </div>
-      </div>
-    </>
+          {/* NAVIGATION */}
+          <nav className="space-y-2">
+            {[
+              { icon: <MessageSquare size={18}/>, label: 'Feed', to: '/user/uplify-community', active: true },
+              { icon: <Briefcase size={18}/>, label: 'Internships', to: '/user/uplify-internship' },
+              { icon: <Trophy size={18}/>, label: 'Challenges', to: '/user/projects-libray' },
+              { icon: <FileText size={18} />, label: "AI Resume Builder", to: "/user/resume-builder"}
+            ].map((item) => (
+              <Link key={item.label} to={item.to}
+                className={`flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500 group ${
+                  item.active 
+                  ? 'bg-slate-900 text-white dark:bg-emerald-500 dark:text-emerald-950 shadow-xl' 
+                  : (darkMode ? 'text-slate-400 hover:text-emerald-400 hover:bg-white/5' : 'text-slate-500 hover:text-emerald-600 hover:bg-white')
+                }`}>
+                <span className="group-hover:rotate-6 transition-transform">{item.icon}</span>
+                <span className="font-black text-xs uppercase tracking-widest">{item.label}</span>
+              </Link>
+            ))}
+          </nav>
+        </aside>
 
-  )
-}
+        {/* --- MAIN FEED (Center) --- */}
+        <main className="lg:col-span-9">
+          <div className={`backdrop-blur-3xl rounded-[3rem] border transition-all duration-700 ${
+            darkMode 
+              ? 'bg-[#081508]/40 border-emerald-500/10 shadow-[0_20px_80px_rgba(0,0,0,0.4)]' 
+              : 'bg-white/80 border-white shadow-[0_20px_80px_rgba(0,0,0,0.05)]'
+          }`}>
+             <div className="p-1 md:p-2">
+                <CommunityPost filter={activeFilter} />
+             </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
 
 export default UplifyCommunity;

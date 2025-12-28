@@ -50,10 +50,12 @@ const BlogDetails = () => {
         if (navigator.share) {
             try {
                 await navigator.share(shareData);
-            } catch (err) {
+            } 
+            catch (err) {
                 console.log("Error sharing", err);
             }
-        } else {
+        } 
+        else {
             navigator.clipboard.writeText(window.location.href);
             message.success('Link copied to clipboard!');
         }

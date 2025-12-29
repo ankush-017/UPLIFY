@@ -75,9 +75,9 @@ export default function UplifyInternship() {
             <button className="px-5 py-2.5 bg-lime-500 hover:bg-lime-600 text-black rounded-lg text-xs font-bold transition-all shadow-md shadow-lime-500/20">
               Apply Now
             </button>
-            <button className={`px-5 py-2.5 rounded-lg text-xs font-bold border transition-all ${darkMode ? "border-zinc-800 hover:bg-zinc-900" : "border-zinc-200 hover:bg-zinc-50"}`}>
+            {/* <button className={`px-5 py-2.5 rounded-lg text-xs font-bold border transition-all ${darkMode ? "border-zinc-800 hover:bg-zinc-900" : "border-zinc-200 hover:bg-zinc-50"}`}>
               Curriculum
-            </button>
+            </button> */}
           </div>
         </section>
 

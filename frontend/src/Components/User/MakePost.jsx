@@ -95,7 +95,7 @@ function MakePost() {
           </div>
           <div>
             <h2 className="text-2xl font-black tracking-tighter">Create Insight</h2>
-            <p className={`text-[10px] font-bold uppercase tracking-[0.2em] ${darkMode ? 'text-emerald-500/50' : 'text-slate-400'}`}>
+            <p className={`text-[10px] font-bold uppercase tracking-[0.2em] ${darkMode ? 'text-emerald-500/80' : 'text-slate-400'}`}>
               Sharing with Uplify Circle
             </p>
           </div>
@@ -109,7 +109,7 @@ function MakePost() {
             placeholder="Share a perspective or update..."
             className={`w-full rounded-3xl p-6 text-base font-medium focus:outline-none border transition-all resize-none ${
               darkMode
-                ? 'bg-black/40 border-white/5 focus:border-emerald-500/50 text-emerald-50 placeholder:text-emerald-900/50'
+                ? 'bg-black/40 border-white/5 focus:border-emerald-500/80 text-emerald-50 placeholder:text-emerald-700/80'
                 : 'bg-slate-50 border-slate-100 focus:border-emerald-500 shadow-inner text-slate-800 placeholder:text-slate-400'
             }`}
             rows={6}

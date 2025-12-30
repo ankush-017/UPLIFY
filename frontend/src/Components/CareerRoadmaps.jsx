@@ -19,7 +19,7 @@ export default function CareerRoadmaps() {
 
   const handleGenerate = (e) => {
     e.preventDefault();
-    navigate(`/user/career-roadmaps/${formData.domain.toLowerCase().replace(/\s+/g, '-')}`, { 
+    navigate(`/user/career-roadmaps/roadmap`, { 
       state: { config: formData } 
     });
   };

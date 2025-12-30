@@ -56,6 +56,8 @@ import UpdateInternCompany from './CompanyPage/UpdateInternCompany.jsx'
 import { roleLoader } from './Components/Loader.js';
 import UserProtected from './Components/UserAdmin.jsx'
 import NotFound from './Components/NotFound.jsx'
+import RoadmapPage from './Components/Career/RoadmapPage.jsx'
+import { RoadmapWrapper } from './Components/Tools/RoadmapWrapper.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -88,7 +90,7 @@ const router = createBrowserRouter(
           <Route path="resume-builder" element={<BuildResume />} />
           <Route path="career-roadmaps" element={<CareerRoadmaps />} />
           <Route path="career-roadmaps/frontend" element={<Frontend />} />
-          <Route path="career-roadmaps/backend" element={<Backend />} />
+          <Route path="career-roadmaps/roadmap" element={<RoadmapWrapper />} />
           <Route path="career-roadmaps/fullstack-developer" element={<FullStackDeveloper />} />
           <Route path="career-roadmaps/android-developer" element={<AndroidDeveloper />} />
           <Route path="career-roadmaps/ai-ml-engineer" element={<AIML />} />

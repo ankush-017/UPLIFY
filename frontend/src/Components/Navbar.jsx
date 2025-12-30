@@ -50,7 +50,7 @@ const Navbar = () => {
   const NAME = USER?.displayName;       // Firebase
   const PHOTO = USER?.photoURL;         // Firebase
 
-  console.log(USER);
+  // console.log(USER);
 
   useEffect(() => {
     setMenuOpen(false);

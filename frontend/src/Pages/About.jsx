@@ -1,280 +1,204 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AboutHero, AboutMission, Ankush } from '../assets/image';
+import { AboutHero, Ankush } from '../assets/image';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 export default function About() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const darkMode = useSelector((state) => state.theme.darkMode);
 
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.6 }
+  };
+
   return (
-    <div className={`${darkMode ? 'bg-gray-900' : 'bg-white'} font-sans`}>
+    <div className={`${darkMode ? 'bg-[#020a02] text-gray-100' : 'bg-slate-50 text-emerald-950'} font-sans selection:bg-yellow-400 selection:text-black`}>
+      
+      {/* --- HERO SECTION --- */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 px-6">
+        <div className="absolute top-20 -left-20 w-96 h-96 bg-emerald-500/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-0 -right-20 w-96 h-96 bg-yellow-500/10 rounded-full blur-[120px]"></div>
 
-      {/* HERO Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={`w-full py-10 px-6 md:px-20 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-900 text-white'}`}
-      >
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          {/* Left Text Content */}
-          <div className="space-y-8">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-blue-600 leading-tight">
-              Transforming Education with Real-World Tech Skills
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="space-y-6"
+          >
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 backdrop-blur-md">
+              <span className="text-[10px] font-black tracking-[0.2em] uppercase text-emerald-400">The Developer's Ecosystem</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1]">
+              Engineered for <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-yellow-300">
+                The Top 1%.
+              </span>
             </h1>
-            <p className="text-lg md:text-xl text-white/90 leading-relaxed">
-              Uplify empowers students to bridge the gap between learning and doing through access to real-world projects, guided roadmaps, and internship opportunities crafted for long-term growth.
+            
+            <p className={`text-sm md:text-base max-w-lg leading-relaxed font-medium ${darkMode ? 'text-gray-400' : 'text-emerald-900/70'}`}>
+              Uplify isn't just a platform; it's a launchpad for the next generation of software architects. We replace generic tutorials with high-stakes, production-grade project experience.
             </p>
-            <button
-              onClick={() => navigate('/resources')}
-              className={`inline-block px-8 py-3 ${darkMode ? "bg-blue-800 text-white" : "bg-white text-blue-800"} font-semibold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300`}
-            >
-              Start Learning
-            </button>
-          </div>
 
-          {/* Right Image */}
-          <div>
-            <img
-              src={AboutHero}
-              alt="Learning Illustration"
-              className="w-full h-auto rounded-2xl shadow-2xl object-cover"
-            />
-          </div>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <button onClick={() => navigate('/resources')} className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-black tracking-widest uppercase rounded-xl transition-all shadow-[0_20px_40px_rgba(16,185,129,0.2)]">
+                Access Resources
+              </button>
+            </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="relative">
+            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-yellow-500/20 rounded-[2rem] blur-2xl"></div>
+            <img src={AboutHero} alt="Hero" className="relative w-full h-[500px] object-cover rounded-[2rem] border border-white/10 shadow-2xl saturate-[1.2]" />
+          </motion.div>
         </div>
-      </motion.section>
+      </section>
 
-
-      {/* MISSION Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className={`${darkMode ? 'bg-gray-800 text-gray-100' : 'bg-gray-50 text-gray-900 '} py-20 px-6 md:px-16`}
-      >
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div className="max-w-[400px] mx-auto">
-            <img
-              src={AboutMission}
-              alt="Mission"
-              className="w-full rounded-lg shadow-md object-cover"
-            />
-          </div>
-          <div>
-            <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
-            <p className="text-lg leading-relaxed">
-              At Uplify, our mission is to revolutionize tech education. We aim to turn every learner into a doer — someone who builds, explores, fails, and grows. Through curated resources and project-based learning, we help students become job-ready with clarity and confidence.
-            </p>
-            <p className="mt-4 text-lg">
-              Our programs are designed to eliminate the disconnect between theoretical knowledge and practical application.
-            </p>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* GOALS Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className={`${darkMode ? 'bg-gray-900' : 'bg-white'} py-10 px-6 md:px-16`}
-      >
-        <div className="max-w-7xl mx-auto pb-3">
-          <h2 className={`text-3xl font-bold ${darkMode ? "text-gray-100" : "text-gray-900"} text-center mb-10`}>Our Core Goals</h2>
-          <div className="grid md:grid-cols-3 gap-10">
-            {[
-              {
-                icon: '🛠️',
-                title: 'Project-Driven Learning',
-                desc: 'Hands-on projects that build job-ready skills and real portfolios.',
-              },
-              {
-                icon: '🌐',
-                title: 'Global Access',
-                desc: 'Breaking the barrier so students from any background can access quality content.',
-              },
-              {
-                icon: '🎯',
-                title: 'Career Readiness',
-                desc: 'From internships to interviews, we prepare learners for real success.',
-              },
-            ].map((goal, i) => (
-              <div
-                key={i}
-                className={`transition p-10 rounded-xl text-center shadow-md ${darkMode
-                  ? 'bg-gray-800 hover:bg-indigo-900'
-                  : 'bg-gray-100 hover:bg-indigo-50'
-                  }`}
-              >
-                <div className="w-16 h-16 mx-auto flex items-center justify-center bg-indigo-100 text-3xl rounded-full mb-4">
-                  {goal.icon}
-                </div>
-                <h3 className={`text-xl font-semibold mb-2 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>{goal.title}</h3>
-                <p className={`${darkMode ? "text-gray-100" : "text-gray-900"} text-base`}>{goal.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      {/* STATS Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className={`py-10 px-6 md:px-16 ${darkMode ? 'bg-indigo-900' : 'bg-indigo-700'} text-white`}
-      >
-        <div className="max-w-6xl mx-auto grid sm:grid-cols-3 gap-8 text-center">
+      {/* --- TRUST BAR --- */}
+      <div className={`border-y ${darkMode ? 'border-white/5 bg-white/5' : 'border-emerald-100 bg-emerald-50/50'} py-10`}>
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-6 text-center">
           {[
-            { value: '1000+', label: 'Learners Empowered' },
-            { value: '50+', label: 'Projects Available' },
-            { value: '95%', label: 'Student Satisfaction' },
-          ].map((stat, i) => (
+            { label: 'Success Stories', val: '500+' },
+            { label: 'Industry Projects', val: '40+' },
+            { label: 'Partner Networks', val: '25+' },
+            { label: 'Global Community', val: '1.2k' },
+          ].map((s, i) => (
             <div key={i}>
-              <h3 className="text-4xl font-bold">{stat.value}</h3>
-              <p className="text-sm mt-2 text-white/80">{stat.label}</p>
+              <h3 className="text-2xl font-black text-yellow-500">{s.val}</h3>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-50 mt-1">{s.label}</p>
             </div>
           ))}
         </div>
-      </motion.section>
+      </div>
 
-      {/* VISION Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} py-10 px-6 md:px-16`}
-      >
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className={`text-3xl font-bold mb-6 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>Our Vision</h2>
-          <p className={`text-lg leading-relaxed ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-            We envision a world where tech education is practical, accessible, and inspiring. Uplify is committed to building a future where students learn through action, innovate fearlessly, and enter the workforce with real confidence and skill.
-          </p>
-        </div>
-      </motion.section>
+      {/* --- REFINED FEATURES: Why Trust Us? --- */}
+      <section className="py-24 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-16 space-y-2">
+            <h2 className="text-xs font-black tracking-[0.4em] uppercase text-emerald-500">The Infrastructure</h2>
+            <h3 className="text-3xl md:text-5xl font-black italic tracking-tighter">Built for Modern Engineering.</h3>
+          </div>
 
-      {/* FEATURES Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className={`${darkMode ? 'bg-gray-900' : 'bg-white'} py-10 px-6 md:px-16`}
-      >
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className={`text-3xl font-bold mb-10 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>What You’ll Get at Uplify</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              {
-                title: 'Internship Listings',
-                icon: '💼',
-                desc: 'Curated internships across tech domains to help you gain real industry experience.',
+              { 
+                title: 'Live Lab Experience', 
+                icon: '🛠️', 
+                desc: 'Bypass the "Tutorial Hell". Build on production-ready stacks used by high-growth startups.' 
               },
-              {
-                title: 'Uplify Internship Program',
-                icon: '🚀',
-                desc: 'Our in-house internship that lets you work on real projects while learning from mentors.',
+              { 
+                title: 'Strategic Internships', 
+                icon: '💼', 
+                desc: 'Access a curated pipeline of roles that prioritize skill over certificates.' 
               },
-              {
-                title: 'Structured Roadmaps',
-                icon: '🧭',
-                desc: 'Personalized learning paths to become a front-end dev, backend engineer, or fullstack pro.',
+              { 
+                title: 'Architectural Roadmaps', 
+                icon: '🧭', 
+                desc: 'Learn System Design, Clean Code, and Scalability—not just basic syntax.' 
               },
-              {
-                title: 'Premium Resources',
-                icon: '📚',
-                desc: 'Access handpicked materials, cheat sheets, and videos to strengthen your tech base.',
+              { 
+                title: 'ATS-Optimized Identity', 
+                icon: '📝', 
+                desc: 'We transform your projects into quantifiable impact statements that recruiters notice.' 
               },
-              {
-                title: 'Peer Group Community',
-                icon: '🤝',
-                desc: 'Collaborate, ask doubts, share knowledge and grow with like-minded learners.',
+              { 
+                title: 'Premium Peer Group', 
+                icon: '🤝', 
+                desc: 'Collaborate with driven developers. Iron sharpens iron in our exclusive community circles.' 
               },
-              {
-                title: 'Project-Based Learning',
-                icon: '🛠️',
-                desc: 'Build real-world projects that showcase your skills to employers.',
+              { 
+                title: 'Career Sovereignty', 
+                icon: '📚', 
+                desc: 'Gain the technical confidence to negotiate better offers and lead high-impact teams.' 
               },
-              {
-                title: 'Resume Builder',
-                icon: '📝',
-                desc: 'Create professional resumes with ease using our AI-assisted resume builder.',
-              },
-              {
-                title: 'Blogs & Articles',
-                icon: '📰',
-                desc: 'Read and write tech blogs to deepen knowledge and showcase your voice in the community.',
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className={`transition p-8 rounded-xl text-center shadow-sm ${darkMode
-                  ? 'bg-gray-800 hover:bg-indigo-900'
-                  : 'bg-gray-50 hover:bg-indigo-50'
-                  }`}
+            ].map((feature, i) => (
+              <motion.div
+                key={i} {...fadeIn}
+                className={`p-8 rounded-[2rem] border transition-all duration-500 hover:border-emerald-500/50 group ${
+                  darkMode ? 'bg-zinc-900/40 border-white/5' : 'bg-white border-emerald-100 shadow-xl shadow-emerald-900/5'
+                }`}
               >
-                <div className="w-16 h-16 mx-auto flex items-center justify-center text-3xl bg-indigo-100 rounded-full mb-4">
-                  {item.icon}
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                  {feature.icon}
                 </div>
-                <h3 className={` ${darkMode ? "text-gray-100" : "text-gray-900"} text-xl font-semibold mb-2`}>{item.title}</h3>
-                <p className={`${darkMode ? "text-gray-300" : "text-gray-800"} text-sm`}>{item.desc}</p>
-              </div>
+                <h3 className="text-lg font-bold mb-3">{feature.title}</h3>
+                <p className="text-[12px] leading-relaxed opacity-60 font-medium">{feature.desc}</p>
+              </motion.div>
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* FOUNDER Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className={`${darkMode ? 'bg-gray-900' : 'bg-white'} py-6 px-6 md:px-16 mb-5`}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className={`text-4xl font-extrabold mb-4 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
-            Meet the Founder
-          </h2>
-          <div className="flex flex-col items-center gap-1">
-            <img
-              src={Ankush}
-              alt="Ankush Kumar"
-              className="rounded-full w-32 h-32 md:w-36 md:h-36 object-cover shadow-xl border-4 border-indigo-500"
-            />
-            <h3 className={`text-2xl font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>
+      {/* --- FOUNDER: Message to Aspiring Developers --- */}
+      <section className="py-24 px-6 bg-emerald-500/5 backdrop-blur-3xl relative">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-5 gap-16 items-center">
+          <div className="md:col-span-2 relative">
+            <div className="absolute -inset-2 bg-yellow-400/30 rounded-[2.5rem] blur-xl"></div>
+            <div className="relative rounded-[2rem] overflow-hidden border-2 border-emerald-500 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
+              <img src={Ankush} alt="Ankush" className="w-full aspect-square object-cover" />
+            </div>
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-black px-6 py-2 font-black rounded-full text-[10px] tracking-widest uppercase shadow-xl">
               Ankush Kumar
-            </h3>
-            <p className={`${darkMode ? "text-indigo-400" : "text-indigo-700"} text-sm font-medium`}>
-              Founder & CEO
-            </p>
-            <p className={`text-lg md:text-xl leading-relaxed mt-4 max-w-2xl ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-              Ankush is a B.Tech CSE student at MMMUT and a passionate full-stack developer with a strong interest in AI/ML. He built <span className="font-semibold text-indigo-500">Uplify</span> with a clear mission — to help students like himself navigate the tech world with clarity, confidence, and a supportive community that fosters growth.
-            </p>
+            </div>
+          </div>
+          
+          <div className="md:col-span-3 space-y-8">
+            <div className="space-y-4">
+              <h2 className="text-xs font-black tracking-[0.5em] uppercase text-emerald-500">From the Founder</h2>
+              <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic">
+                To the next great <br/> Software Engineer.
+              </h3>
+            </div>
+            
+            <div className="space-y-6 text-sm md:text-base opacity-80 leading-relaxed font-medium border-l-2 border-yellow-400 pl-6 italic">
+              <p>
+                "I started Uplify because I realized that the university curriculum is often three years behind the industry. As a B.Tech student at MMMUT, I felt the gap between writing code and building products."
+              </p>
+              <p>
+                "My goal is to give you the clarity I wish I had. Whether you're mastering the MERN stack or diving into AI, Uplify is here to ensure your effort translates into a high-impact career. You don't need another certificate; you need proof of work."
+              </p>
+            </div>
+            
+            <div className="flex gap-6 pt-4">
+               <div>
+                 <p className="text-[10px] font-black uppercase text-gray-500 mb-1">Expertise</p>
+                 <p className="text-xs font-bold">Fullstack Architecture / AI / ML</p>
+               </div>
+               <div>
+                 <p className="text-[10px] font-black uppercase text-gray-500 mb-1">Education</p>
+                 <p className="text-xs font-bold">B.Tech CSE, MMMUT</p>
+               </div>
+            </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
-
-      {/* CTA Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className={`${darkMode ? 'bg-indigo-900' : 'bg-indigo-700'} text-white text-center rounded-t-3xl py-10 px-6 md:px-16`}
-      >
-        <h2 className="text-3xl font-bold mb-4">Be a Part of the Uplify Community</h2>
-        <p className="mb-6 text-lg">Connect, share, and grow with fellow tech enthusiasts and students just like you.</p>
-        <button onClick={() => navigate('/user/uplify-community')} className="px-8 py-3 bg-white text-indigo-700 font-bold rounded-lg shadow hover:shadow-lg transition">
-          Participate Now
-        </button>
-      </motion.section>
+      {/* --- CTA --- */}
+      <section className="py-24 px-6">
+        <div className="max-w-7xl mx-auto bg-[#040f04] rounded-[3.5rem] p-10 md:p-10 text-center relative overflow-hidden border border-emerald-500/20 shadow-2xl">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px]"></div>
+          <div className="relative z-10 space-y-10">
+            <h2 className="text-4xl md:text-7xl font-black text-white leading-tight tracking-tighter">
+              Stop Learning. <br />
+              <span className="text-yellow-400">Start Building.</span>
+            </h2>
+            <p className="text-[11px] font-black tracking-[0.3em] uppercase text-emerald-100/40 max-w-sm mx-auto">
+              Limited slots for the next mentorship cohort.
+            </p>
+            <button 
+              onClick={() => navigate('/user/uplify-community')}
+              className="px-14 py-5 bg-white text-black font-black rounded-2xl text-[12px] tracking-[0.2em] uppercase hover:bg-yellow-400 transition-all shadow-2xl"
+            >
+              Join the Elite Community
+            </button>
+          </div>
+        </div>
+      </section>
 
     </div>
   );

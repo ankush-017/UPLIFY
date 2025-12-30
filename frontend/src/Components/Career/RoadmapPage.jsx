@@ -64,7 +64,7 @@ function RoadmapPage({ role, experience, skills }) {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-2">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-400 to-emerald-500">
+            <span className="text-transparent uppercase bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-400 to-emerald-500">
               {role}
             </span>
           </h1>

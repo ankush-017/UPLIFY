@@ -71,7 +71,8 @@ const Blogs = () => {
       const { data, error } = await supabase.from('blogs').select('*');
       if (error) {
         console.error('Error fetching blogs:', error.message);
-      } else {
+      } 
+      else {
         setBlogs(data);
       }
     };

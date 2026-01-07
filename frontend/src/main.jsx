@@ -12,7 +12,6 @@ import Resources from './Components/Resources.jsx'
 import store from './Store/store.js'
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async'
-import BuildResume from './Pages/BuildResume.jsx'
 import ProjectLibrary from './Pages/ProjectLibrary.jsx'
 import UplifyInternship from './Pages/UplifyInternship.jsx'
 import Dashboard from './Components/Admin/Dashboard.jsx'
@@ -34,14 +33,6 @@ import AllResources from './Components/Admin/Resources/AllResources.jsx'
 import UpdateResources from './Components/Admin/Resources/UpdateResources.jsx'
 import MakePost from './Components/User/MakePost.jsx'
 import UplifyCommunity from './Pages/UplifyCommunity.jsx'
-import Frontend from './Components/Career/Frontend.jsx'
-import Backend from './Components/Career/Backend.jsx'
-import FullStackDeveloper from './Components/Career/FullStackDeveloper.jsx'
-import AndroidDeveloper from './Components/Career/AndroidDeveloper.jsx'
-import AIML from './Components/Career/AIML.jsx'
-import DataScientist from './Components/Career/DataScientist.jsx'
-import UiUx from './Components/Career/UiUx.jsx'
-import CyberSecuirtyAnalyst from './Components/Career/CyberSecuirtyAnalyst.jsx'
 import CareerRoadmaps from './Components/CareerRoadmaps.jsx'
 import ViewApplicant from './Components/Admin/Internships/ViewApplicant.jsx'
 // import UserAdmin from './Components/UserAdmin.jsx'
@@ -56,15 +47,14 @@ import UpdateInternCompany from './CompanyPage/UpdateInternCompany.jsx'
 import { roleLoader } from './Components/Loader.js';
 import UserProtected from './Components/UserAdmin.jsx'
 import NotFound from './Components/NotFound.jsx'
-import RoadmapPage from './Components/Career/RoadmapPage.jsx'
-import { RoadmapWrapper } from './Components/Tools/RoadmapWrapper.jsx'
+import ResumeBuilder from './Pages/ResumeBuilder/ResumeBuilder.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       {/* Redirect logic only */}
       <Route index
-        loader={roleLoader}
+        loader={roleLoader} 
         element={<RoleRouter />} />
 
       {/* Auth Pages */}
@@ -87,16 +77,8 @@ const router = createBrowserRouter(
           <Route path="resources" element={<Resources />} />
           <Route path="uplify-internship" element={<UplifyInternship />} />
           <Route path="projects-libray" element={<ProjectLibrary />} />
-          <Route path="resume-builder" element={<BuildResume />} />
+          <Route path="resume-builder" element={<ResumeBuilder />} />
           <Route path="career-roadmaps" element={<CareerRoadmaps />} />
-          <Route path="career-roadmaps/frontend" element={<Frontend />} />
-          <Route path="career-roadmaps/roadmap" element={<RoadmapWrapper />} />
-          <Route path="career-roadmaps/fullstack-developer" element={<FullStackDeveloper />} />
-          <Route path="career-roadmaps/android-developer" element={<AndroidDeveloper />} />
-          <Route path="career-roadmaps/ai-ml-engineer" element={<AIML />} />
-          <Route path="career-roadmaps/data-scientist" element={<DataScientist />} />
-          <Route path="career-roadmaps/ui-ux-designer" element={<UiUx />} />
-          <Route path="career-roadmaps/cybersecuirty-analyst" element={<CyberSecuirtyAnalyst />} />
           <Route path="job-internships/u/apply-internships/:id" element={<ApplicationForm />} />
         </Route>
       </Route>

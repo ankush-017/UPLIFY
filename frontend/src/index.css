@@ -21,3 +21,93 @@
 .animate-gradient {
   animation: gradient 3s ease infinite;
 }
+
+.rsw-ce ul {
+  list-style: disc;
+  padding-left: 1em;
+}
+
+.rsw-ce ol {
+  list-style: decimal;
+  padding-left: 1em;
+}
+
+.custom-editor ul {
+    list-style-type: disc !important;
+    padding-left: 1.5rem !important;
+    margin-top: 0rem !important;
+    margin-bottom: 0rem !important;
+}
+
+.custom-editor ol {
+    list-style-type: decimal !important;
+    padding-left: 1.5rem !important;
+    margin-top: 0rem !important;
+    margin-bottom: 0rem !important;
+}
+
+.custom-editor li {
+    display: list-item !important;
+}
+
+/* Update the Preview List section */
+.preview-list ul, 
+.preview-list ol {
+  list-style-position: inside; /* Keeps bullets aligned with text */
+  padding-left: 0rem !important;
+  margin-top: 0 !important;    /* Removes top margin */
+  margin-bottom: 3px !important; /* Removes bottom margin */
+  padding-top: 0 !important;   /* Removes top padding */
+  padding-bottom: 0 !important;/* Removes bottom padding */
+}
+
+.preview-list li {
+  margin-top: 0 !important;    /* Removes space between items */
+  margin-bottom: 0 !important; /* Removes space between items */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: normal;         /* Tightens the vertical height of text */
+}
+
+/* Ensure the marker (bullet) also has no extra spacing */
+.preview-list li::marker {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@media print {
+  /* 1. Hide the entire website UI */
+  body * {
+    visibility: hidden;
+  }
+
+  /* 2. Only show the resume and force it to the absolute top-left */
+  #print-area, #print-area * {
+    visibility: visible;
+  }
+
+  #print-area {
+    position: absolute;
+    left: 0 !important;
+    top: 0 !important; /* Force to top 0 */
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  /* 3. Strip all modal/body constraints */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* 4. Remove browser headers and FORCE TOP 0 MARGIN */
+  @page {
+    size: auto;
+    margin: 0 !important; /* Changed from 10mm to 0 */
+  }
+}

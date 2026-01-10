@@ -136,7 +136,9 @@ function SummaryForm() {
                     <button
                         type="submit"
                         className={`flex items-center gap-2 px-8 py-2.5 rounded-lg font-bold text-sm transition-all duration-300 shadow-lg active:scale-95
-                                bg-yellow-500 hover:bg-yellow-400 text-gray-700 shadow-yellow-500/20`}
+                               ${darkMode 
+                                ? 'bg-yellow-500 hover:bg-yellow-400 text-gray-900 shadow-yellow-500/40' 
+                                : 'bg-green-700 hover:bg-green-800 text-white shadow-green-700/30'} text-gray-700 shadow-yellow-500/20`}
                     >
                         <Save size={18} />
                         Save Summary

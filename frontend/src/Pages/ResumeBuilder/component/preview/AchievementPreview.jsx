@@ -27,9 +27,6 @@ function AchievementPreview({ resumeInfo, darkMode }) {
       <div className='flex flex-col gap-y-1 mt-2'>
         {resumeInfo?.achievements?.map((achievement, index) => (
           <div key={index} className='flex items-start gap-2'>
-            {/* Standard Bullet Point */}
-            <span className={`text-[11px] ${textColor}`}>•</span>
-            
             {/* Description using pre-line to respect the \n from your dummy data */}
             <p 
               className={`text-[11px] leading-relaxed text-justify ${textColor}`}

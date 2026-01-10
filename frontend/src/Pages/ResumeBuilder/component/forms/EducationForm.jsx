@@ -36,7 +36,7 @@ function EducationForm() {
     const onSave = (e) => {
         e.preventDefault();
         localStorage.setItem('resumeData', JSON.stringify(resumeInfo));
-        toast.success(`${scoreType} and Education details saved!`, {
+        toast.success(`Education details saved!`, {
             icon: '🎓',
             style: {
                 borderRadius: '12px',

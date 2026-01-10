@@ -18,7 +18,8 @@ export const resumeSlice = createSlice({
       const { section, data } = action.payload;
       if (state.info.hasOwnProperty(section)) {
         state.info[section] = data;
-      } else {
+      } 
+      else {
         // Creates the section if it doesn't exist (e.g., first time adding achievements)
         state.info = { ...state.info, [section]: data };
       }

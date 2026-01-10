@@ -6,19 +6,19 @@ function ExperiencePreview({ resumeInfo, darkMode }) {
 
     return (
         <div className='my-6 transition-all duration-300'>
-            <h2 
+            <h2
                 className='text-base font-serif font-bold mb-0 uppercase tracking-wide'
                 style={{ color: resumeInfo?.themeColor || '#16a34a' }}
             >
                 Experience
             </h2>
-            <hr 
-                className='mb-2' 
-                style={{ 
+            <hr
+                className='mb-2'
+                style={{
                     borderColor: resumeInfo?.themeColor || '#16a34a',
                     opacity: darkMode ? 0.3 : 0.8,
                     borderWidth: '0.5px'
-                }} 
+                }}
             />
 
             {resumeInfo?.experience?.map((experience, index) => (
@@ -42,12 +42,12 @@ function ExperiencePreview({ resumeInfo, darkMode }) {
                     </div>
 
                     {/* Rendering the text bullets with pre-line to support \n */}
-                    <p
-                        className={`text-[11px] leading-relaxed text-justify mt-2 ml-1 ${textColor}`}
-                        style={{ whiteSpace: 'pre-line' }}
-                    >
-                        {experience?.workSummary}
-                    </p>
+                    {/* Replace where you display workSummary */}
+                    <div 
+                    className={`prose prose-sm max-w-none text-[11px] ${textColor} preview-list`}
+                    dangerouslySetInnerHTML={{ __html: experience.workSummary }} 
+                    />
+
                 </div>
             ))}
         </div>

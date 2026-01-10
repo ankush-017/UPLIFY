@@ -4,6 +4,10 @@ import { ArrowRight, LayoutGrid } from 'lucide-react' // Use lucide-react for pr
 import SummaryForm from './forms/SummaryForm';
 import { useSelector } from 'react-redux';
 import EducationForm from './forms/EducationForm';
+import ExperienceForm from './forms/ExperienceForm';
+import ProjectForm from './forms/ProjectForm';
+import SkillForm from './forms/SkillForm';
+import AchievementForm from './forms/AchievementForm';
 
 function FormSection() {
 
@@ -12,7 +16,7 @@ function FormSection() {
 
     // This helps navigate between forms
     const handleNext = () => {
-        if (activeFormIndex < 6) setActiveFormIndex(activeFormIndex + 1);
+        if (activeFormIndex < 8) setActiveFormIndex(activeFormIndex + 1);
     }
 
     const handleBack = () => {
@@ -57,11 +61,13 @@ function FormSection() {
                 {/* Placeholder divs for your next steps */}
                 {activeFormIndex === 2 && <SummaryForm />}
                 {activeFormIndex === 3 && <EducationForm />}
-                {activeFormIndex === 4 && <div>{/* <ExperienceForm /> */}</div>}
-                {activeFormIndex === 5 && <div>{/* <SkillsForm /> */}</div>}
-                {activeFormIndex === 6 && <div>{/* <AchievementForm /> */}</div>}
+                {activeFormIndex === 4 && <ExperienceForm/>}
+                {activeFormIndex === 5 && <ProjectForm/>}
+                {activeFormIndex === 6 && <SkillForm />}
+                {activeFormIndex === 7 && <AchievementForm />}
             </div>
         </div>
     )
 }
+
 export default FormSection;

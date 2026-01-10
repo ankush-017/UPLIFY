@@ -41,7 +41,7 @@ function PersonalDetailForm() {
         ${darkMode ? 'text-gray-400' : 'text-gray-600'}`;
 
     return (
-        <div className='p-5 shadow-sm rounded-lg border-t-4 border-t-yellow-500 bg-transparent'>
+        <div className={`p-5 shadow-sm rounded-lg border-t-4 ${darkMode? "border-t-yellow-500" : "border-t-green-600"} bg-transparent`}>
             <h2 className='font-bold text-lg'>Personal Details</h2>
             <p className='text-sm text-gray-500 mb-5'>Fill in your basic information</p>
 
@@ -110,7 +110,9 @@ function PersonalDetailForm() {
                 <div className='mt-6 flex justify-end'>
                     <button 
                         type="submit"
-                        className='flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-gray-700 px-6 py-2 rounded-md transition-all shadow-md font-semibold active:scale-95'
+                        className={`flex items-center gap-2 ${darkMode 
+                                ? 'bg-yellow-500 hover:bg-yellow-400 text-gray-900 shadow-yellow-500/40' 
+                                : 'bg-green-700 hover:bg-green-800 text-white shadow-green-700/30'} text-gray-700 px-6 py-2 rounded-md transition-all shadow-md font-semibold active:scale-95`}
                     >
                         <Save size={18} />
                         Save Details

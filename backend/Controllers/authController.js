@@ -10,8 +10,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: process.env.Email,
-    pass: process.env.password,
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
   },
 });
 
@@ -66,7 +66,7 @@ export const sendOtpController = async (req, res) => {
   try {
     // Send OTP via Email
     await transporter.sendMail({
-      from: `"Uplify" <${process.env.EMAIL_USER}>`,
+      from: `"Uplify" <${process.env.EMAIL}>`,
       to: email,
       subject: 'Your Password Reset OTP',
       html: `

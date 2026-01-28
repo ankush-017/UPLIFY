@@ -52,140 +52,70 @@ export const getUserController = async (req, res) => {
   }
 }
 
-// // SendOTP Controller
-// export const sendOtpController = async (req, res) => {
-
-//   const { email } = req.body;
-//   if (!email) {
-//     return res.status(400).json({ success: false, error: 'Email required' });
-//   }
-
-//   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-//   console.log('Generated OTP:', otp);
-
-//   try {
-//     // Send OTP via Email
-//     await transporter.sendMail({
-//       from: `"Uplify" <${process.env.EMAIL}>`,
-//       to: email,
-//       subject: 'Your Password Reset OTP',
-//       html: `
-//   <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; background-color: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-//     <h2 style="color: #2563eb; text-align: center;">🔐 Confirm Your Email</h2>
-//     <p style="font-size: 16px; color: #374151;">
-//       Thank you for choosing <strong>Uplify</strong>! To continue, please confirm your email address by entering the OTP code below.
-//     </p>
-//     <div style="text-align: center; margin: 30px 0;">
-//       <div style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: #ffffff; font-size: 24px; letter-spacing: 6px; border-radius: 6px;">
-//         ${otp}
-//       </div>
-//     </div>
-//     <p style="font-size: 14px; color: #6b7280;">
-//       This OTP is valid for <strong>5 minutes</strong>. If you did not request this, you can safely ignore this email.
-//     </p>
-//     <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
-//     <p style="font-size: 12px; color: #9ca3af; text-align: center;">
-//       © ${new Date().getFullYear()} Uplify. All rights reserved.
-//     </p>
-//   </div>
-// `,
-
-//     });
-
-//     console.log('OTP Email Sent');
-//     // Save OTP in Redis with 5 minutes expiry
-//     try {
-//       await redisClient.set(`otp:${email}`, otp, { ex: 300 });
-//       console.log("✅ OTP stored successfully");
-//     } catch (error) {
-//       console.error("❌ Error storing OTP in Redis:", error);
-//     }
-
-
-//     return res.status(200).send({
-//       success: true,
-//       message: 'OTP sent to your email',
-//     });
-//   }
-//   catch (err) {
-//     console.error('sendOtpController Error:', err);
-//     return res.status(500).send({
-//       success: false,
-//       message: 'Something went wrong while sending OTP',
-//       error: process.env.NODE_ENV === 'development' ? err.message : undefined,
-//     });
-//   }
-// };
-
-// Send OTP Controller
+// SendOTP Controller
 export const sendOtpController = async (req, res) => {
-  console.log("🚀 [SEND OTP] Controller hit");
 
   const { email } = req.body;
-  console.log("📩 Email received:", email);
-
   if (!email) {
-    console.log("❌ Email missing in request body");
-    return res.status(400).json({
-      success: false,
-      error: "Email required",
-    });
+    return res.status(400).json({ success: false, error: 'Email required' });
   }
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  console.log("🔐 OTP generated:", otp);
-
-  console.log("🧪 ENV CHECK:", {
-    EMAIL: process.env.EMAIL,
-    PASSWORD_EXISTS: !!process.env.PASSWORD,
-    NODE_ENV: process.env.NODE_ENV,
-  });
+  console.log('Generated OTP:', otp);
 
   try {
-    console.log("📤 Sending OTP email...");
-
+    // Send OTP via Email
     await transporter.sendMail({
       from: `"Uplify" <${process.env.EMAIL}>`,
       to: email,
-      subject: "Your Password Reset OTP",
+      subject: 'Your Password Reset OTP',
       html: `
-        <div style="max-width:600px;margin:auto;padding:20px;font-family:Arial">
-          <h2>Your OTP</h2>
-          <h1>${otp}</h1>
-          <p>This OTP is valid for 5 minutes.</p>
-        </div>
-      `,
+  <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; background-color: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+    <h2 style="color: #2563eb; text-align: center;">🔐 Confirm Your Email</h2>
+    <p style="font-size: 16px; color: #374151;">
+      Thank you for choosing <strong>Uplify</strong>! To continue, please confirm your email address by entering the OTP code below.
+    </p>
+    <div style="text-align: center; margin: 30px 0;">
+      <div style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: #ffffff; font-size: 24px; letter-spacing: 6px; border-radius: 6px;">
+        ${otp}
+      </div>
+    </div>
+    <p style="font-size: 14px; color: #6b7280;">
+      This OTP is valid for <strong>5 minutes</strong>. If you did not request this, you can safely ignore this email.
+    </p>
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+    <p style="font-size: 12px; color: #9ca3af; text-align: center;">
+      © ${new Date().getFullYear()} Uplify. All rights reserved.
+    </p>
+  </div>
+`,
+
     });
 
-    console.log("✅ OTP email sent successfully");
-
-    // Redis store
+    console.log('OTP Email Sent');
+    // Save OTP in Redis with 5 minutes expiry
     try {
-      console.log("💾 Storing OTP in Redis...");
       await redisClient.set(`otp:${email}`, otp, { ex: 300 });
-      console.log("✅ OTP stored in Redis");
-    } catch (redisError) {
-      console.error("❌ Redis error:", redisError.message);
+      console.log("✅ OTP stored successfully");
+    } catch (error) {
+      console.error("❌ Error storing OTP in Redis:", error);
     }
 
-    return res.status(200).json({
+
+    return res.status(200).send({
       success: true,
-      message: "OTP sent to your email",
+      message: 'OTP sent to your email',
     });
-
-  } catch (error) {
-    console.error("❌ SEND OTP FAILED");
-    console.error("🔥 Error message:", error.message);
-    console.error("🔥 Full error:", error);
-
-    return res.status(500).json({
+  }
+  catch (err) {
+    console.error('sendOtpController Error:', err);
+    return res.status(500).send({
       success: false,
-      message: "Failed to send OTP",
-      error: error.message, // TEMP: keep for debugging
+      message: 'Something went wrong while sending OTP',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined,
     });
   }
 };
-
 
 // Verify OTP controller
 export const verifyOtpController = async (req, res) => {

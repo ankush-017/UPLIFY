@@ -3,17 +3,9 @@ import { redisClient } from '../Utils/redisClient.js';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import crypto from "crypto";
+import sgMail from "../Config/sendgrid.js";
 
 dotenv.config();
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.sendgrid.net",
-  port: 587,
-  auth: {
-    user: "apikey",
-    pass: process.env.SENDGRID_API_KEY,
-  },
-});
 
 export const registerController = async (req, res) => {
 
@@ -56,154 +48,115 @@ export const getUserController = async (req, res) => {
 
 export const sendOtpController = async (req, res) => {
   try {
-    console.log("[SEND OTP] Controller hit");
+    console.log("🚀 [SEND OTP] Controller hit");
 
     const { email } = req.body;
+    console.log("📩 Email received:", email);
+
     if (!email) {
-      console.log("❌ Email missing");
+      console.log("❌ Email missing in request body");
       return res.status(400).json({
         success: false,
         message: "Email is required",
       });
     }
 
-    // Generate 6-digit OTP
+    // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log("🔐 OTP generated:", otp);
+    console.log("🔐 OTP generated");
 
-    // (Best practice) Hash OTP before storing
+    // Hash OTP before storing
     const hashedOtp = crypto
       .createHash("sha256")
       .update(otp)
       .digest("hex");
+    console.log("🔒 OTP hashed");
 
-    console.log("📤 Sending OTP email via SendGrid...");
-
-    // Send email using SendGrid
-    await transporter.sendMail({
-      from: `"Uplify" <${process.env.SENDGRID_SENDER_EMAIL}>`, // MUST be verified
+    const msg = {
       to: email,
-      subject: "Your Password Reset OTP",
+      from: process.env.SENDGRID_SENDER_EMAIL,
+      subject: "Your OTP Code",
       html: `
-        <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; background-color: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-          <h2 style="color: #2563eb; text-align: center;">🔐 Confirm Your Email</h2>
-          <p style="font-size: 16px; color: #374151;">
-            Thank you for choosing <strong>Uplify</strong>! To continue, please confirm your email address by entering the OTP code below.
-          </p>
-          <div style="text-align: center; margin: 30px 0;">
-            <div style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: #ffffff; font-size: 24px; letter-spacing: 6px; border-radius: 6px;">
-              ${otp}
-            </div>
-          </div>
-          <p style="font-size: 14px; color: #6b7280;">
-            This OTP is valid for <strong>5 minutes</strong>. If you did not request this, you can safely ignore this email.
-          </p>
-          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
-          <p style="font-size: 12px; color: #9ca3af; text-align: center;">
-            © ${new Date().getFullYear()} Uplify. All rights reserved.
-          </p>
+        <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif;">
+          <h2>Your OTP</h2>
+          <h1>${otp}</h1>
+          <p>This OTP is valid for 5 minutes.</p>
         </div>
       `,
-    });
+    };
 
+    console.log("📤 Sending OTP via SendGrid API...");
+    await sgMail.send(msg);
     console.log("✅ OTP email sent successfully");
 
-    // Store hashed OTP in Redis (5 minutes expiry)
-    try {
-      await redisClient.set(`otp:${email}`, hashedOtp, { ex: 300 });
-      console.log("✅ OTP stored in Redis");
-    } catch (redisError) {
-      console.error("❌ Redis error:", redisError.message);
-      // Email already sent, so we don’t fail the request
-    }
+    console.log("💾 Storing OTP in Redis...");
+    await redisClient.set(
+      `otp:${email.toLowerCase()}`,
+      hashedOtp,
+      { ex: 300 }
+    );
+    console.log("✅ OTP stored in Redis (expires in 5 min)");
 
     return res.status(200).json({
       success: true,
-      message: "OTP sent to your email",
+      message: "OTP sent successfully",
     });
 
   } catch (error) {
-    console.error("❌ sendOtpController Error:", error);
+    console.error("❌ Send OTP Error");
+    console.error("Message:", error.message);
+    console.error("Full Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to send OTP. Please try again later.",
+      message: "Failed to send OTP",
     });
   }
 };
 
-
 // Verify OTP controller
 
 export const verifyOtpController = async (req, res) => {
+
   try {
     const { email, otp } = req.body;
 
-    console.log("📩 Received email:", email);
-    console.log("🔐 Received OTP:", otp);
-
-    if (!email || !otp) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and OTP are required",
-      });
-    }
-
-    const normalizedEmail = email.trim().toLowerCase();
-    const key = `otp:${normalizedEmail}`;
-
-    // Get hashed OTP from Redis
+    const key = `otp:${email.toLowerCase()}`;
     const storedHashedOtp = await redisClient.get(key);
-    console.log("📦 Stored OTP (hashed):", storedHashedOtp);
 
     if (!storedHashedOtp) {
-      console.log("⏰ OTP expired or not found");
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired OTP",
+        message: "OTP expired or invalid",
       });
     }
 
-    // Hash user-entered OTP
     const hashedInputOtp = crypto
       .createHash("sha256")
-      .update(otp.toString().trim())
+      .update(otp.toString())
       .digest("hex");
 
-    console.log("🔍 Comparing hashes:");
-    console.log("User OTP hash:", hashedInputOtp);
-    console.log("Stored OTP hash:", storedHashedOtp);
-
     if (hashedInputOtp !== storedHashedOtp) {
-      console.log("❌ OTP mismatch");
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired OTP",
+        message: "Invalid OTP",
       });
     }
 
-    // Mark OTP as verified (optional)
-    await redisClient.set(`otp_verified:${normalizedEmail}`, "true", { ex: 600 });
-
-    // Delete OTP so it can be used only once
     await redisClient.del(key);
-
-    console.log("✅ OTP verified successfully");
 
     return res.status(200).json({
       success: true,
       message: "OTP verified successfully",
     });
 
-  } catch (err) {
-    console.error("❌ OTP Verification Error:", err);
+  } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "OTP verification failed",
     });
   }
 };
-
 
 // userVerifybyEmailController 
 export const userVerifybyEmailController = async (req, res) => {

@@ -1,105 +1,139 @@
-import { withTheme } from "@emotion/react";
+import React from "react";
 import { motion } from "framer-motion";
 import {
     Briefcase,
-    ClipboardList,
-    FileCheck,
-    CalendarCheck,
-    BarChart4,
-    Users,
+    MessageSquare,
+    Zap,
+    CalendarDays,
+    Target,
+    ShieldCheck,
+    ArrowUpRight
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const features = [
     {
-        icon: <Briefcase className="w-10 h-10 text-white" />,
-        title: "Post Internships",
+        icon: <Target className="w-8 h-8 text-[#002D15]" />,
+        title: "AI Skill Matching",
+        tag: "Automated",
         description:
-            "Easily post openings and reach a wide network of students actively looking for opportunities.",
-        bgColor: "from-blue-500 to-purple-500",
+            "Our proprietary engine instantly maps candidate skills against your job requirements, providing a percentage match score for every resume.",
+        bgColor: "from-[#3DDC84] to-[#c7ee3f]",
     },
     {
-        icon: <ClipboardList className="w-10 h-10 text-white" />,
-        title: "Track Applications",
+        icon: <MessageSquare className="w-8 h-8 text-white" />,
+        title: "Direct Talent Chat",
+        tag: "Real-time",
         description:
-            "View and manage all candidate applications with smart filters and real-time updates.",
-        bgColor: "from-pink-500 to-red-500",
+            "Skip the email back-and-forth. Open a secure, instant chat line with top candidates as soon as they match your criteria.",
+        bgColor: "from-slate-800 to-slate-900",
     },
     {
-        icon: <FileCheck className="w-10 h-10 text-white" />,
-        title: "Resume Verification",
+        icon: <CalendarDays className="w-8 h-8 text-white" />,
+        title: "Smart Scheduling",
+        tag: "Seamless",
         description:
-            "Automatically detect resume quality and inconsistencies, saving your time in screening.",
-        bgColor: "from-green-500 to-teal-500",
+            "Integrated calendar sync lets you propose interview times directly in-app. Auto-reminders ensure zero no-shows for your hiring team.",
+        bgColor: "from-blue-600 to-indigo-600",
     },
     {
-        icon: <CalendarCheck className="w-10 h-10 text-white" />,
-        title: "Interview Scheduling",
+        icon: <Zap className="w-8 h-8 text-white" />,
+        title: "Verified Pipeline",
+        tag: "Security",
         description:
-            "Coordinate and conduct interviews directly from the dashboard—no external tools needed.",
-        bgColor: "from-yellow-500 to-orange-500",
+            "Every student profile undergoes 3-point verification (Identity, Education, and Skills) before they appear in your dashboard.",
+        bgColor: "from-orange-500 to-amber-500",
     },
     {
-        icon: <ClipboardList className="w-10 h-10 text-white" />,
-        title: "Internship Management",
+        icon: <Briefcase className="w-8 h-8 text-white" />,
+        title: "Multi-Role Posting",
+        tag: "Growth",
         description:
-            "Easily post internships, manage listings, and review applicants from a centralized dashboard.",
-        bgColor: "from-purple-600 to-fuchsia-500",
-
+            "Launch internship programs across multiple departments. Track separate pipelines for Tech, Design, and Management from one view.",
+        bgColor: "from-purple-600 to-pink-500",
     },
     {
-        icon: <Users className="w-10 h-10 text-white" />,
-        title: "Curated Student Pool",
+        icon: <ShieldCheck className="w-8 h-8 text-white" />,
+        title: "Hiring Analytics",
+        tag: "Insights",
         description:
-            "Access a verified pool of top students with skills matched to your company needs.",
-        bgColor: "from-cyan-500 to-sky-500",
+            "Deep dive into your recruitment funnel. Understand time-to-hire, source quality, and diversity metrics with one click.",
+        bgColor: "from-emerald-600 to-teal-500",
     },
 ];
 
 const FeaturesSection = () => {
-
     const darkMode = useSelector((state) => state.theme.darkMode);
 
     return (
-        <section className={`py-16 pb-24 ${darkMode?"bg-gray-900":"bg-white"}`}>
-            <div className="max-w-7xl mx-auto px-6 text-center">
-                <motion.h2
-                    initial={{ opacity: 0, y: -30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    viewport={{ once: true }}
-                    className={`text-4xl font-bold mb-4 ${darkMode?"text-gray-100":"text-gray-900"}`}
-                >
-                    Why Companies Choose <span className="text-blue-600">Uplify</span>
-                </motion.h2>
+        <section className={`py-16 relative overflow-hidden ${darkMode ? "bg-[#020617]" : "bg-slate-50"}`}>
+            {/* Background Glows */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 blur-[120px] rounded-full" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full" />
 
-                <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    viewport={{ once: true }}
-                    className={`${darkMode?"text-gray-400":"text-gray-600"} text-lg mb-12 `}
-                >
-                    Transform how you connect with student talent using smart, intuitive, and powerful hiring tools.
-                </motion.p>
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+                <div className="text-center max-w-3xl mx-auto mb-20">
+                    <motion.span
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        className={`${darkMode?"text-[#3DDC84]":"text-[#15a757]"} font-black text-xs uppercase tracking-[0.3em] mb-4 block`}
+                    >
+                        The Uplify Advantage
+                    </motion.span>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className={`text-4xl md:text-6xl font-black mb-6 tracking-tighter ${darkMode ? "text-white" : "text-slate-900"}`}
+                    >
+                        Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3DDC84] to-[#c7ee3f]">scale your team.</span>
+                    </motion.h2>
+                    <motion.p
+                        className={`text-lg ${darkMode ? "text-slate-400" : "text-slate-600"} leading-relaxed`}
+                    >
+                        Stop digging through piles of resumes. Uplify combines AI-powered skill verification with direct communication tools to make hiring students 10x faster.
+                    </motion.p>
+                </div>
 
-                <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-5">
                     {features.map((feature, idx) => (
                         <motion.div
                             key={idx}
-                            initial={{ opacity: 0, y: 40 }}
+                            initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: idx * 0.1 }}
                             viewport={{ once: true }}
-                            className={`rounded-3xl p-6 backdrop-blur-md border-[2px] ${darkMode? "border-gray-100 bg-white/10" :"border-gray-600 bg-white/70" } shadow-xl  hover:-translate-y-1 hover:shadow-2xl transition duration-300 ease-in-out`}
+                            className={`group relative p-8 rounded-[2.5rem] border transition-all duration-500 
+                                ${darkMode 
+                                    ? "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 shadow-[0_0_40px_rgba(0,0,0,0.3)]" 
+                                    : "bg-white border-slate-200 hover:shadow-2xl hover:border-transparent shadow-xl"
+                                }`}
                         >
+                            {/* Hover Arrow */}
+                            <div className="absolute top-8 right-8 text-slate-500 group-hover:text-[#3DDC84] transition-colors">
+                                <ArrowUpRight size={24} />
+                            </div>
+
                             <div
-                                className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.bgColor} flex items-center justify-center mb-5 mx-auto`}
+                                className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.bgColor} flex items-center justify-center mb-8 shadow-lg group-hover:scale-110 transition-transform duration-500`}
                             >
                                 {feature.icon}
                             </div>
-                            <h3 className={`text-xl font-semibold ${darkMode?"text-gray-200":"text-gray-800"} mb-2`}>{feature.title}</h3>
-                            <p className={`${darkMode?"text-gray-400":"text-gray-600"} text-sm`}>{feature.description}</p>
+
+                            <div className="flex items-center gap-3 mb-3">
+                                <h3 className={`text-xl font-black tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}>
+                                    {feature.title}
+                                </h3>
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter ${darkMode ? "bg-white/10 text-slate-300" : "bg-slate-100 text-slate-500"}`}>
+                                    {feature.tag}
+                                </span>
+                            </div>
+
+                            <p className={`text-sm leading-relaxed ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
+                                {feature.description}
+                            </p>
+
+                            {/* Decorative line */}
+                            <div className="mt-8 w-12 h-1 bg-gradient-to-r from-[#3DDC84] to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                         </motion.div>
                     ))}
                 </div>
@@ -107,5 +141,4 @@ const FeaturesSection = () => {
         </section>
     );
 };
-
 export default FeaturesSection;

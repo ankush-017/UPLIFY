@@ -296,9 +296,30 @@ const Navbar = () => {
           {!isAuthenticated ? (
             <button
               onClick={() => setIsModal(true)}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold"
+              className="group relative flex items-center gap-3 px-8 py-2.5 rounded-full font-bold text-sm tracking-wide
+             bg-gradient-to-r from-[#10b981] via-[#3DDC84] to-[#C7EE3F] 
+             text-[#002D15] shadow-md hover:shadow-[#3DDC84]/40 hover:shadow-xl
+             transition-all duration-300 active:scale-95"
             >
               Login
+
+              {/* Premium Animated Arrow */}
+              <svg
+                className="w-5 h-5 transform transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2.5"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+
+              {/* Top "Light" Edge for 3D depth */}
+              <div className="absolute inset-x-4 top-0 h-px bg-white/30 rounded-full"></div>
             </button>
           ) : (
             <div className="relative">
@@ -507,8 +528,8 @@ const Navbar = () => {
                         to={item.path}
                         onClick={() => setMenuOpen(false)}
                         className={({ isActive }) => `px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${isActive
-                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
-                            : darkMode ? 'text-white/70 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:bg-emerald-50'
+                          ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                          : darkMode ? 'text-white/70 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:bg-emerald-50'
                           }`}
                       >
                         {item.name}
@@ -560,9 +581,29 @@ const Navbar = () => {
                     {!isAuthenticated ? (
                       <button
                         onClick={() => { setIsModal(true); setMenuOpen(false); }}
-                        className="w-full py-5 rounded-2xl bg-emerald-500 text-white font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-emerald-500/30 active:scale-95 transition-all"
+                        className="group w-full py-4 rounded-2xl flex items-center justify-center gap-3
+             bg-gradient-to-r from-[#22bd68] via-[#a5ca22] to-[#d4ad10] 
+             text-[#002D15] font-black uppercase tracking-[0.2em] text-xs 
+             shadow-lg shadow-emerald-500/20 
+             hover:shadow-emerald-500/40 hover:-translate-y-0.5
+             active:scale-95 transition-all duration-300"
                       >
-                        Access Account
+                        <span>Login</span>
+
+                        {/* Premium Animated Arrow */}
+                        <svg
+                          className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2.5"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          />
+                        </svg>
                       </button>
                     ) : (
                       <button

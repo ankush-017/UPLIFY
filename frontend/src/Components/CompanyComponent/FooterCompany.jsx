@@ -1,63 +1,81 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
-import { Facebook, Linkedin, Mail, Twitter } from 'lucide-react';
+import { Facebook, Linkedin, Mail, Twitter, Globe } from 'lucide-react';
 
 function FooterCompany() {
     return (
-        <footer className="bg-gradient-to-tr from-gray-800 via-gray-900 to-blue-950 text-blue-100 py-5 px-6">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 pt-8 gap-8">
+        <footer className="bg-[#050a14] text-slate-400 py-12 px-6 border-t border-white/5">
+            <div className="max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
 
-                {/* Logo & About */}
-                <div>
-                    <Link to="/" className="flex items-center gap-2 mb-4">
-                        <img src={logo} alt="Uplify" className="h-8" />
-                        {/* <span className="text-white text-xl font-bold">Uplify</span> */}
-                    </Link>
-                    <p className="text-sm leading-relaxed">
-                        Empowering companies with the tools to hire smarter and faster. At Uplify, we bridge talent with opportunity.
-                    </p>
+                    {/* 1. Brand & Tagline */}
+                    <div className="space-y-6">
+                        <Link to="/" className="inline-block transition-opacity hover:opacity-80">
+                            <img src={logo} alt="Uplify" className="h-12 brightness-110" />
+                        </Link>
+                        <p className="text-sm leading-relaxed max-w-xs text-slate-500">
+                            The intelligent bridge between student talent and world-class companies. 
+                            Hiring, redefined.
+                        </p>
+                    </div>
+
+                    {/* 2. Platform Links */}
+                    <div className="flex flex-col space-y-4">
+                        <h4 className="text-white font-black uppercase tracking-[0.2em] text-[10px]">Platform</h4>
+                        <ul className="space-y-3 text-sm">
+                            <li><Link to="/post" className="hover:text-[#3DDC84] transition-colors">Post Internship</Link></li>
+                            <li><Link to="/track" className="hover:text-[#3DDC84] transition-colors">Track Applications</Link></li>
+                            <li><Link to="/pricing" className="hover:text-[#3DDC84] transition-colors">Pricing</Link></li>
+                        </ul>
+                    </div>
+
+                    {/* 3. Company Links */}
+                    <div className="flex flex-col space-y-4">
+                        <h4 className="text-white font-black uppercase tracking-[0.2em] text-[10px]">Company</h4>
+                        <ul className="space-y-3 text-sm">
+                            <li><Link to="/about" className="hover:text-[#3DDC84] transition-colors">About Us</Link></li>
+                            <li><Link to="/blog" className="hover:text-[#3DDC84] transition-colors">Resources</Link></li>
+                            <li><Link to="/privacy" className="hover:text-[#3DDC84] transition-colors">Privacy Policy</Link></li>
+                        </ul>
+                    </div>
+
+                    {/* 4. Social & Support */}
+                    <div className="flex flex-col space-y-4">
+                        <h4 className="text-white font-black uppercase tracking-[0.2em] text-[10px]">Connect</h4>
+                        <div className="flex gap-4">
+                            {[Linkedin, Twitter, Facebook, Mail].map((Icon, idx) => (
+                                <a 
+                                    key={idx} 
+                                    href="#" 
+                                    className="text-slate-500 hover:text-[#3DDC84] transform hover:-translate-y-1 transition-all duration-200"
+                                >
+                                    <Icon size={20} strokeWidth={1.5} />
+                                </a>
+                            ))}
+                        </div>
+                        <p className="text-xs font-medium text-slate-400">hello@uplify.in</p>
+                    </div>
                 </div>
 
-                {/* Navigation Links */}
-                <div>
-                    <h3 className="text-blue-400 text-lg font-semibold mb-3">Company</h3>
-                    <ul className="space-y-2 text-sm">
-                        <li><a href="/about" className="hover:text-white transition">Post Internship</a></li>
-                        <li><a href="/careers" className="hover:text-white transition">Application</a></li>
-                        <li><a href="/about" className="hover:text-white transition">About Us</a></li>
-                    </ul>
-                </div>
+                {/* --- Bottom Bar --- */}
+                <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                        <span>© {new Date().getFullYear()} Uplify AI</span>
+                        <div className="w-1 h-1 bg-slate-700 rounded-full" />
+                        <span className="flex items-center gap-1">
+                            <Globe size={12} className="text-[#3DDC84]" /> EN-US
+                        </span>
+                    </div>
 
-                {/* Resources */}
-                <div>
-                    <h3 className="text-blue-400 text-lg font-semibold mb-3">Resources</h3>
-                    <ul className="space-y-2 text-sm">
-                        <li><a href="/blog" className="hover:text-white transition">Blog</a></li>
-                        <li><a href="/user/uplify-community" className="hover:text-white transition">Uplify-community</a></li>
-                        <li><a href="/privacy" className="hover:text-white transition">Privacy Policy</a></li>
-                    </ul>
-                </div>
-
-                {/* Contact & Social */}
-                <div>
-                    <h4 className="text-blue-400 text-lg font-semibold mb-3">Connect</h4>
-                    <p className="text-sm mb-3 text-gray-400">Email: <a href="mailto:hello@uplify.in" className="hover:text-blue-400">hello@uplify.in</a></p>
-                    <div className="flex gap-4 mt-2">
-                        <a href="#" target="_blank" rel="noreferrer" className="hover:text-blue-400"><Facebook size={20} /></a>
-                        <a href="#" target="_blank" rel="noreferrer" className="hover:text-blue-400"><Twitter size={20} /></a>
-                        <a href="#" target="_blank" rel="noreferrer" className="hover:text-blue-400"><Linkedin size={20} /></a>
-                        <a href="mailto:hello@uplify.in" className="hover:text-blue-400"><Mail size={20} /></a>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-[#3DDC84]/5 rounded-full border border-[#3DDC84]/10">
+                        <div className="w-1.5 h-1.5 bg-[#3DDC84] rounded-full animate-pulse shadow-[0_0_8px_#3DDC84]" />
+                        <span className="text-[9px] font-black uppercase tracking-tighter text-[#3DDC84]">System Live</span>
                     </div>
                 </div>
             </div>
-
-            <hr className="my-8 border-blue-700" />
-
-            <p className="text-center text-sm text-blue-300">
-                © {new Date().getFullYear()} Uplify. All rights reserved.
-            </p>
         </footer>
-    )
+    );
 }
-export default FooterCompany
+
+export default FooterCompany;

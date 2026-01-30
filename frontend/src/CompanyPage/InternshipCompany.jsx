@@ -2,144 +2,151 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../superbaseClient';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { Loader2, Briefcase, MapPin, IndianRupee } from 'lucide-react';
+import { Loader2, Briefcase, MapPin, IndianRupee, Clock, Sparkles, ArrowUpRight } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 function InternshipCompany() {
   const [interns, setInterns] = useState([]);
   const [loading, setLoading] = useState(true);
   const darkMode = useSelector((state) => state.theme.darkMode);
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
-  const [loginShow, setLoginShow] = useState(false); // add this if not coming from props
 
   const fetchInterns = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('internships').select('*');
-    if (error) {
-      setLoading(false);
-      toast.error("Error fetching internships");
-      return;
-    }
 
-    if (data && data.length > 0) {
-      setInterns(data);
+    // Logic: Calculate date 30 days ago
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const { data, error } = await supabase
+      .from('internships')
+      .select('*')
+      .gte('created_at', thirtyDaysAgo.toISOString()) // Only show last 30 days
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      toast.error("Error fetching opportunities");
     } else {
-      toast.error("No internships found");
+      setInterns(data || []);
     }
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchInterns();
-  }, []);
+  useEffect(() => { fetchInterns(); }, []);
 
   const timeAgo = (date) => {
-    const now = new Date();
-    const posted = new Date(date);
-    const diffMs = now - posted;
-
-    const seconds = Math.floor(diffMs / 1000);
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    if (seconds < 60) return 'Just now';
     const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const months = Math.floor(days / 30);
-    const years = Math.floor(months / 12);
-
-    if (years > 0) return `${years} year${years > 1 ? 's' : ''} ago`;
-    if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`;
-    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
-    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-    if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    return 'Just now';
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-blue-50'}`}>
-      {/* Bell-shaped Header */}
-      <div className="relative bg-blue-500 text-white rounded-b-[80px] pb-10 pt-10 px-6 shadow-lg overflow-hidden">
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
+    <div className={`min-h-screen ${darkMode ? 'bg-[#020617] text-white' : 'bg-slate-50 text-slate-900'}`}>
+
+      {/* --- PREMIUM MESH HEADER --- */}
+      <div className="relative overflow-hidden pt-20 pb-24 px-6">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full">
+          <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-b from-emerald-500/20 to-transparent' : 'bg-gradient-to-b from-blue-500/10 to-transparent'}`} />
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#3DDC84]/20 blur-[120px] rounded-full animate-pulse" />
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl sm:text-5xl font-extrabold text-center leading-tight"
+          className="relative z-10 max-w-4xl mx-auto text-center"
         >
-          Discover Exciting Internships
-        </motion.h1>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3DDC84]/10 border border-[#3DDC84]/20 mb-6">
+            <Sparkles size={14} className={`${darkMode ? "text-[#3DDC84]" : "text-[#0ba751]"}`} />
+            <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${darkMode ? "text-[#3DDC84]" : "text-[#0ba751]"}`}>Fresh Opportunities</span>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-[0.9]">
+            Discover the <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3DDC84] to-[#C7EE3F]">Latest.</span>
+          </h1>
+          <p className={`text-lg ${darkMode ? 'text-slate-400' : 'text-slate-600'} max-w-xl mx-auto font-medium`}>
+            Showing verified internships posted in the last 30 days.
+          </p>
+        </motion.div>
       </div>
 
-      {/* Internship Cards */}
-      <div className="max-w-6xl mx-auto pt-12 px-6 pb-16">
+      {/* --- GRID FEED --- */}
+      <div className="max-w-7xl mx-auto px-6 pb-24">
         {loading ? (
-          <div className="flex justify-center items-center py-24">
-            <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+          <div className="flex flex-col justify-center items-center py-20 gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-[#3DDC84]" />
+            <span className="text-xs font-bold uppercase tracking-widest opacity-50">Curating Feed...</span>
           </div>
         ) : interns.length === 0 ? (
-          <div className="text-center text-gray-600 text-lg">No internships available.</div>
+          <div className="text-center py-20 bg-white/5 rounded-[3rem] border border-dashed border-slate-700">
+            <p className="text-slate-500 font-bold uppercase tracking-widest">No fresh posts found in 30 days.</p>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {interns.map((job, idx) => (
               <motion.div
                 key={job.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className={`rounded-2xl p-6 border hover:shadow-xl flex flex-col justify-center hover:scale-[1.02] transition-all duration-300 
+                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                className={`group relative p-8 rounded-[2.5rem] border transition-all duration-500 
                 ${darkMode
-                    ? "bg-black/20 border-blue-500 text-white"
-                    : "bg-white border-blue-500 shadow-md text-gray-900"
+                    ? "bg-white/5 border-white/10 hover:bg-white/10 hover:border-[#d8e337] shadow-2xl"
+                    : "bg-white border-slate-200 hover:shadow-2xl hover:border-[#c2d001] shadow-sm"
                   }`}
               >
-                <div className="flex justify-between text-md font-medium mb-2">
-                  <h1 className={`flex items-center gap-2 ${darkMode ? "text-blue-300" : "text-blue-700"}`}>
-                    <Briefcase size={16} /> {job.company}
-                  </h1>
-                  <span className="text-blue-500 text-sm">{job.source_type}</span>
+                {/* Top Row: Company & Source */}
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#3DDC84]/10 flex items-center justify-center">
+                      <Briefcase size={20} className="text-[#3DDC84]" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm leading-none mb-1">{job.company}</h4>
+                      <span className="text-[10px] font-black uppercase tracking-widest opacity-40">{job.source_type}</span>
+                    </div>
+                  </div>
+                  <button className="p-2 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-[#3DDC84] hover:text-[#002D15] transition-all">
+                    <ArrowUpRight size={18} />
+                  </button>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{job.title}</h3>
-                {/* Skills */}
-                {job.skills && (
-                  <div className={`flex items-center text-sm ${darkMode ? "text-blue-400" : "text-blue-700"} gap-2 mb-4`}>
-                    <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                      Skills:
+
+                {/* Title & Skills */}
+                <h3 className="text-xl font-black tracking-tight mb-4 group-hover:text-[#11cc65] transition-colors line-clamp-1">
+                  {job.title}
+                </h3>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {job.skills?.split(',').map((skill, i) => (
+                    <span
+                      key={i}
+                      className={`text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-[0.1em] transition-all duration-300 border
+    ${darkMode
+                          ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]"
+                          : "bg-slate-100 border-slate-200 text-slate-600 group-hover:bg-white"
+                        }`}
+                    >
+                      {skill.trim()}
                     </span>
-                    {job.skills}
-                  </div>
-                )}
+                  ))}
+                </div>
 
-                {/* Location */}
-                {job.location && (
-                  <div className={`flex items-center text-sm gap-2 mb-1 ${darkMode ? "text-white" : "text-black"}`}>
-                    <MapPin size={14} /> {job.location}
+                {/* Details Footer */}
+                <div className={`pt-6 border-t ${darkMode?"border-white/20":"border-slate-200"} space-y-3`}>
+                  <div className="flex items-center justify-between text-xs font-medium">
+                    <div className="flex items-center gap-2 opacity-60"><MapPin size={14} /> {job.location}</div>
+                    <div className="flex items-center gap-2 text-[#3DDC84] font-bold"><IndianRupee size={14} /> {job.stipend}</div>
                   </div>
-                )}
 
-                {/* Stipend */}
-                {job.stipend && (
-                  <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                    <IndianRupee size={14} /> {job.stipend}
-                  </div>
-                )}
-
-                {/* Job-Type */}
-                {job.job_type && (
-                  <div className={`flex items-center text-sm gap-2 mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                    <span className={`font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                      Type:
-                    </span>  {job.job_type}
-                  </div>
-                )}
-                <div className='flex flex-row justify-between'>
-                  <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block font-medium 
-                    ${job.type === 'Remote' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                    {job.type}
-                  </span>
-                  <div>
-                    <p className={`text-xs mb-3 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                      Posted {timeAgo(job.created_at)}
-                    </p>
+                  <div className="flex items-center justify-between pt-2">
+                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${job.type === 'Remote' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                      {job.type}
+                    </div>
+                    <div className="flex items-center gap-1.5 opacity-40 text-[10px] font-bold uppercase tracking-widest">
+                      <Clock size={12} /> {timeAgo(job.created_at)}
+                    </div>
                   </div>
                 </div>
               </motion.div>

@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login as loginAction } from "../Store/Slice/authSlice.js";
-import { X } from "lucide-react";
+import { X, Mail, Lock, Eye, EyeOff, User, Phone, CheckCircle2, ArrowRight, ShieldCheck } from "lucide-react";
 import { FaLock } from "react-icons/fa";
-import { Mail, User, Eye, EyeOff, Phone } from "lucide-react";
 import toast from 'react-hot-toast';
 import {
   getAuth,
@@ -80,7 +79,7 @@ export default function Login({ onClose }) {
             },
           }
         );
-        dispatch(loginAction({ uid: user.uid}));
+        dispatch(loginAction({ uid: user.uid }));
         toast.success("Login Successfully");
         onClose();
         navigate('/');
@@ -209,7 +208,7 @@ export default function Login({ onClose }) {
         }
       );
       // admin.auth().setCustomUserClaims(uid, { role: role });
-      dispatch(loginAction({ uid: pendingUser.uid}));
+      dispatch(loginAction({ uid: pendingUser.uid }));
       setPendingUser(null);
       setShowRoleModal(false);
       toast.success("Register Successfully");
@@ -288,7 +287,7 @@ export default function Login({ onClose }) {
   };
 
   const handleForgotPassword = async (e) => {
-    
+
     e.preventDefault();
     if (!email) return toast.error("Please enter your email");
     const Email = email.toLowerCase().trim();
@@ -310,210 +309,219 @@ export default function Login({ onClose }) {
   };
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center px-4">
+      <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex justify-center items-center px-4 py-6">
         <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: -20 }}
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="bg-white w-full max-w-4xl rounded-3xl flex shadow-2xl overflow-hidden relative"
+          exit={{ opacity: 0, scale: 0.9, y: 30 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          className="bg-white w-full max-w-5xl rounded-[2.5rem] flex flex-col md:flex-row shadow-2xl overflow-hidden relative border border-white/20"
         >
-          <button onClick={onClose} className="absolute top-4 right-4 text-gray-600 hover:text-red-600 z-10">
-            <X size={24} />
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-all z-50 p-2 hover:bg-slate-100 rounded-full"
+          >
+            <X size={22} />
           </button>
 
-          <div className="hidden md:flex w-1/2 bg-gradient-to-br from-[#e0e7ff] to-[#ffe4e6] items-center justify-center p-6">
-            <img src={loginImg} alt="Login Art" className="w-full max-w-sm" />
+          {/* --- LEFT SIDE: THE BRAND PANEL --- */}
+          <div className="hidden md:flex w-2/5 bg-gradient-to-br from-[#f0fdf4] via-[#f7fee7] to-[#ecfccb] flex-col items-center justify-center p-12 border-r border-slate-100 relative overflow-hidden">
+            {/* Decorative Glow */}
+            <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#c7ee3f]/30 blur-[100px] rounded-full"></div>
+            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#3DDC84]/20 blur-[100px] rounded-full"></div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="relative z-10 text-center"
+            >
+              <img src={loginImg} alt="Uplify Auth" className="w-full max-w-[280px] drop-shadow-2xl mb-8" />
+              <h3 className="text-2xl font-black text-[#064e3b] leading-tight tracking-tighter">
+                Empowering Careers <br /> with Intelligence
+              </h3>
+              <p className="text-emerald-700/60 mt-4 text-sm font-medium">Join Uplify and launch your professional journey today.</p>
+            </motion.div>
           </div>
 
-          <div className="w-full md:w-1/2 p-8 mt-7 bg-white/90 backdrop-blur">
+          {/* --- RIGHT SIDE: THE AUTH FORM --- */}
+          <div className="w-full md:w-3/5 p-8 md:p-14 bg-white flex flex-col overflow-y-auto max-h-[90vh] custom-scrollbar">
+
+            <div className="mb-8">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
+                {isLogin ? "Welcome Back" : "Create Your Account"}
+              </h2>
+              <p className="text-slate-500 mt-2 text-sm">Please enter your details to continue.</p>
+            </div>
+
+            {/* Google SSO Button */}
             <button
-              onClick={handleGoogleLogin}
-              className="w-full border border-gray-300 rounded-md py-2 flex items-center justify-center gap-2 mb-4 mt-4 hover:bg-gray-50 transition"
+              onClick={handleGoogleLogin} // <-- Add this line
+              disabled={loadingGoogle}
+              className="group w-full border border-slate-200 rounded-2xl py-3.5 flex items-center justify-center gap-3 mb-6 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 disabled:opacity-50"
             >
-              <img src={google} width={20} height={20} alt="" />
-              <span className="text-gray-800 font-medium">
-                {loadingGoogle ? "Logging in..." : "Continue with Google"}
+              <img src={google} width={20} height={20} alt="Google" className={loadingGoogle ? "animate-spin" : ""} />
+              <span className="text-slate-700 font-bold text-xs uppercase tracking-widest">
+                {loadingGoogle ? "Connecting..." : "Continue with Google"}
               </span>
             </button>
 
-            <div className="flex items-center mb-4">
-              <hr className="flex-grow border-gray-300" />
-              <span className="mx-2 text-gray-400 text-sm">or</span>
-              <hr className="flex-grow border-gray-300" />
+            <div className="relative flex items-center mb-8">
+              <div className="flex-grow border-t border-slate-100"></div>
+              <span className="mx-4 text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">OR USE EMAIL</span>
+              <div className="flex-grow border-t border-slate-100"></div>
             </div>
 
-            {
-              isLogin ? (<>
-                <div className="flex items-center border rounded-lg px-3 py-2 mb-3 shadow-sm">
-                  <Mail size={18} className="text-blue-800" />
+            <div className="space-y-4">
+              {/* --- SIGN UP FIELDS --- */}
+              {!isLogin && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                  <div className="group flex items-center border border-slate-200 rounded-2xl px-4 py-3.5 focus-within:border-[#3DDC84] focus-within:ring-4 focus-within:ring-[#3DDC84]/10 transition-all">
+                    <User size={18} className="text-slate-400 group-focus-within:text-[#3DDC84]" />
+                    <input
+                      type="text"
+                      placeholder="Full Name"
+                      className="ml-3 w-full outline-none text-slate-900 font-semibold bg-transparent"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="group flex items-center border border-slate-200 rounded-2xl px-4 py-3.5 focus-within:border-[#3DDC84] focus-within:ring-4 focus-within:ring-[#3DDC84]/10 transition-all flex-grow">
+                      <Mail size={18} className="text-slate-400" />
+                      <input
+                        type="email"
+                        placeholder="Email address"
+                        disabled={emailVerified}
+                        className={`ml-3 w-full outline-none font-semibold bg-transparent ${emailVerified ? 'text-slate-400' : 'text-slate-900'}`}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      {emailVerified && <CheckCircle2 size={18} className="text-emerald-500" />}
+                    </div>
+
+                    {!emailVerified && (
+                      <button
+                        onClick={handleSendOtp}
+                        disabled={isSendingOtp}
+                        className="px-6 py-3.5 rounded-2xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all disabled:bg-slate-300"
+                      >
+                        {isSendingOtp ? "..." : (otpSent ? "Resend" : "Send OTP")}
+                      </button>
+                    )}
+                  </div>
+
+                  {otpSent && !emailVerified && (
+                    <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} className="flex gap-2 bg-[#f7fee7] p-2 rounded-2xl border border-[#c7ee3f]">
+                      <input
+                        type="text"
+                        placeholder="Enter 6-digit OTP"
+                        className="w-full px-4 py-2 bg-white rounded-xl border-none outline-none font-bold text-center tracking-widest"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                      />
+                      <button onClick={handleVerifyOtp} className="px-6 bg-[#3DDC84] text-[#002D15] rounded-xl font-black text-[10px] uppercase">
+                        {isVerifyingOtp ? "..." : "Verify"}
+                      </button>
+                    </motion.div>
+                  )}
+
+                  <div className="group flex items-center border border-slate-200 rounded-2xl px-4 py-3.5 focus-within:border-[#3DDC84] focus-within:ring-4 focus-within:ring-[#3DDC84]/10 transition-all">
+                    <Phone size={18} className="text-slate-400" />
+                    <input
+                      type="tel"
+                      placeholder="Phone Number"
+                      className="ml-3 w-full outline-none text-slate-900 font-semibold bg-transparent"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
+                </motion.div>
+              )}
+
+              {/* --- LOGIN FIELDS --- */}
+              {isLogin && (
+                <div className="group flex items-center border border-slate-200 rounded-2xl px-4 py-3.5 focus-within:border-[#3DDC84] focus-within:ring-4 focus-within:ring-[#3DDC84]/10 transition-all">
+                  <Mail size={18} className="text-slate-400 group-focus-within:text-[#3DDC84]" />
                   <input
                     type="email"
-                    placeholder="Your email"
-                    className="ml-2 w-full outline-none text-purple-700 placeholder:text-gray-400"
+                    placeholder="Your Email"
+                    className="ml-3 w-full outline-none text-slate-900 font-semibold bg-transparent"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
+              )}
 
-                <div className="flex items-center border rounded-lg px-3 py-2 mb-4 shadow-sm">
-                  <FaLock size={18} className="text-blue-800" />
+              {/* Password Block */}
+              <div className="space-y-4">
+                <div className="group flex items-center border border-slate-200 rounded-2xl px-4 py-3.5 focus-within:border-[#3DDC84] transition-all relative">
+                  <FaLock size={16} className="text-slate-400" />
                   <input
-                    type={showLoginPassword ? "text" : "password"}
+                    type={isLogin ? (showLoginPassword ? "text" : "password") : (showPassword ? "text" : "password")}
                     placeholder="Password"
-                    className="ml-2 w-full outline-none text-purple-700 placeholder:text-gray-400"
+                    className="ml-3 w-full outline-none text-slate-900 font-semibold bg-transparent"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  <span
-                    onClick={() => setShowLoginPassword(!showLoginPassword)}
-                    className="absolute right-11 cursor-pointer text-sm text-blue-600"
+                  <button
+                    onClick={() => isLogin ? setShowLoginPassword(!showLoginPassword) : setShowPassword(!showPassword)}
+                    className="text-slate-400 hover:text-slate-600"
                   >
-                    {showLoginPassword ? <EyeOff /> : <Eye />}
-                  </span>
+                    {(isLogin ? showLoginPassword : showPassword) ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
-                <div
-                  className="flex justify-end mb-2 cursor-pointer text-blue-900 hover:underline"
-                  onClick={handleForgotPassword}
-                >
-                  <p>Forgot password?</p>
+
+                {!isLogin && (
+                  <div className="group flex items-center border border-slate-200 rounded-2xl px-4 py-3.5 focus-within:border-[#3DDC84] transition-all">
+                    <ShieldCheck size={18} className="text-slate-400" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Confirm Password"
+                      className="ml-3 w-full outline-none text-slate-900 font-semibold bg-transparent"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {isLogin && (
+                <div className="flex justify-end px-1">
+                  <button className="text-[10px] font-black text-[#166534] hover:text-[#3DDC84] transition-colors uppercase tracking-widest">
+                    Forgot password?
+                  </button>
                 </div>
-              </>
-              ) :
-                (
-                  <>
-                    <div className="flex items-center border rounded-lg px-3 py-2 mb-3 shadow-sm">
-                      <User size={18} className="text-blue-800" />
-                      <input
-                        type="text"
-                        placeholder="Your name"
-                        className="ml-2 w-full outline-none text-purple-700 placeholder:text-gray-400"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-4 flex flex-col gap-3">
-                      {/* Email Input + Send OTP Button */}
-                      <div className="flex gap-2 flex-col sm:flex-row items-stretch">
-                        <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm w-full sm:w-2/3 bg-white">
-                          <Mail size={18} className="text-blue-800" />
-                          <input
-                            type="email"
-                            placeholder="Enter your email"
-                            className="ml-2 w-full outline-none text-purple-700 placeholder:text-gray-400 bg-transparent"
-                            value={email}
-                            onChange={(e) => {
-                              setEmail(e.target.value);
-                              setEmailVerified(false);
-                              setOtpSent(false);
-                              setOtp("");
-                            }}
-                            disabled={emailVerified}
-                          />
-                        </div>
+              )}
+            </div>
 
-                        {!emailVerified && (
-                          <button
-                            onClick={handleSendOtp}
-                            disabled={isSendingOtp}
-                            className={`${isSendingOtp ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"
-                              } text-white px-4 py-2 rounded-lg transition w-full sm:w-auto`}
-                          >
-                            {isSendingOtp ? "Sending..." : (otpSent ? "Resend OTP" : "Send OTP")}
-                          </button>
-                        )}
-                      </div>
-
-                      {/* OTP Input appears after Send OTP is clicked */}
-                      {otpSent && !emailVerified && (
-                        <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-                          <input
-                            type="text"
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value)}
-                            placeholder="Enter 6-digit OTP"
-                            className="border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-2/3 text-center placeholder:text-gray-500"
-                          />
-                          <button
-                            onClick={handleVerifyOtp}
-                            disabled={isVerifyingOtp}
-                            className={`${isVerifyingOtp ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-                              } text-white px-4 py-2 rounded-lg transition w-full sm:w-auto`}
-                          >
-                            {isVerifyingOtp ? "Verifying..." : "Verify OTP"}
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center border rounded-lg px-3 py-2 mb-3 shadow-sm">
-                      <Phone className="text-blue-800" />
-                      <input
-                        type="tel"
-                        placeholder="Phone number"
-                        className="ml-2 w-full outline-none text-purple-700 placeholder:text-gray-400"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                      />
-                    </div>
-                    <div className="flex items-center border rounded-lg px-3 py-2 mb-3 shadow-sm relative">
-                      <FaLock size={18} className="text-blue-800" />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                        className="ml-2 w-full outline-none text-purple-700 placeholder:text-gray-400"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
-                      <span
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 cursor-pointer text-sm text-blue-600"
-                      >
-                        {showPassword ? <EyeOff /> : <Eye />}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center border rounded-lg px-3 py-2 mb-4 shadow-sm relative">
-                      <FaLock size={18} className="text-blue-800" />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Confirm Password"
-                        className="ml-2 w-full outline-none text-purple-700 placeholder:text-gray-400"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      />
-                    </div>
-
-                  </>
-                )
-            }
-
+            {/* --- MAIN ACTION BUTTON --- */}
             <button
               onClick={handleManualAuth}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+              className="group w-full mt-10 py-4 rounded-2xl flex items-center justify-center gap-3
+                       bg-gradient-to-r from-[#3DDC84] via-[#C7EE3F] to-[#facc15] 
+                       text-[#002D15] font-black uppercase tracking-[0.2em] text-xs 
+                       shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 
+                       hover:-translate-y-1 active:scale-95 transition-all duration-300"
             >
-              {isLogin ? `${manual ? "Signing ..." : "Sign In"}` : `${manual ? "Creating ..." : "Create Account"}`}
+              <span>{isLogin ? (manual ? "Signing In..." : "Sign In") : (manual ? "Creating..." : "Create Account")}</span>
+              <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-300" />
             </button>
 
-            <p className="text-center text-sm text-gray-600 mt-4">
-              {isLogin ? (
-                <>
-                  Don’t have an account?{" "}
-                  <span onClick={() => setIsLogin(false)} className="text-purple-800 cursor-pointer hover:underline">
-                    Create Account
-                  </span>
-                </>
-              ) : (
-                <>
-                  Already have an account?{" "}
-                  <span onClick={() => setIsLogin(true)} className="text-blue-600 cursor-pointer hover:underline">
-                    Sign In
-                  </span>
-                </>
-              )}
+            <p className="text-center text-sm text-slate-500 mt-8 font-medium">
+              {isLogin ? "Don't have an account?" : "Already a member?"}{" "}
+              <button
+                onClick={() => { setIsLogin(!isLogin); setOtpSent(false); }}
+                className="text-[#166534] font-black hover:underline underline-offset-4 decoration-2 transition-all"
+              >
+                {isLogin ? "Create Account" : "Sign In"}
+              </button>
             </p>
           </div>
         </motion.div>
       </div>
-
       {showRoleModal && (
         <ShowRole handleRoleSelection={handleRoleSelection} />
       )}

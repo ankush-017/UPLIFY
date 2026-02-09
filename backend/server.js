@@ -8,10 +8,17 @@ import geminiRoutes from './Routes/geminiRoutes.js'
 dotenv.config();
 
 const app = express();
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://uplify-alpha.vercel.app',
-];
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://uplify.live",
+    "https://www.uplify.live",
+    "https://uplify-alpha.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true
+}));
 
 app.use(cors({
   origin: (origin, callback) => {

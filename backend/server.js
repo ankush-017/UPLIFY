@@ -20,18 +20,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
-      return callback(null, true);
-    }
-    console.log("Blocked by CORS:", origin);
-    return callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true,
-}));
-
 app.use(express.json());
 connectDB();
 

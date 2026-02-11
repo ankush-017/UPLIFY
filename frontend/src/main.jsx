@@ -48,6 +48,7 @@ import { roleLoader } from './Components/Loader.js';
 import UserProtected from './Components/UserAdmin.jsx'
 import NotFound from './Components/NotFound.jsx'
 import ResumeBuilder from './Pages/ResumeBuilder/ResumeBuilder.jsx'
+import RoadmapPage from './Components/Career/RoadmapPage.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -79,6 +80,7 @@ const router = createBrowserRouter(
           <Route path="projects-libray" element={<ProjectLibrary />} />
           <Route path="resume-builder" element={<ResumeBuilder />} />
           <Route path="career-roadmaps" element={<CareerRoadmaps />} />
+          <Route path="career-roadmaps/roadmap" element={<RoadmapPage />} />
           <Route path="job-internships/u/apply-internships/:id" element={<ApplicationForm />} />
         </Route>
       </Route>

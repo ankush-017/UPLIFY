@@ -3,8 +3,20 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { BookOpen, RefreshCw, ChevronRight, GraduationCap, Code2, Briefcase, Zap } from 'lucide-react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
-function RoadmapPage({ role, experience, skills }) {
+function RoadmapPage() {
+
+  const location = useLocation();
+  const { config } = location.state || {};
+
+  const role = config?.domain;
+  const experience = config?.experience;
+  const skills = config?.currentSkills;
+
+
+  console.log(role);
+
   const darkMode = useSelector((state) => state.theme.darkMode);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -105,7 +117,6 @@ function RoadmapPage({ role, experience, skills }) {
             </div>
           </div>
         </div>
-
         {/* --- CONTENT SECTION --- */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24">

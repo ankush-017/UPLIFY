@@ -108,7 +108,7 @@ export default function Login({ onClose }) {
   };
 
   const handleManualAuth = async () => {
-    setManual(true);
+
     if (isLogin) {
       // Login form validation
       if (!email || !password) {
@@ -134,6 +134,8 @@ export default function Login({ onClose }) {
       toast.error("Please Verify Email");
       return;
     }
+
+    setManual(true);
 
     try {
       let userCred;

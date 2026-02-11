@@ -87,8 +87,10 @@ export default function Login({ onClose }) {
       catch (err) {
         // first time login
         if (err.response?.status === 404) {
+          console.log("here i am");
           setPendingUser(user);
           setShowRoleModal(true);
+          console.log(showRoleModal);
         }
         else {
           console.error("Role fetch failed:", err);

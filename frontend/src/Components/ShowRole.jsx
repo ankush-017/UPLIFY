@@ -2,7 +2,7 @@ import React from 'react'
 
 function ShowRole({ handleRoleSelection }) {
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-[200]">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-[100%] max-w-lg animate-fade-in-up space-y-6 text-center">
         <h2 className="text-2xl font-bold text-gray-800">Welcome! 👋</h2>
         <p className="text-gray-500">Let us know who you are to personalize your experience.</p>

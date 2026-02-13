@@ -15,7 +15,7 @@ function Home() {
   return (
     <>
       <Seo
-        title="Uplify - Top Internships for Students in 2025"
+        title="Uplify - Top Internships for Students in 2026"
         description="Discover top remote and in-office internships in tech, marketing, design & more. Uplify connects students with verified companies and offers resume building, courses, and more."
         url="https://uplify.in/"
         image="https://uplify.in/og-banner.jpg"

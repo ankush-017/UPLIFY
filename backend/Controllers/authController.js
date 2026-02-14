@@ -1,6 +1,5 @@
 import User from '../Models/UserModel.js';
 import { redisClient } from '../Utils/redisClient.js';
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import crypto from "crypto";
 import sgMail from "../Config/sendgrid.js";

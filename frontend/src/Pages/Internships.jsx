@@ -3,7 +3,9 @@ import { supabase } from '../../superbaseClient';
 import {
   Briefcase, IndianRupee, MapPin, Filter, Calendar,
   Clock, ChevronRight, Star, Sparkles, Search,
-  RotateCcw, Cpu, Layers, Target, Award, Zap, ShieldCheck, X
+  RotateCcw, Cpu, Layers, Target, Award, Zap, ShieldCheck, X,
+  Banknote,
+  Wallet
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector } from 'react-redux';
@@ -175,7 +177,7 @@ export default function Internships() {
         <div className="flex flex-col lg:flex-row gap-10">
 
           {/* --- Desktop Sidebar Filters (Hidden on Mobile) --- */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block ">
             <FilterInternship filters={filters} setFilters={setFilters} resetFilters={resetFilters} darkMode={darkMode} />
           </div>
 
@@ -225,7 +227,7 @@ export default function Internships() {
                               {job.title} - {job.job_type || 'HIH'} - {job.company}
                             </h3>
 
-                            <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 mb-4">
+                            <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 md:mb-0 mb-4">
                               <div className="flex items-center gap-2 text-sm font-bold text-emerald-500">
                                 <Briefcase size={16} />
                                 <span className={darkMode ? "text-emerald-400" : "text-emerald-700"}>{job.company}</span>
@@ -238,6 +240,11 @@ export default function Internships() {
                                 <Award size={16} className="text-yellow-500" />
                                 <span>{job.experience || 'Fresher'}</span>
                               </div>
+                              <div className="flex items-center gap-2 text-sm font-medium opacity-60">
+                                <Wallet size={16} className="text-yellow-500" />
+                                <span>{job.stipend || 'Not Disclose'}</span>
+                              </div>
+
                               <div className="flex items-center gap-2 text-sm font-medium">
                                 <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] border transition-all duration-300
     ${job.type?.toLowerCase() === 'remote'
@@ -256,7 +263,14 @@ export default function Internships() {
                                 </span>
                               </div>
                             </div>
-
+                            <div className={`hidden md:flex items-center gap-2 mb-4 text-[13px] font-medium ${darkMode ? "text-zinc-400" : "text-zinc-500"
+                              }`}>
+                              <Wallet
+                                size={16}
+                                className={darkMode ? "text-emerald-400" : "text-emerald-600"}
+                              />
+                              <span>{job.stipend || 'Unpaid'}</span>
+                            </div>
                             <div className="mb-4 md:mb-0">
                               <p className="text-[11px] md:text-xs leading-relaxed opacity-70 italic">
                                 <span className={`font-black ${darkMode ? "text-emerald-400" : "text-emerald-600"} not-italic mr-2`}>**Key Skills**</span>

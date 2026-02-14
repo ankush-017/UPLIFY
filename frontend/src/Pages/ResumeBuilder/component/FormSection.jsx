@@ -28,14 +28,6 @@ function FormSection() {
             {/* Header with Theme and Navigation */}
             <div className='flex justify-between items-center mb-6'>
                 <div className='flex gap-2'>
-                    {/* Theme Button - You can later open a color picker modal here */}
-                    <button className='flex gap-2 items-center bg-yellow-500 text-gray-900 px-3 py-1.5 rounded-md text-sm hover:bg-green-500 transition-all'>
-                        <LayoutGrid size={16} /> 
-                        Theme
-                    </button>
-                </div>
-
-                <div className='flex gap-2'>
                     {activeFormIndex > 1 && (
                         <button 
                             onClick={handleBack}

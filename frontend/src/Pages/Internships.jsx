@@ -30,6 +30,7 @@ export default function Internships() {
   const [filters, setFilters] = useState({
     categories: [],
     types: [],
+    workModes: [],
     skills: [],
     minStipend: 0,
   });
@@ -57,22 +58,44 @@ export default function Internships() {
 
   const filteredData = useMemo(() => {
     return internships.filter(item => {
-      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      const matchesSearch =
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.company.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesType = filters.types.length === 0 || filters.types.includes(item.type);
-      const matchesCategory = filters.categories.length === 0 || filters.categories.includes(item.job_type);
+
+      // Job Type (from image_7dd664.png: "Full-Time", "Part-Time", "Internship")
+      const matchesType = filters.types.length === 0 ||
+        filters.types.includes(item.job_type);
+
+      // Work Mode (from image_7dd664.png: "Remote", "On-Site", "Hybrid")
+      // Note: Mapping filters.workModes to item.type
+      const matchesWorkMode = filters.workModes.length === 0 ||
+        filters.workModes.includes(item.type);
+
+      // Tech Stack (Skills)
       const itemSkills = item.skills?.toLowerCase() || "";
       const matchesSkills = filters.skills.length === 0 ||
         filters.skills.every(skill => itemSkills.includes(skill.toLowerCase()));
+
+      // Stipend Logic
       const stipendNum = parseInt(item.stipend?.replace(/[^0-9]/g, '')) || 0;
       const matchesStipend = stipendNum >= filters.minStipend;
 
-      return matchesSearch && matchesType && matchesCategory && matchesSkills && matchesStipend;
+      // Category (Domain) - keep if still using categories state
+      const matchesCategory = filters.categories.length === 0 ||
+        filters.categories.includes(item.domain);
+
+      return matchesSearch && matchesType && matchesWorkMode && matchesSkills && matchesStipend && matchesCategory;
     });
   }, [internships, searchQuery, filters]);
 
   const resetFilters = () => {
-    setFilters({ categories: [], types: [], skills: [], minStipend: 0 });
+    setFilters({
+      categories: [],
+      types: [],
+      workModes: [],
+      skills: [],
+      minStipend: 0
+    });
     setSearchQuery('');
   };
 

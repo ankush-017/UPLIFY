@@ -35,7 +35,8 @@ function MyApplication() {
 
       if (error) {
         console.error('Error fetching:', error.message);
-      } else {
+      } 
+      else {
         setApplications(data || []);
         setFilteredApps(data || []);
       }
@@ -103,7 +104,7 @@ function MyApplication() {
                 </p>
                 <p className={`text-[10px] md:text-xs mt-1 uppercase tracking-wider font-medium ${darkMode ? "text-red-500" : "text-red-600"
                   }`}>
-                  Applications submitted via external or forwarded links will not be recorded.
+                  Or Added Manually By You (For External Applications)
                 </p>
               </div>
             </motion.div>

@@ -46,6 +46,7 @@ const InputField = ({ label, icon: Icon, darkMode, ...props }) => (
 
 
 function PostInternship() {
+
     const darkMode = useSelector((state) => state.theme.darkMode);
     const navigate = useNavigate();
     const { uid } = JSON.parse(localStorage.getItem('uplify_user')) || {};
@@ -75,8 +76,9 @@ function PostInternship() {
 
         if (error) {
             toast.error('Failed to publish opportunity');
-        } else {
-            toast.success('Opportunity live on Uplify!');
+        } 
+        else {
+            toast.success('Submitted successfully. Awaiting admin approval.');
             setForm({ ...form, title: '', company: '', location: '', stipend: '', link: '', skills: '' });
         }
     };

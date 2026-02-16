@@ -49,6 +49,8 @@ import UserProtected from './Components/UserAdmin.jsx'
 import NotFound from './Components/NotFound.jsx'
 import ResumeBuilder from './Pages/ResumeBuilder/ResumeBuilder.jsx'
 import RoadmapPage from './Components/Career/RoadmapPage.jsx'
+import ReviewPage from './CompanyPage/ReviewPage.jsx'
+import ApproveJob from './Components/Admin/Internships/ApproveJob.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -77,7 +79,7 @@ const router = createBrowserRouter(
           <Route path="blog/:id" element={<BlogDetails />} />
           <Route path="resources" element={<Resources />} />
           <Route path="uplify-internship" element={<UplifyInternship />} />
-          <Route path="projects-libray" element={<ProjectLibrary />} />
+          <Route path="projects-library" element={<ProjectLibrary />} />
           <Route path="resume-builder" element={<ResumeBuilder />} />
           <Route path="career-roadmaps" element={<CareerRoadmaps />} />
           <Route path="career-roadmaps/roadmap" element={<RoadmapPage />} />
@@ -93,6 +95,7 @@ const router = createBrowserRouter(
         <Route path='track-application' element={<TrackApplication />} />
         <Route path='job-applicants/:id' element={<JobApplicant />} />
         <Route path='update-internship/:id' element={<UpdateInternCompany />} />
+        <Route path='review-application' element={<ReviewPage />} />
       </Route>
 
       {/* Admin Routes (Protected) */}
@@ -105,6 +108,7 @@ const router = createBrowserRouter(
           <Route path="all-blogs" element={<AllBlogs />} />
           <Route path="add-resources" element={<AddResources />} />
           <Route path="all-resources" element={<AllResources />} />
+          <Route path='approve-job' element={<ApproveJob />} />
           <Route path="update-blog/:id" element={<UpdateBlog />} />
           <Route path="update-internship/:id" element={<UpdateInternship />} />
           <Route path="update-resource/:id" element={<UpdateResources />} />

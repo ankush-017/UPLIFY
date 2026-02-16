@@ -107,9 +107,18 @@ const Navbar = () => {
   ];
 
   const companyLinks = [
+    { name: 'Home', path: '/company' },
     { name: 'Jobs & Internships', path: '/company/job-internship' },
     { name: 'Post Internship', path: '/company/post-internship' },
-    { name: 'Track Applications', path: '/company/track-application' },
+
+    {
+      name: 'Applications',
+      dropdown: [
+        { name: 'Review Queue', path: '/company/review-application' },
+        { name: 'Track Applications', path: '/company/track-application' },
+      ],
+    },
+
     { name: 'About Us', path: '/about' },
   ];
 
@@ -269,19 +278,72 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-6 font-medium">
-          {linksToRender.map(link => (
-            <NavLink key={link.path} to={link.path} className={navLinkClass}>
-              {link.name}
-            </NavLink>
-          ))}
+          {linksToRender.map((link, index) => {
+
+            if (link.dropdown) {
+              return (
+                <div key={index} className="relative group">
+                  <button
+                    className={`flex items-center gap-1 transition ${darkMode
+                      ? "text-white hover:text-yellow-600"
+                      : "text-gray-800 hover:text-yellow-600"
+                      }`}
+                  >
+                    {link.name}
+                    <ChevronDown size={16} />
+                  </button>
+
+                  {/* Dropdown */}
+                  <div
+                    className={`absolute left-0 mt-3 w-56 rounded-2xl shadow-2xl border transition-all duration-300 transform
+    opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
+    ${darkMode
+                        ? "bg-[#0f172a]/80 border-emerald-500/20 backdrop-blur-2xl shadow-emerald-900/20"
+                        : "bg-white/90 border-emerald-100 backdrop-blur-xl shadow-emerald-200/50"
+                      }`}
+                  >
+                    <div className="py-2">
+                      {link.dropdown.map((item, i) => (
+                        <NavLink
+                          key={i}
+                          to={item.path}
+                          className={({ isActive }) =>
+                            `group/item relative block px-5 py-2.5 text-sm transition-all duration-200 overflow-hidden
+          ${darkMode
+                              ? "text-gray-300 hover:text-yellow-400"
+                              : "text-gray-700 hover:text-emerald-700"
+                            }
+          ${isActive
+                              ? "font-bold text-yellow-500 bg-emerald-500/5"
+                              : "hover:bg-gradient-to-r hover:from-emerald-500/10 hover:to-transparent"
+                            }`
+                          }
+                        >
+                          {/* Lucid Glow Indicator */}
+                          <span className="relative z-10">{item.name}</span>
+
+                          {/* Hover Accent Line */}
+                          <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-yellow-400 to-emerald-500 opacity-0 group-hover/item:opacity-100 transition-opacity duration-200" />
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <NavLink key={link.path} to={link.path} className={navLinkClass}>
+                {link.name}
+              </NavLink>
+            );
+          })}
 
           <ExploreDropdown
             role={role}
             isAuthenticated={isAuthenticated}
             darkMode={darkMode}
           />
-
-
         </div>
 
         {/* Desktop Actions */}
@@ -522,19 +584,95 @@ const Navbar = () => {
                   {/* NAVIGATION LINKS */}
                   <div className="flex flex-col space-y-1">
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/60 px-4 mb-2">Navigation</p>
-                    {linksToRender.map((item) => (
-                      <NavLink
-                        key={item.path}
-                        to={item.path}
-                        onClick={() => setMenuOpen(false)}
-                        className={({ isActive }) => `px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${isActive
-                          ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
-                          : darkMode ? 'text-white/70 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:bg-emerald-50'
-                          }`}
-                      >
-                        {item.name}
-                      </NavLink>
-                    ))}
+                    {linksToRender.map((link, index) => {
+                      if (link.dropdown) {
+                        return (
+                          <div key={index} className="w-full relative">
+                            {/* Toggle Button - Now controls visibility on all screens */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevents immediate closing if you have a body listener
+                                setMenuOpen(menuOpen === index ? null : index); // Use index to track which specific menu is open
+                              }}
+                              className={`flex w-full items-center justify-between py-3 px-4 md:px-2 md:w-auto md:justify-start gap-1 font-semibold transition-all duration-300
+            ${darkMode ? "text-gray-200 hover:text-yellow-400" : "text-gray-700 hover:text-emerald-600"}
+            ${menuOpen === index ? "text-yellow-500" : ""}`}
+                            >
+                              <span className="flex items-center gap-2">{link.name}</span>
+                              <ChevronDown
+                                size={18}
+                                className={`transition-transform duration-300 
+              ${menuOpen === index ? "rotate-180 text-yellow-500" : "opacity-50"}`}
+                              />
+                            </button>
+
+                            {/* Lucid Dropdown - Managed by menuOpen state */}
+                            <div
+                              className={`
+            /* Base Desktop Positioning */
+            md:absolute md:left-0 md:mt-3 md:w-72 md:rounded-2xl md:border z-50
+            
+            /* Animation Logic (Manual State) */
+            transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]
+            ${menuOpen === index
+                                  ? "opacity-100 visible translate-y-0 scale-100 max-h-[500px]"
+                                  : "opacity-0 invisible translate-y-4 scale-95 max-h-0 md:max-h-none"}
+            
+            /* Glassmorphism Theme */
+            ${darkMode
+                                  ? "bg-[#0f172a]/95 border-emerald-500/20 backdrop-blur-2xl shadow-[0_20px_50px_rgba(16,185,129,0.2)]"
+                                  : "bg-white/95 border-emerald-100 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
+                                }
+          `}
+                            >
+                              <div className="py-2 flex flex-col">
+                                {link.dropdown.map((item, i) => (
+                                  <NavLink
+                                    key={i}
+                                    to={item.path}
+                                    onClick={() => setMenuOpen(null)} // Close menu after selection
+                                    className={({ isActive }) =>
+                                      `group/item relative flex flex-col px-6 py-4 md:px-5 transition-all duration-200
+                  ${darkMode ? "hover:bg-emerald-500/10" : "hover:bg-emerald-500/5"}
+                  ${isActive ? "bg-emerald-500/5 border-l-2 border-yellow-500" : "border-l-2 border-transparent"}`
+                                    }
+                                  >
+                                    {({ isActive }) => (
+                                      <>
+                                        {/* Desktop Glow Beam */}
+                                        <div className={`hidden md:block absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-yellow-400 to-emerald-500 transition-opacity duration-300 ${isActive ? "opacity-100" : "opacity-0 group-hover/item:opacity-100"}`} />
+
+                                        <div className="relative z-10 flex flex-col gap-0.5">
+                                          <span className={`text-[15px] md:text-sm font-bold tracking-tight transition-colors
+                        ${darkMode ? "text-gray-100 group-hover/item:text-yellow-400" : "text-gray-700 group-hover/item:text-emerald-700"}
+                        ${isActive ? "!text-yellow-500" : ""}`}>
+                                            {item.name}
+                                          </span>
+                                        </div>
+                                      </>
+                                    )}
+                                  </NavLink>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <NavLink
+                          key={link.path}
+                          to={link.path}
+                          end={link.path === "/"}
+                          className={({ isActive }) =>
+                            `block w-full py-3 px-4 md:px-2 md:inline md:w-auto font-semibold transition-colors
+        ${isActive ? "text-yellow-500" : darkMode ? "text-white hover:text-yellow-500" : "text-gray-800 hover:text-emerald-600"}`
+                          }
+                        >
+                          {link.name}
+                        </NavLink>
+                      );
+                    })}
                   </div>
 
                   {/* EXPLORE SECTION */}

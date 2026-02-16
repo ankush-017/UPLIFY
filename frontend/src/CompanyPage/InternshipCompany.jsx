@@ -20,6 +20,7 @@ function InternshipCompany() {
     const { data, error } = await supabase
       .from('internships')
       .select('*')
+      .eq('status', 'approved')
       .gte('created_at', thirtyDaysAgo.toISOString()) // Only show last 30 days
       .order('created_at', { ascending: false });
 
@@ -47,7 +48,7 @@ function InternshipCompany() {
     <div className={`min-h-screen ${darkMode ? 'bg-[#020617] text-white' : 'bg-slate-50 text-slate-900'}`}>
 
       {/* --- PREMIUM MESH HEADER --- */}
-      <div className="relative overflow-hidden pt-20 pb-24 px-6">
+      <div className="relative overflow-hidden pt-14 pb-16 px-6">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full">
           <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-b from-emerald-500/20 to-transparent' : 'bg-gradient-to-b from-blue-500/10 to-transparent'}`} />
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#3DDC84]/20 blur-[120px] rounded-full animate-pulse" />
@@ -58,7 +59,7 @@ function InternshipCompany() {
           animate={{ opacity: 1, y: 0 }}
           className="relative z-10 max-w-4xl mx-auto text-center"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3DDC84]/10 border border-[#3DDC84]/20 mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3DDC84]/10 border border-[#3DDC84]/20 mb-4">
             <Sparkles size={14} className={`${darkMode ? "text-[#3DDC84]" : "text-[#0ba751]"}`} />
             <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${darkMode ? "text-[#3DDC84]" : "text-[#0ba751]"}`}>Fresh Opportunities</span>
           </div>

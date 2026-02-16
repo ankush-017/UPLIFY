@@ -21,6 +21,7 @@ function TrackApplication() {
       .from('internships')
       .select('*')
       .eq('uid', uidString)
+      .eq('status', 'approved')   // filter here
       .order('created_at', { ascending: false });
 
     if (error) {

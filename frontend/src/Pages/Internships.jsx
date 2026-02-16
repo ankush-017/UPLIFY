@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { supabase } from '../../superbaseClient';
 import {
-  Briefcase, IndianRupee, MapPin, Filter, Calendar,
-  Clock, ChevronRight, Star, Sparkles, Search,
+  Briefcase, MapPin, Filter, Calendar,
+  Clock, Sparkles, Search,
   RotateCcw, Cpu, Layers, Target, Award, Zap, ShieldCheck, X,
   Banknote,
   Wallet
@@ -48,8 +48,10 @@ export default function Internships() {
     const { data, error } = await supabase
       .from('internships')
       .select('*')
+      .eq('status', 'approved')   // filter here
       .gte('created_at', dateString)
       .order('created_at', { ascending: false });
+
 
     if (!error) setInternships(data);
     else toast.error("Live feed interrupted. Try again.");

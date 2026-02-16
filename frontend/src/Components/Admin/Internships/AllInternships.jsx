@@ -18,7 +18,7 @@ export default function AllInternships() {
     // Fetch internships from Supabase
     const fetchInternships = async () => {
         setLoading(true);
-        const { data, error } = await supabase.from('internships').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabase.from('internships').select('*').eq('status', 'approved').order('created_at', { ascending: false });
         if (error) {
             setLoading(false);
             console.error('Error fetching:', error.message);

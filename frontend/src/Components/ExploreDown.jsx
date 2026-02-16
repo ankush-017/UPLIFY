@@ -76,7 +76,7 @@ const ExploreDropdown = ({ role, isAuthenticated, darkMode }) => {
         className={`group flex items-center gap-1 px-2 font-semibold transition-all
         ${
           darkMode
-            ? "text-gray-200 hover:text-yellow-400"
+            ? "text-gray-200 hover:text-yellow-600"
             : "text-gray-700 hover:text-yellow-600"
         }`}
 
@@ -111,7 +111,7 @@ const ExploreDropdown = ({ role, isAuthenticated, darkMode }) => {
         }`}
       >
         <NavItem
-          to="/user/projects-libray"
+          to="/user/projects-library"
           title="Projects Library"
           desc="Build real-world projects"
           Icon={FolderKanban}

@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../superbaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector } from 'react-redux';
-import { Briefcase, FileUser, IndianRupee, MapPin, Pencil, Trash2, LayoutDashboard, Clock, Sparkles, PlusCircle } from 'lucide-react';
+import { 
+  FileUser, IndianRupee, MapPin, Pencil, Trash2, 
+  Clock, Terminal, Globe2, BarChart3, Target, 
+  Activity, LayoutGrid, Plus
+} from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { Spin } from 'antd';
+import { Spin, Tooltip } from 'antd';
 
 function TrackApplication() {
   const [applications, setApplications] = useState([]);
@@ -21,7 +25,7 @@ function TrackApplication() {
       .from('internships')
       .select('*')
       .eq('uid', uidString)
-      .eq('status', 'approved')   // filter here
+      .eq('status', 'approved')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -33,12 +37,12 @@ function TrackApplication() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Confirm deletion of this listing?")) return;
+    if (!window.confirm("Confirm: Permanent removal of this node?")) return;
     const { error } = await supabase.from('internships').delete().eq('id', id);
     if (error) {
-      toast.error('Action failed');
+      toast.error('Purge failed');
     } else {
-      toast.success('Listing permanently removed');
+      toast.success('Node removed successfully');
       setApplications(prev => prev.filter(app => app.id !== id));
     }
   };
@@ -54,119 +58,113 @@ function TrackApplication() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-700 ${darkMode ? 'bg-[#020617] text-white' : 'bg-[#FCFDF2] text-slate-900'}`}>
-
-      {/* --- CINEMATIC AMBIENCE --- */}
+    <div className={`min-h-screen transition-all duration-1000 selection:bg-[#3DDC84] selection:text-[#002D15] ${darkMode ? 'bg-[#020617] text-slate-200' : 'bg-[#F9FAFB] text-slate-900'}`}>
+      
+      {/* --- BEST-IN-CLASS BACKGROUND --- */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className={`absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full blur-[140px] opacity-20 ${darkMode ? 'bg-[#3DDC84]' : 'bg-[#C7EE3F]'}`} />
-        <div className={`absolute -bottom-[10%] -left-[10%] w-[40%] h-[40%] rounded-full blur-[140px] opacity-10 ${darkMode ? 'bg-[#C7EE3F]' : 'bg-[#3DDC84]'}`} />
+        
+        {/* Subtle Noise Texture */}
+        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }} />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-
-        {/* --- HERO HEADER --- */}
-        <div className="pt-10 pb-20 text-center flex flex-col items-center">
-          <div className="flex flex-col items-center justify-center text-center mb-3 px-4">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-8 shadow-sm backdrop-blur-md ${darkMode ? 'bg-emerald-500/10 text-[#3DDC84] border border-emerald-500/20' : 'bg-[#3DDC84]/10 text-[#166534] border border-[#3DDC84]/20'}`}>
-              <Sparkles size={14} className="animate-pulse" /> Intelligence Management Console
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 relative z-10">
+        
+        {/* --- COMPACT PROFESSIONAL HEADER --- */}
+        <header className="pt-10 pb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <div className="space-y-2">
+            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 text-[#3DDC84] font-black text-[9px] uppercase tracking-[0.4em]">
+              <Terminal size={14} /> Intelligence Console
             </motion.div>
-            <h1 className={`text-4xl md:text-6xl font-black tracking-tighter leading-none ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-              Monitor Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3DDC84] via-[#C7EE3F] to-[#3DDC84] bg-[length:200%_auto] animate-text-gradient pl-2"> Opportunities.</span>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-none italic uppercase">
+              Monitor <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0bb457] to-[#99bd13] not-italic">Your Listing.</span>
             </h1>
+            <p className="text-sm font-medium opacity-50 tracking-wide max-w-md leading-snug">
+              Manage opportunities and track student talent in real-time.
+            </p>
           </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            transition={{ delay: 0.4 }}
-            className="max-w-xl text-sm md:text-base font-medium tracking-wide leading-relaxed"
-          >
-            Track, edit, and manage your live internship listings. <br className="hidden md:block" />
-            Analyze engagement and manage incoming student talent.
-          </motion.p>
-        </div>
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className={`flex items-center gap-3 px-5 py-3 rounded-2xl border backdrop-blur-md ${darkMode ? 'bg-white/5 border-white/5' : 'bg-white border-slate-200'} hidden sm:flex`}>
+              <Activity size={16} className="text-[#3DDC84]" />
+              <div className="leading-none">
+                <p className={`text-[10px] font-black ${darkMode ? 'text-slate-400' : 'text-gray-500'} opacity-70 uppercase mb-1`}>Active Nodes</p>
+                <p className="text-lg font-mono font-bold text-[#3DDC84]">{applications.length}</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => navigate('/company/post-internship')}
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-[#3DDC84] text-[#002D15] font-black text-xs uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-emerald-500/20"
+            >
+              <Plus size={16} strokeWidth={3} /> Create New Listing
+            </button>
+          </div>
+        </header>
 
-        {/* --- CONTENT GRID --- */}
-        <div className="pb-32">
+        {/* --- HORIZONTAL LISTING ENGINE --- */}
+        <main className="pb-32">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-32 gap-6">
+            <div className="flex flex-col items-center justify-center py-40 gap-4">
               <Spin size="large" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 animate-pulse">Syncing Database</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] opacity-30">Syncing Grid...</span>
             </div>
           ) : applications.length === 0 ? (
-            <div className={`text-center py-32 rounded-[4rem] border-2 border-dashed ${darkMode ? 'border-white/5 bg-white/5' : 'border-slate-200 bg-slate-100/50'}`}>
-              <Briefcase size={48} className="mx-auto mb-6 opacity-10" />
-              <p className="text-slate-500 font-black uppercase tracking-widest text-xs mb-8">Your dashboard is empty.</p>
-              <button
-                onClick={() => navigate('/company/post-internship')}
-                className="px-8 py-4 rounded-2xl bg-[#3DDC84] text-[#002D15] font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-emerald-500/20"
-              >
-                Post New Role
-              </button>
+            <div className={`py-40 text-center border-2 border-dashed rounded-[3rem] ${darkMode ? 'border-white/5' : 'border-slate-200'}`}>
+               <Target size={48} className="mx-auto mb-4 opacity-10" />
+               <h3 className="text-sm font-black opacity-30 uppercase tracking-widest">Sector Empty: Deploy New Listing</h3>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div className="flex flex-col gap-3">
+              {/* Table Header Labels */}
+              <div className="hidden lg:grid grid-cols-12 px-12 py-3 text-[9px] font-black uppercase tracking-[0.3em] opacity-30">
+                <div className="col-span-4">Operational Identity</div>
+                <div className="col-span-4">Technology Stack</div>
+                <div className="col-span-2">Yield / Origin</div>
+                <div className="col-span-2 text-right">Actions</div>
+              </div>
+
               <AnimatePresence mode="popLayout">
-                {applications.map((job, idx) => (
+                {applications.map((job) => (
                   <motion.div
                     key={job.id}
                     layout
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
-                    className={`group relative p-8 md:p-10 rounded-[3.5rem] border transition-all duration-500 hover:-translate-y-2
-              ${darkMode
-                        ? "bg-[#0f172a]/40 border-white/5 hover:border-[#3DDC84]/40 shadow-2xl shadow-black/60 backdrop-blur-3xl"
-                        : "bg-white border-slate-200 hover:border-[#3DDC84] shadow-[0_20px_50px_rgba(0,0,0,0.04)] shadow-slate-200/50"
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    className={`group relative grid grid-cols-1 lg:grid-cols-12 items-center px-8 lg:px-12 py-6 rounded-[2rem] border transition-all duration-300 backdrop-blur-sm
+                      ${darkMode 
+                        ? "bg-white/[0.03] border-white/5 hover:border-[#3DDC84]/30 hover:bg-white/[0.06]" 
+                        : "bg-white border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl hover:border-[#3DDC84]"
                       }`}
                   >
-                    {/* Top Bar: Source & Work Type */}
-                    <div className="flex justify-between items-start mb-8">
-                      <div className="flex flex-col gap-2">
-                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] w-fit ${darkMode ? 'bg-emerald-500/10 text-emerald-400' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
-                          {job.job_type || 'Internship'}
+                    {/* 1. Identity */}
+                    <div className="col-span-1 lg:col-span-4 mb-4 lg:mb-0">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="px-2 py-0.5 rounded bg-[#3DDC84]/10 text-[#3DDC84] text-[8px] font-black uppercase italic">
+                          {job.job_type}
                         </span>
-                        <span className={`text-[8px] font-bold uppercase tracking-widest opacity-40 ml-1`}>
-                          Source: {job.source_type}
-                        </span>
+                        <div className="flex items-center gap-1 text-[10px] font-bold opacity-30 uppercase tracking-tighter">
+                          <Clock size={12} /> {timeAgo(job.created_at)}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1.5 opacity-30 text-[10px] font-black uppercase tracking-widest">
-                        <Clock size={12} /> {timeAgo(job.created_at)}
-                      </div>
-                    </div>
-
-                    {/* Title & Environment */}
-                    <div className="mb-6">
-                      <h3 className="text-2xl font-black tracking-tight mb-2 line-clamp-1 italic group-hover:text-[#3DDC84] transition-colors">
+                      <h3 className="text-xl font-black tracking-tighter truncate group-hover:text-[#3DDC84] transition-colors uppercase">
                         {job.title}
                       </h3>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${job.type === 'Remote' ? 'text-blue-500 bg-blue-500/10' : 'text-amber-500 bg-amber-500/10'}`}>
-                        {job.type}
-                      </span>
-                    </div>
-
-                    {/* Primary Details */}
-                    <div className="space-y-3 mb-8">
-                      <div className="flex items-center gap-3 text-xs font-bold opacity-50 uppercase tracking-wider">
-                        <MapPin size={16} className="text-[#3DDC84]" /> {job.location || 'Global/Remote'}
-                      </div>
-                      <div className="flex items-center gap-3 text-xs font-black text-[#3DDC84]">
-                        <IndianRupee size={16} /> {job.stipend || 'Competitive'}
+                      <div className="flex items-center gap-3 mt-1 opacity-50 text-[10px] font-bold uppercase tracking-widest">
+                        <span className="flex items-center gap-1"><MapPin size={12} /> {job.location || 'Global'}</span>
+                        <span className="flex items-center gap-1"><Globe2 size={12} /> {job.type}</span>
                       </div>
                     </div>
 
-                    {/* Skills Segment - The "Intelligence" touch */}
-                    <div className="mb-10">
-                      <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-3 ml-1">Required Expertise</p>
-                      <div className="flex flex-wrap gap-2">
+                    {/* 2. Skills Stack */}
+                    <div className="col-span-1 lg:col-span-4 mb-6 lg:mb-0 pr-4">
+                      <div className="flex flex-wrap gap-1.5">
                         {job.skills?.split(',').map((skill, i) => (
-                          <span
-                            key={i}
-                            className={`text-[9px] font-black px-3 py-1.5 rounded-xl uppercase tracking-tighter transition-all
-                                ${darkMode
-                                ? "bg-white/5 text-slate-400 border border-white/5 group-hover:border-[#3DDC84]/30"
-                                : "bg-slate-100 text-slate-500 border border-transparent group-hover:bg-white group-hover:border-slate-200 shadow-sm"
-                              }`}
+                          <span 
+                            key={i} 
+                            className={`text-[9px] font-black px-2.5 py-1 rounded-md border transition-all
+                              ${darkMode 
+                                ? 'bg-white/5 border-white/5 text-slate-400 group-hover:text-[#3DDC84]' 
+                                : 'bg-slate-50 border-slate-100 text-slate-500 group-hover:bg-white group-hover:border-[#3DDC84]'}`}
                           >
                             {skill.trim()}
                           </span>
@@ -174,46 +172,57 @@ function TrackApplication() {
                       </div>
                     </div>
 
-                    {/* Elite Action Bar */}
-                    <div className={`pt-8 border-t flex items-center justify-between ${darkMode ? 'border-white/5' : 'border-slate-100'}`}>
-                      <div className="flex gap-3">
-                        {job.source_type === 'on-uplify' && (
-                          <Link
-                            to={`/company/job-applicants/${job.id}`}
-                            className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${darkMode ? 'bg-white/5 hover:bg-blue-600/20 text-blue-400' : 'bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white shadow-sm shadow-blue-500/10'}`}
-                            title="View Applicants"
-                          >
-                            <FileUser size={20} />
-                          </Link>
-                        )}
-                        <Link
-                          to={`/company/update-internship/${job.id}`}
-                          className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${darkMode ? 'bg-white/5 hover:bg-[#3DDC84]/20 text-[#3DDC84]' : 'bg-emerald-50 hover:bg-[#3DDC84] text-emerald-700 hover:text-[#002D15] shadow-sm shadow-emerald-500/10'}`}
-                          title="Edit Details"
-                        >
-                          <Pencil size={20} />
-                        </Link>
+                    {/* 3. Stipend & Source */}
+                    <div className="col-span-1 lg:col-span-2 mb-6 lg:mb-0">
+                      <div className="flex items-center gap-1 text-xl font-black text-[#3DDC84] mb-0.5">
+                        <IndianRupee size={18} strokeWidth={3} /> {job.stipend}
                       </div>
-
-                      <button
-                        onClick={() => handleDelete(job.id)}
-                        className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${darkMode ? 'bg-white/5 hover:bg-red-500/20 text-red-400' : 'bg-red-50 hover:bg-red-600 text-red-600 hover:text-white shadow-sm shadow-red-500/10'}`}
-                        title="Delete Listing"
-                      >
-                        <Trash2 size={20} />
-                      </button>
+                      <p className="text-[9px] font-black uppercase tracking-widest opacity-50">Source: {job.source_type}</p>
                     </div>
 
-                    {/* Gradient Border Accent */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#3DDC84]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    {/* 4. Action Nexus */}
+                    <div className="col-span-1 lg:col-span-2 flex justify-end items-center gap-2">
+                      {job.source_type === 'on-uplify' && (
+                        <Tooltip title="View Talent Pipeline">
+                          <Link
+                            to={`/company/job-applicants/${job.id}`}
+                            className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${darkMode ? 'bg-white/5 text-blue-400 hover:bg-blue-500 hover:text-white' : 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white'}`}
+                          >
+                            <BarChart3 size={18} />
+                          </Link>
+                        </Tooltip>
+                      )}
+                      
+                      <Tooltip title="Update Listing">
+                        <Link
+                          to={`/company/update-internship/${job.id}`}
+                          className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${darkMode ? 'bg-white/5 text-white hover:bg-white/20' : 'bg-slate-100 text-slate-900 hover:bg-slate-900 hover:text-white'}`}
+                        >
+                          <Pencil size={18} />
+                        </Link>
+                      </Tooltip>
+
+                      <Tooltip title="Delete Listing">
+                        <button
+                          onClick={() => handleDelete(job.id)}
+                          className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${darkMode ? 'bg-white/5 text-red-400 hover:bg-red-500 hover:text-white' : 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white'}`}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </Tooltip>
+                    </div>
+
+                    {/* Indicator Glow */}
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-0 group-hover:h-1/2 bg-[#3DDC84] transition-all duration-500 rounded-r-full" />
                   </motion.div>
                 ))}
               </AnimatePresence>
             </div>
           )}
-        </div>
+        </main>
       </div>
     </div>
   );
 }
+
 export default TrackApplication;

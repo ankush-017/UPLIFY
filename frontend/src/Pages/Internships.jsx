@@ -265,7 +265,7 @@ export default function Internships() {
                                 <Award size={16} className="text-yellow-500" />
                                 <span>{job.experience || 'Fresher'}</span>
                               </div>
-                              <div className="flex items-center gap-2 text-sm font-medium opacity-60">
+                              <div className="flex md:hidden items-center gap-2 text-sm font-medium opacity-60">
                                 <Wallet size={16} className="text-yellow-500" />
                                 <span>{job.stipend || 'Not Disclose'}</span>
                               </div>
@@ -294,7 +294,7 @@ export default function Internships() {
                                 size={16}
                                 className={darkMode ? "text-emerald-400" : "text-emerald-600"}
                               />
-                              <span>{job.stipend || 'Unpaid'}</span>
+                              <span>{job.stipend || 'Not Disclose'}</span>
                             </div>
                             <div className="mb-4 md:mb-0">
                               <p className="text-[11px] md:text-xs leading-relaxed opacity-70 italic">

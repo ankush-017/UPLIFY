@@ -7,10 +7,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { useSelector } from 'react-redux';
+import API from '../API.js';
 import {
     Calendar, User, ChevronLeft, Share2,
     Clock, Bookmark, Sparkles, Zap, ArrowRight, Rocket
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const BlogDetails = () => {
     const { id } = useParams();
@@ -26,16 +28,32 @@ const BlogDetails = () => {
     });
 
     useEffect(() => {
-        const fetchPost = async () => {
-            const { data, error } = await supabase
-                .from('blogs')
-                .select('*')
-                .eq('id', id)
-                .single();
+        // const fetchPost = async () => {
+        //     const { data, error } = await supabase
+        //         .from('blogs')
+        //         .select('*')
+        //         .eq('id', id)
+        //         .single();
 
-            if (!error) setPost(data);
-            setLoading(false);
-        };
+        //     if (!error) setPost(data);
+        //     setLoading(false);
+        // };
+        const fetchPost = async () => {
+            try{
+                setLoading(true);
+                const res = await API.get('/api/all-blogs');
+                const allPosts = res.data.blogs;
+                const foundPost = allPosts.find(p => p.id === id);
+                setPost(foundPost);
+            } 
+            catch (error) {
+                toast.error('Failed to load the blog post. Please try again later.');
+                console.error("Error fetching post:", error);
+            } 
+            finally {
+                setLoading(false);
+            }
+        }
         fetchPost();
         window.scrollTo(0, 0);
     }, [id]);

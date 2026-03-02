@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../superbaseClient.js';
 import { useSelector } from 'react-redux';
-import { 
-  Calendar, ArrowRight, Sparkles, BookOpen, 
+import {
+  Calendar, ArrowRight, Sparkles, BookOpen,
   Timer, Zap, Rocket
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const BlogCard = ({ id, title, excerpt, date, author, category, image, darkMode }) => (
   <motion.div
@@ -15,8 +16,8 @@ const BlogCard = ({ id, title, excerpt, date, author, category, image, darkMode 
     whileInView={{ opacity: 1, scale: 1 }}
     whileHover={{ y: -6 }}
     className={`group relative h-full flex flex-col rounded-[24px] md:rounded-[32px] border transition-all duration-300 
-      ${darkMode 
-        ? "bg-zinc-900/40 border-white/5 hover:border-emerald-500/40 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]" 
+      ${darkMode
+        ? "bg-zinc-900/40 border-white/5 hover:border-emerald-500/40 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
         : "bg-white border-emerald-100 hover:border-amber-400/50 hover:shadow-[0_15px_30px_rgba(0,0,0,0.05)]"}`}
   >
     {/* Compact Media Section */}
@@ -33,8 +34,8 @@ const BlogCard = ({ id, title, excerpt, date, author, category, image, darkMode 
     {/* Compact Content Section */}
     <div className="px-4 md:px-6 pb-6 pt-1 flex flex-col flex-grow">
       <div className="flex items-center gap-1.5 mb-2 text-emerald-500">
-        <Zap size={10} className={`${darkMode? "text-yellow-500":"text-yellow-600"}`} />
-        <span className="text-[9px] font-black uppercase tracking-widest opacity-70"><span className={`${darkMode? "text-yellow-500":"text-yellow-600"}`}>Author: </span>{author}</span>
+        <Zap size={10} className={`${darkMode ? "text-yellow-500" : "text-yellow-600"}`} />
+        <span className="text-[9px] font-black uppercase tracking-widest opacity-70"><span className={`${darkMode ? "text-yellow-500" : "text-yellow-600"}`}>Author: </span>{author}</span>
       </div>
 
       <h2 className={`text-base md:text-lg font-black leading-tight mb-2 transition-colors 
@@ -67,21 +68,24 @@ const Blogs = () => {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   useEffect(() => {
+
     const fetchBlogs = async () => {
-      const { data, error } = await supabase.from('blogs').select('*');
-      if (error) {
-        console.error('Error fetching blogs:', error.message);
-      } 
-      else {
-        setBlogs(data);
+      try {
+        const res = await API.get('/api/all-blogs');
+        setBlogs(res.data.blogs);
       }
-    };
+      catch (error) {
+        console.error('Error fetching blogs:', error.message);
+        toast.error('Failed to load blogs. Please try again later.');
+      }
+
+    }
     fetchBlogs();
   }, []);
 
   return (
     <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 ${darkMode ? "bg-[#050607]" : "bg-[#f8fafc]"}`}>
-      
+
       {/* Refined Background Mesh */}
       <div className="absolute top-0 inset-x-0 h-screen w-full pointer-events-none">
         <div className={`absolute top-[-5%] left-[-5%] w-[40%] h-[40%] rounded-full blur-[100px] opacity-10 bg-emerald-500`} />
@@ -89,14 +93,14 @@ const Blogs = () => {
       </div>
 
       <div className="max-w-[1200px] mx-auto px-6 py-12 md:py-10 relative z-10">
-        
+
         {/* Header Section - Compact */}
         <div className="flex flex-col items-center text-center mb-16 md:mb-12">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase tracking-[0.3em] mb-6">
             <Rocket size={10} /> The Uplify Feed
           </motion.div>
-          
-          <motion.h1 
+
+          <motion.h1
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`text-4xl md:text-6xl font-black tracking-tight leading-none mb-6 
@@ -104,8 +108,8 @@ const Blogs = () => {
           >
             Insights to reach <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-400 to-emerald-500 italic">the Sky.</span>
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className={`text-xs md:text-sm font-bold max-w-2xl leading-relaxed opacity-60 ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}
@@ -125,7 +129,7 @@ const Blogs = () => {
 
         {/* Refined Footer Area */}
         <div className="mt-24 max-w-3xl mx-auto space-y-4">
-          
+
           {/* UPCOMING FEATURE - Subtle Look */}
           {/* <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -147,7 +151,7 @@ const Blogs = () => {
           </motion.div> */}
 
           {/* MAIN CTA - High Impact but Compact */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             className={`p-8 rounded-[32px] text-center overflow-hidden relative group
@@ -155,16 +159,16 @@ const Blogs = () => {
           >
             <div className="relative z-10">
               <Sparkles className="mx-auto mb-4 text-yellow-400" size={32} />
-              <h2 className={`text-2xl md:text-3xl font-black mb-4 ${darkMode?"text-white":"text-white"} tracking-tight leading-tight`}>Master your Craft with <span className='text-yellow-500'> Uplify Masterclasses.</span></h2>
-              <p className={`mb-8 text-xs md:text-sm opacity-70 ${darkMode?"text-white":"text-white"} max-w-lg mx-auto font-medium leading-relaxed italic`}>
+              <h2 className={`text-2xl md:text-3xl font-black mb-4 ${darkMode ? "text-white" : "text-white"} tracking-tight leading-tight`}>Master your Craft with <span className='text-yellow-500'> Uplify Masterclasses.</span></h2>
+              <p className={`mb-8 text-xs md:text-sm opacity-70 ${darkMode ? "text-white" : "text-white"} max-w-lg mx-auto font-medium leading-relaxed italic`}>
                 Step away from tutorials and build real industry systems under expert guidance.
               </p>
-              
+
               <button className="px-8 py-4 bg-yellow-400 text-black font-black rounded-xl hover:bg-emerald-400 transition-all shadow-xl shadow-yellow-400/20 uppercase tracking-widest text-[10px]">
                 Unlock Membership (Coming Soon)
               </button>
             </div>
-            
+
             <div className="absolute -top-10 -right-10 opacity-5">
               <BookOpen size={200} />
             </div>

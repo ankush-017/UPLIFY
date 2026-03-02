@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../superbaseClient';
 import toast from 'react-hot-toast';
+import API from '../API.js';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },

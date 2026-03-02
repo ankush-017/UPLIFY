@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import API from '../API.js';
 
 export default function Resources() {
   const [resources, setResources] = useState([]);

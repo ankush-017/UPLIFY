@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../../../superbaseClient.js';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -9,6 +8,7 @@ import {
   Globe, Target, Cpu, Activity, Fingerprint, X, ShieldCheck, Box
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import API from '../../API.js'
 
 function MyApplication() {
   const [applications, setApplications] = useState([]);
@@ -24,24 +24,41 @@ function MyApplication() {
   const filters = ['All', 'Full-time', 'Internship', 'Remote', 'On-Site', 'Hybrid'];
 
   useEffect(() => {
+    // const fetchApplications = async () => {
+    //   setLoading(true);
+    //   if (!uid) { setLoading(false); return; }
+
+    //   const { data, error } = await supabase
+    //     .from('applyapplications')
+    //     .select(`*, internships(*)`)
+    //     .eq('uid', uid);
+
+    //   if (error) {
+    //     console.error('Error fetching:', error.message);
+    //   } 
+    //   else {
+    //     setApplications(data || []);
+    //     setFilteredApps(data || []);
+    //   }
+    //   setLoading(false);
+    // };
     const fetchApplications = async () => {
-      setLoading(true);
-      if (!uid) { setLoading(false); return; }
-
-      const { data, error } = await supabase
-        .from('applyapplications')
-        .select(`*, internships(*)`)
-        .eq('uid', uid);
-
-      if (error) {
-        console.error('Error fetching:', error.message);
-      } 
-      else {
-        setApplications(data || []);
-        setFilteredApps(data || []);
+      try{
+        setLoading(true);
+        if (!uid) { setLoading(false); return; }
+        const res = await API.get(`/api/myapplications/${uid}`);
+        setApplications(res.data.applications || []);
+        setFilteredApps(res.data.applications || []);
       }
-      setLoading(false);
-    };
+      catch(error){
+        console.error("Error fetching applications:", error);
+        toast.error("Failed to load applications. Please try again later.");
+      }
+      finally{
+        setLoading(false);
+      }
+    }
+
     fetchApplications();
   }, [uid]);
 

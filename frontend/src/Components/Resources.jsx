@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../superbaseClient.js';
 import {
   ExternalLink, Search, X, Filter, BookOpen, Briefcase,
   Users, Map, FileText, Sparkles, Zap, ChevronRight,

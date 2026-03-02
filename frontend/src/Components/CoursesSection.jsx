@@ -8,7 +8,6 @@ import {
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { supabase } from '../../superbaseClient';
 import toast from 'react-hot-toast';
 import API from '../API.js';
 
@@ -24,8 +23,8 @@ const cardVariants = {
 function CoursesSection() {
 
   const [courses, setCourses] = useState([]);
-  const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
+  const [loading, setLoading] = useState(false);
   const courseFetch = async () => {
     try{
       setLoading(true);

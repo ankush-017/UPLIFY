@@ -14,6 +14,7 @@ import { Spin, Slider, Tooltip } from 'antd';
 import Login from '../Components/Login';
 import toast from 'react-hot-toast';
 import FilterInternship from '../Components/Tools/FilterInternship';
+import API from '../API';
 
 export default function Internships() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -35,38 +36,23 @@ export default function Internships() {
     minStipend: 0,
   });
 
-  // const fetchInternships = async () => {
-  //   setLoading(true);
-  //   const thirtyDaysAgo = new Date();
-  //   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  //   const dateString = thirtyDaysAgo.toISOString();
-
-  //   const { data, error } = await supabase
-  //     .from('internships')
-  //     .select('*')
-  //     .eq('status', 'approved')   // filter here
-  //     .gte('created_at', dateString)
-  //     .order('created_at', { ascending: false });
-
-
-  //   if (!error) setInternships(data);
-  //   else toast.error("Live feed interrupted. Try again.");
-  //   setLoading(false);
-  // };
-
   const fetchInternships = async () => {
 
-    try{
+    try {
       setLoading(true);
-      console.log("Fetching internships and jobs from backend...");
-      const response = await API.get('/api/internships-jobs-all/');
-      console.log("Received response:", response.data);
-      setInternships(response.data);
+      // console.log("Fetching internships and jobs from backend...");
+      // console.log("API Base URL:", import.meta.env.VITE_API_BASE_URL);
+      const response = await API.get('/api/internships-jobs-all');
+      // console.log("Received response:", response.job.data);
+      setInternships(response.job.data);
     }
-    catch(error){
+    catch (error) {
+      console.log("ERROR FULL:", error);
+      console.log("ERROR RESPONSE:", error.response);
+      console.log("ERROR MESSAGE:", error.message);
       toast.error("Live feed interrupted. Try again.");
     }
-    finally{
+    finally {
       setLoading(false);
     }
 

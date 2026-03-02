@@ -7,11 +7,12 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../../superbaseClient.js';
 import { useSelector } from 'react-redux';
 import { Spin } from 'antd';
+import API from '../API';
 
 export default function FeaturedInternships() {
+
   const darkMode = useSelector((state) => state.theme.darkMode);
   const isAuthenticated = useSelector((state) => state.auth);
 
@@ -22,15 +23,19 @@ export default function FeaturedInternships() {
 
   useEffect(() => {
     const fetchInternships = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('internships')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(3);
-
-      if (!error) setInternships(data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const response = await API.get('/api/internships-jobs-all');
+        // take only first 3 items
+        const topThree = response.job.data.slice(0, 3);
+        setInternships(topThree);
+      } 
+      catch (error) {
+        console.log(error);
+      } 
+      finally {
+        setLoading(false);
+      }
     };
 
     fetchInternships();
@@ -47,13 +52,21 @@ export default function FeaturedInternships() {
     return `${Math.floor(days / 30)} month ago`;
   };
 
+  const HandleNavigate = (link, source_type,job_id) => {
+    if (source_type === "forwarded") {
+      window.open(link, "_blank");
+    } 
+    else {
+      navigate(`/user/internships/u/apply-internships/${job_id}`);
+    }
+  }
+
   return (
     <section
-      className={`py-14 px-6 lg:px-20 ${
-        darkMode
+      className={`py-14 px-6 lg:px-20 ${darkMode
           ? 'bg-black text-white'
           : 'bg-gradient-to-br from-yellow-50 via-green-50 to-white text-gray-900'
-      }`}
+        }`}
     >
       {/* Heading */}
       <div className="max-w-7xl mx-auto text-center mb-12">
@@ -82,10 +95,9 @@ export default function FeaturedInternships() {
             transition={{ duration: 0.4, delay: idx * 0.1 }}
             viewport={{ once: true }}
             className={`rounded-2xl p-6 border backdrop-blur-lg
-              ${
-                darkMode
-                  ? 'bg-gray-900/70 border-gray-700'
-                  : 'bg-white/70 border-gray-200'
+              ${darkMode
+                ? 'bg-gray-900/70 border-gray-700'
+                : 'bg-white/70 border-gray-200'
               }
               shadow-md hover:shadow-xl hover:-translate-y-1 transition-all`}
           >
@@ -134,11 +146,10 @@ export default function FeaturedInternships() {
             <div className="flex justify-between items-center mt-5">
               <span
                 className={`text-xs px-3 py-1 rounded-full font-medium
-                ${
-                  job.type === 'Remote'
+                ${job.type === 'Remote'
                     ? 'bg-green-100 text-green-700'
                     : 'bg-yellow-100 text-yellow-700'
-                }`}
+                  }`}
               >
                 {job.type}
               </span>
@@ -152,7 +163,7 @@ export default function FeaturedInternships() {
             <button
               onClick={() =>
                 isAuthenticated
-                  ? navigate(`/user/internships/u/apply-internships/${job.id}`)
+                  ? HandleNavigate(job.link, job.source_type, job.id)
                   : navigate('/login')
               }
               className="mt-5 w-full py-2 rounded-lg font-semibold

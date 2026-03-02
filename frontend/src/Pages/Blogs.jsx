@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { supabase } from '../../superbaseClient.js';
+import API from '../API';
 import { useSelector } from 'react-redux';
 import {
   Calendar, ArrowRight, Sparkles, BookOpen,

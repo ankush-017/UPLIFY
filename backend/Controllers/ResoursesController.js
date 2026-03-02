@@ -1,4 +1,4 @@
-import { supabase } from "../Config/supabaseClient";
+import { supabase } from "../Config/supabaseClient.js";
 
 export const ResoursesController = async (req, res) => {
 

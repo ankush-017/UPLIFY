@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../superbaseClient.js';
-import { 
-  ExternalLink, Search, X, Filter, BookOpen, Briefcase, 
-  Users, Map, FileText, Sparkles, Zap, ChevronRight, 
+import {
+  ExternalLink, Search, X, Filter, BookOpen, Briefcase,
+  Users, Map, FileText, Sparkles, Zap, ChevronRight,
   Rocket, Gift, ShieldCheck, Cpu, Star, Layout, Wand2, Menu
 } from 'lucide-react';
 import { Spin } from 'antd';
@@ -10,28 +10,39 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { set } from 'mongoose';
+import toast from 'react-hot-toast';
 
 export default function Resources() {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResourses, setSearchResources] = useState([]);
-  const [activeTab, setActiveTab] = useState('All'); 
+  const [activeTab, setActiveTab] = useState('All');
   const [selectedRole, setSelectedRole] = useState('All');
 
   const roles = ['All', 'Web Development', 'Data Science', 'Data Structure and Algorithm', 'UI/UX', 'Cloud'];
 
   useEffect(() => {
     const fetchResources = async () => {
-      setLoading(true);
-      const { data, error } = await supabase.from('resources').select('*');
-      if (!error) setResources(data);
-      setLoading(false);
-    };
+      try {
+        setLoading(true);
+        const res = await API.get('/api/resources');
+        if (res.data?.courses) setResources(res.data.courses);
+      }
+      catch (err) {
+        toast.error("Failed to fetch resources. Please try again later.");
+        console.log(err);
+      }
+      finally {
+        setLoading(false);
+      }
+    }
+
     fetchResources();
   }, []);
 
@@ -55,17 +66,17 @@ export default function Resources() {
   }, [searchQuery]);
 
   const filteredDisplay = (searchResourses.length > 0 ? searchResourses : resources).filter(item => {
-    const matchesPrice = activeTab === 'All' || 
-      (activeTab === 'Free' && (Number(item.sellprice) === 0 || !item.sellprice)) || 
+    const matchesPrice = activeTab === 'All' ||
+      (activeTab === 'Free' && (Number(item.sellprice) === 0 || !item.sellprice)) ||
       (activeTab === 'Paid' && Number(item.sellprice) > 0);
-    const matchesRole = selectedRole === 'All' || 
+    const matchesRole = selectedRole === 'All' ||
       item.title.toLowerCase().includes(selectedRole.toLowerCase());
     return matchesPrice && matchesRole;
   });
 
   return (
     <div className={`h-screen flex overflow-hidden font-sans transition-colors duration-500 ${darkMode ? "bg-[#0a0b10] text-slate-200" : "bg-[#f4f7f5] text-slate-900"}`}>
-      
+
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -74,7 +85,7 @@ export default function Resources() {
       {/* SIDEBAR - Responsive Drawer Logic */}
       <AnimatePresence>
         {(isMobileMenuOpen || window.innerWidth >= 1024) && (
-          <motion.aside 
+          <motion.aside
             initial={window.innerWidth < 1024 ? { x: "-100%" } : { x: 0 }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
@@ -97,13 +108,13 @@ export default function Resources() {
                     <X size={16} />
                   </button>
                 </div>
-                
+
                 <div className="space-y-6">
                   <div className={`relative flex p-1 rounded-2xl ${darkMode ? "bg-black/40" : "bg-slate-200"}`}>
                     {['All', 'Free', 'Paid'].map(t => (
-                      <button 
+                      <button
                         key={t}
-                        onClick={() => { setActiveTab(t); if(window.innerWidth < 1024) setIsMobileMenuOpen(false); }}
+                        onClick={() => { setActiveTab(t); if (window.innerWidth < 1024) setIsMobileMenuOpen(false); }}
                         className={`relative z-10 flex-1 py-2 text-[10px] font-bold rounded-xl transition-all duration-300 ${activeTab === t ? 'text-black font-black' : 'text-slate-500'}`}
                       >
                         {t}
@@ -116,9 +127,9 @@ export default function Resources() {
 
                   <div className="space-y-1.5 max-h-[180px] overflow-y-auto no-scrollbar pr-1">
                     {roles.map(role => (
-                      <button 
+                      <button
                         key={role}
-                        onClick={() => { setSelectedRole(role); if(window.innerWidth < 1024) setIsMobileMenuOpen(false); }}
+                        onClick={() => { setSelectedRole(role); if (window.innerWidth < 1024) setIsMobileMenuOpen(false); }}
                         className={`w-full text-left px-4 py-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-between group ${selectedRole === role ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm' : 'text-slate-500 hover:bg-emerald-500/5'}`}
                       >
                         {role}
@@ -162,7 +173,7 @@ export default function Resources() {
       {/* MOBILE OVERLAY */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -174,23 +185,23 @@ export default function Resources() {
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 h-full overflow-y-auto no-scrollbar flex flex-col relative">
-        
+
         {/* TOP SEARCH HEADER */}
         <header className={`sticky top-0 z-40 px-6 lg:px-10 py-5 backdrop-blur-md flex items-center justify-between ${darkMode ? "bg-[#0a0b10]/70" : "bg-[#f4f7f5]/70"}`}>
           <div className="relative group w-full max-w-2xl">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-yellow-500 rounded-2xl blur opacity-10 group-focus-within:opacity-40 transition duration-500" />
             <div className={`relative flex items-center w-full px-4 lg:px-6 py-3.5 rounded-2xl border transition-all ${darkMode ? 'bg-[#1a1c26] border-white/5 shadow-2xl' : 'bg-white border-slate-200 shadow-sm'}`}>
               <Search className="text-emerald-500 mr-3 lg:mr-4 shrink-0" size={18} />
-              <input 
-                type="text" 
-                placeholder="Find anything... or type 'Recommend best AI courses' to let our AI assist you"
+              <input
+                type="text"
+                placeholder="Find anything... or type 'Recommend best personalized courses' to let our AI assist you"
                 className="bg-transparent outline-none w-full text-[11px] lg:text-xs font-bold placeholder:text-slate-500 tracking-tight"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && setSearchQuery(inputValue)}
               />
               <div className="flex items-center gap-2">
-                {inputValue && <X className="cursor-pointer text-slate-500" size={16} onClick={() => {setInputValue(''); setSearchQuery('');}} />}
+                {inputValue && <X className="cursor-pointer text-slate-500" size={16} onClick={() => { setInputValue(''); setSearchQuery(''); }} />}
                 <div className="hidden sm:block h-5 w-[1px] bg-slate-700 mx-2" />
                 <Cpu size={18} className="text-slate-600 hidden sm:block" />
               </div>
@@ -198,10 +209,10 @@ export default function Resources() {
           </div>
 
           <div className="hidden xl:flex items-center gap-4">
-             <div className="flex flex-col items-end">
-                <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.25em]">Search Engine</span>
-                <span className={`text-[10px] font-bold opacity-60 italic ${darkMode ? "text-slate-400" : "text-slate-600"}`}>Uplify AI v2.4 Active</span>
-             </div>
+            <div className="flex flex-col items-end">
+              <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.25em]">Search Engine</span>
+              <span className={`text-[10px] font-bold opacity-60 italic ${darkMode ? "text-slate-400" : "text-slate-600"}`}>Uplify AI v2.4 Active</span>
+            </div>
           </div>
         </header>
 
@@ -232,14 +243,14 @@ export default function Resources() {
                           <img src={item.image || item.thumbnailUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 group-hover:opacity-100" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
                           <div className="absolute top-4 right-4">
-                             <div className={`p-2 lg:p-2.5 rounded-2xl backdrop-blur-md border ${isFree ? "bg-emerald-500/20 border-emerald-500/40" : "bg-yellow-400/20 border-yellow-400/40"}`}>
-                                {isFree ? <Gift size={14} className="text-emerald-400" /> : <ShieldCheck size={14} className="text-yellow-400" />}
-                             </div>
+                            <div className={`p-2 lg:p-2.5 rounded-2xl backdrop-blur-md border ${isFree ? "bg-emerald-500/20 border-emerald-500/40" : "bg-yellow-400/20 border-yellow-400/40"}`}>
+                              {isFree ? <Gift size={14} className="text-emerald-400" /> : <ShieldCheck size={14} className="text-yellow-400" />}
+                            </div>
                           </div>
                           <div className="absolute bottom-4 left-6">
-                             <span className={`px-3 lg:px-4 py-1 rounded-full text-[9px] lg:text-[10px] font-black uppercase tracking-widest ${isFree ? "bg-emerald-500 text-black shadow-lg shadow-emerald-500/20" : "bg-yellow-400 text-black shadow-lg shadow-yellow-500/20"}`}>
-                                {isFree ? "Full Access" : "Pro Series"}
-                             </span>
+                            <span className={`px-3 lg:px-4 py-1 rounded-full text-[9px] lg:text-[10px] font-black uppercase tracking-widest ${isFree ? "bg-emerald-500 text-black shadow-lg shadow-emerald-500/20" : "bg-yellow-400 text-black shadow-lg shadow-yellow-500/20"}`}>
+                              {isFree ? "Full Access" : "Pro Series"}
+                            </span>
                           </div>
                         </div>
 
@@ -251,16 +262,16 @@ export default function Resources() {
                           <h3 className={`text-lg lg:text-xl font-extrabold leading-tight mb-3 transition-colors ${darkMode ? "text-white group-hover:text-emerald-400" : "text-slate-800"}`}>
                             {item.title}
                           </h3>
-                          
+
                           <p className={`text-[11px] lg:text-xs leading-relaxed mb-6 line-clamp-2 font-medium ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
                             {item.description || "Access the complete curriculum and mastering project files for this industry-standard technical course."}
                           </p>
                           <div className="mt-auto flex items-center justify-between pt-5 lg:pt-6 border-t border-white/5">
                             <div className="flex flex-col">
-                                <span className="text-[8px] lg:text-[9px] font-black text-emerald-500 uppercase tracking-widest">Status</span>
-                                <span className={`text-[10px] lg:text-[11px] font-bold ${darkMode ? "text-slate-200" : "text-slate-700"}`}>Verified by AI</span>
+                              <span className="text-[8px] lg:text-[9px] font-black text-emerald-500 uppercase tracking-widest">Status</span>
+                              <span className={`text-[10px] lg:text-[11px] font-bold ${darkMode ? "text-slate-200" : "text-slate-700"}`}>Verified by AI</span>
                             </div>
-                            <motion.a 
+                            <motion.a
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               href={item.courseUrl || item.videoUrl}

@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../superbaseClient';
+import toast from 'react-hot-toast';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -25,8 +26,19 @@ function CoursesSection() {
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
   const courseFetch = async () => {
-    const { data, error } = await supabase.from('resources').select('*').limit(3);
-    if (error) { console.log(error); return; } setCourses(data);
+    try{
+      setLoading(true);
+      const res = await API.get('/api/resources');
+      // only took 3 courses to show in homepage
+      if (res.data?.courses) setCourses(res.data.courses.slice(0, 3));
+    }
+    catch(error){
+      toast.error("Failed to fetch HomePage courses.");
+      console.log(error);
+    }
+    finally{
+      setLoading(false);
+    }
   }
   useEffect(() => {
     courseFetch();

@@ -5,6 +5,7 @@ import connectDB from './Config/db.js';
 import authRoutes from './Routes/authRoutes.js'
 import geminiRoutes from './Routes/geminiRoutes.js'
 import JobAndInternshipRoutes from './Routes/JobAndInternshipRoutes.js';
+import ResourcesRoutes from './Routes/ResourcesRoutes.js';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/user', authRoutes);
 app.use('/api/internships-jobs-all', JobAndInternshipRoutes);
+app.use('/api/resources', ResourcesRoutes);
 app.use('/api',geminiRoutes)
 
 const PORT = process.env.PORT || 5000;

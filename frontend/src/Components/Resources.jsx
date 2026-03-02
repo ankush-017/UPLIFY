@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { set } from 'mongoose';
 import toast from 'react-hot-toast';
 
 export default function Resources() {

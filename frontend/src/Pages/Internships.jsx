@@ -35,28 +35,46 @@ export default function Internships() {
     minStipend: 0,
   });
 
+  // const fetchInternships = async () => {
+  //   setLoading(true);
+  //   const thirtyDaysAgo = new Date();
+  //   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  //   const dateString = thirtyDaysAgo.toISOString();
+
+  //   const { data, error } = await supabase
+  //     .from('internships')
+  //     .select('*')
+  //     .eq('status', 'approved')   // filter here
+  //     .gte('created_at', dateString)
+  //     .order('created_at', { ascending: false });
+
+
+  //   if (!error) setInternships(data);
+  //   else toast.error("Live feed interrupted. Try again.");
+  //   setLoading(false);
+  // };
+
+  const fetchInternships = async () => {
+
+    try{
+      setLoading(true);
+      console.log("Fetching internships and jobs from backend...");
+      const response = await API.get('/api/internships-jobs-all/');
+      console.log("Received response:", response.data);
+      setInternships(response.data);
+    }
+    catch(error){
+      toast.error("Live feed interrupted. Try again.");
+    }
+    finally{
+      setLoading(false);
+    }
+
+  }
+
   useEffect(() => {
     fetchInternships();
   }, []);
-
-  const fetchInternships = async () => {
-    setLoading(true);
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const dateString = thirtyDaysAgo.toISOString();
-
-    const { data, error } = await supabase
-      .from('internships')
-      .select('*')
-      .eq('status', 'approved')   // filter here
-      .gte('created_at', dateString)
-      .order('created_at', { ascending: false });
-
-
-    if (!error) setInternships(data);
-    else toast.error("Live feed interrupted. Try again.");
-    setLoading(false);
-  };
 
   const filteredData = useMemo(() => {
     return internships.filter(item => {

@@ -27,7 +27,7 @@ export default function FeaturedInternships() {
         setLoading(true);
         const response = await API.get('/api/internships-jobs-all');
         // take only first 3 items
-        const topThree = response.job.data.slice(0, 3);
+        const topThree = response.data.job.slice(0, 3);
         setInternships(topThree);
       } 
       catch (error) {

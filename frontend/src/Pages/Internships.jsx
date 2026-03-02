@@ -44,7 +44,7 @@ export default function Internships() {
       // console.log("API Base URL:", import.meta.env.VITE_API_BASE_URL);
       const response = await API.get('/api/internships-jobs-all');
       // console.log("Received response:", response.job.data);
-      setInternships(response.job.data);
+      setInternships(response.data.job);
     }
     catch (error) {
       console.log("ERROR FULL:", error);

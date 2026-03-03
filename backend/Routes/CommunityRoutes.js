@@ -4,7 +4,7 @@ import { GetPostLikes,GetCommunityPosts,getComments,toggleLike, addComment} from
 const router = express.Router();
 router.get('/posts', GetCommunityPosts);
 router.get('/likes', GetPostLikes);
-router.post('/comments', getComments);
+router.get('/comments', getComments);
 router.post('/like-post', toggleLike);
 router.post('/comment-post', addComment);
 

@@ -63,25 +63,29 @@ const CommunityPost = ({ filter }) => {
 
     try {
       const res = await API.get('/api/community/comments');
-      if (res.success == false) {
+      if (!res.data.success) {
         toast.error("Failed to fetch comments.");
         return;
       }
+
       const data = res.data.comments;
       const commentMap = {};
+
       data.forEach(comment => {
         if (!commentMap[comment.post_id]) {
           commentMap[comment.post_id] = [];
         }
         commentMap[comment.post_id].push(comment);
       });
+
       setComments(commentMap);
-    }
+
+    } 
     catch (err) {
       console.error(err);
       toast.error("An error occurred while fetching comments.");
     }
-
+    
   };
 
   const handleLike = async (postId) => {
@@ -145,7 +149,7 @@ const CommunityPost = ({ filter }) => {
         [postId]: "",
       }));
 
-    } 
+    }
     catch (error) {
       console.error(error);
       toast.error("Something went wrong");

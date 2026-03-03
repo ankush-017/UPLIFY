@@ -84,7 +84,7 @@ export const GetPostLikes = async (req, res) => {
 export const getComments = async (req, res) => {
 
     try {
-        const { data, error } = await supabase.from('uplify_comments').select('*').eq('post_id', req.body.post_id).order('created_at', { ascending: true });
+        const { data, error } = await supabase.from('uplify_comments').select('*').order('created_at', { ascending: true });
 
         if (error) {
             return res.status(500).json({
@@ -221,5 +221,5 @@ export const addComment = async (req, res) => {
       message: "Server error",
     });
   }
-  
+
 };

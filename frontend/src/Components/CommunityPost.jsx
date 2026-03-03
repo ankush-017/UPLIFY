@@ -22,7 +22,7 @@ const CommunityPost = ({ filter }) => {
   const fetchPosts = async () => {
 
     try {
-      const res = await API.get(`/community/posts/?filter=${filter || "All Time"}`);
+      const res = await API.get(`/api/community/posts/?filter=${filter || "All Time"}`);
       if (res.success == false) {
         toast.error("Failed to fetch posts.");
         return;
@@ -41,7 +41,7 @@ const CommunityPost = ({ filter }) => {
   const fetchLikes = async () => {
 
     try {
-      const res = await API.get('/community/likes');
+      const res = await API.get('/api/community/likes');
       if (res.success == false) {
         toast.error("Failed to fetch likes.");
         return;
@@ -62,7 +62,7 @@ const CommunityPost = ({ filter }) => {
   const fetchComments = async () => {
 
     try {
-      const res = await API.get('/community/comments');
+      const res = await API.get('/api/community/comments');
       if (res.success == false) {
         toast.error("Failed to fetch comments.");
         return;
@@ -92,7 +92,7 @@ const CommunityPost = ({ filter }) => {
     }
 
     try {
-      const res = await API.post("/community/like-post", {
+      const res = await API.post("/api/community/like-post", {
         postId,
         userId,
       });
@@ -125,7 +125,7 @@ const CommunityPost = ({ filter }) => {
     const text = newComments[postId];
     if (!text?.trim()) return toast.error("Comment cannot be empty");
     try {
-      const res = await API.post("/community/comment-post", {
+      const res = await API.post("/api/community/comment-post", {
         postId,
         text: text.trim(),
         userId: firebaseUid,

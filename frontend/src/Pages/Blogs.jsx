@@ -8,13 +8,16 @@ import {
   Timer, Zap, Rocket
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { Spin } from 'antd';
 
-const BlogCard = ({ id, title, excerpt, date, author, category, image, darkMode }) => (
+const BlogCard = ({ id, title, excerpt, date, author, category, image, darkMode, onClick }) => (
   <motion.div
     layout
     initial={{ opacity: 0, scale: 0.98 }}
     whileInView={{ opacity: 1, scale: 1 }}
     whileHover={{ y: -6 }}
+    onClick={onClick}
     className={`group relative h-full flex flex-col rounded-[24px] md:rounded-[32px] border transition-all duration-300 
       ${darkMode
         ? "bg-zinc-900/40 border-white/5 hover:border-emerald-500/40 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
@@ -64,13 +67,22 @@ const BlogCard = ({ id, title, excerpt, date, author, category, image, darkMode 
 );
 
 const Blogs = () => {
+
   const [blogs, setBlogs] = useState([]);
   const darkMode = useSelector((state) => state.theme.darkMode);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  const handleClick = (id) => {
+    navigate(`/blog/${id}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   useEffect(() => {
 
     const fetchBlogs = async () => {
       try {
+        setLoading(true);
         const res = await API.get('/api/all-blogs');
         setBlogs(res.data.blogs);
       }
@@ -78,13 +90,21 @@ const Blogs = () => {
         console.error('Error fetching blogs:', error.message);
         toast.error('Failed to load blogs. Please try again later.');
       }
+      finally {
+        setLoading(false);
+      }
 
     }
     fetchBlogs();
   }, []);
 
   return (
-    <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 ${darkMode ? "bg-[#050607]" : "bg-[#f8fafc]"}`}>
+    loading ? (
+      <div className="flex items-center justify-center h-64">
+        <Spin size="large" />
+      </div>)
+      : (
+        <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 ${darkMode ? "bg-[#050607]" : "bg-[#f8fafc]"}`}>
 
       {/* Refined Background Mesh */}
       <div className="absolute top-0 inset-x-0 h-screen w-full pointer-events-none">
@@ -97,7 +117,7 @@ const Blogs = () => {
         {/* Header Section - Compact */}
         <div className="flex flex-col items-center text-center mb-16 md:mb-12">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase tracking-[0.3em] mb-6">
-            <Rocket size={10} /> The Uplify Feed
+            <Rocket size={10} /> The Uplify Blogs
           </motion.div>
 
           <motion.h1
@@ -122,7 +142,7 @@ const Blogs = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           <AnimatePresence>
             {blogs.map((post) => (
-              <BlogCard key={post.id} {...post} darkMode={darkMode} />
+              <BlogCard key={post.id} {...post} darkMode={darkMode} onClick={() => handleClick(post.id)} />
             ))}
           </AnimatePresence>
         </div>
@@ -176,6 +196,7 @@ const Blogs = () => {
         </div>
       </div>
     </div>
+      )
   );
 };
 

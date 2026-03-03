@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { MessageSquare, Heart, Send, PlusCircle, Sparkles, Maximize2, X } from 'lucide-react';
 import { useSelector } from 'react-redux';
+import API from '../API.js';
 
 const CommunityPost = ({ filter }) => {
   const [posts, setPosts] = useState([]);
@@ -19,133 +20,141 @@ const CommunityPost = ({ filter }) => {
   const navigate = useNavigate();
 
   const fetchPosts = async () => {
-    // 1. Initialize the base query
-    let query = supabase
-      .from('uplify_discussion')
-      .select('*')
-      .order('created_at', { ascending: false });
 
-    // 2. Conditionally apply the time filter to the query variable
-    if (filter && filter !== 'All Time') {
-      const now = new Date();
-      let filterDate;
-
-      if (filter === 'Today') filterDate = new Date(now.setDate(now.getDate() - 1));
-      else if (filter === 'Last 48h') filterDate = new Date(now.setDate(now.getDate() - 2));
-      else if (filter === 'This Week') filterDate = new Date(now.setDate(now.getDate() - 7));
-      else if (filter === 'This Month') filterDate = new Date(now.setMonth(now.getMonth() - 1));
-
-      if (filterDate) {
-        // Apply filter to the 'query' variable
-        query = query.gte('created_at', filterDate.toISOString());
+    try {
+      const res = await API(`/community/posts/?filter=${filter || "All Time"}`);
+      if (res.success == false) {
+        toast.error("Failed to fetch posts.");
+        return;
       }
+      const data = res.data.post;
+      setPosts(data);
+    }
+    catch (err) {
+      console.error(err);
+      toast.error("An error occurred while fetching posts.");
     }
 
-    // 3. Execute the query
-    const { data: postsData, error: postError } = await query;
+  }
 
-    if (postError) {
-      toast.error('Failed to load posts');
-      return;
-    }
-    setPosts(postsData);
-  };
+
   const fetchLikes = async () => {
-    const { data, error } = await supabase.from('uplify_likes').select('*');
-    if (!error) {
+
+    try {
+      const res = await API('/community/likes');
+      if (res.success == false) {
+        toast.error("Failed to fetch likes.");
+        return;
+      }
+      const data = res.data.likes;
       const likeCount = {};
       data.forEach(like => {
         likeCount[like.post_id] = (likeCount[like.post_id] || 0) + 1;
       });
       setLikes(likeCount);
     }
+    catch (err) {
+      console.error(err);
+      toast.error("An error occurred while fetching likes.");
+    }
   };
 
   const fetchComments = async () => {
-    const { data, error } = await supabase
-      .from('uplify_comments')
-      .select('*')
-      .order('created_at');
 
-    if (!error) {
-      const grouped = {};
+    try {
+      const res = await API('/community/comments');
+      if (res.success == false) {
+        toast.error("Failed to fetch comments.");
+        return;
+      }
+      const data = res.data.comments;
+      const commentMap = {};
       data.forEach(comment => {
-        if (!grouped[comment.post_id]) grouped[comment.post_id] = [];
-        grouped[comment.post_id].push(comment);
+        if (!commentMap[comment.post_id]) {
+          commentMap[comment.post_id] = [];
+        }
+        commentMap[comment.post_id].push(comment);
       });
-      setComments(grouped);
+      setComments(commentMap);
     }
+    catch (err) {
+      console.error(err);
+      toast.error("An error occurred while fetching comments.");
+    }
+
   };
 
   const handleLike = async (postId) => {
+
     const userId = getAuth()?.currentUser?.uid;
-    if (!userId) return toast.error("Please login to like a post.");
-
-    const { data: existingLike, error: fetchError } = await supabase
-      .from("uplify_likes")
-      .select("*")
-      .eq("post_id", postId)
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (fetchError) {
-      console.error(fetchError);
-      return toast.error("Error checking like status.");
+    if (!userId) {
+      return toast.error("Please login to like a post.");
     }
 
-    if (existingLike) {
-      // User already liked → remove the like
-      const { error: deleteError } = await supabase
-        .from("uplify_likes")
-        .delete()
-        .eq("id", existingLike.id); // delete by primary key ID
+    try {
+      const res = await API.post("/community/like-post", {
+        postId,
+        userId,
+      });
 
-      if (deleteError) {
-        console.error(deleteError);
-        return toast.error("Failed to unlike post.");
+      const data = res.data;
+
+      if (!data.success) {
+        return toast.error(data.message);
       }
 
-      toast.success("Unliked!");
-    } else {
-      // User has not liked yet → insert like
-      const { error: insertError } = await supabase
-        .from("uplify_likes")
-        .insert([{ post_id: postId, user_id: userId }]);
-
-      if (insertError) {
-        console.error(insertError);
-        return toast.error("Failed to like post.");
+      if (data.action === "liked") {
+        toast.success("Liked!");
+      }
+      else {
+        toast.success("Unliked!");
       }
 
-      toast.success("Liked!");
+      fetchLikes(); // refresh like count
+
     }
-
-    // Fetch updated like count
-    fetchLikes();
+    catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
   };
 
 
   const handleAddComment = async (postId) => {
+
     const text = newComments[postId];
-    if (!text?.trim()) return;
+    if (!text?.trim()) return toast.error("Comment cannot be empty");
+    try {
+      const res = await API.post("/community/comment-post", {
+        postId,
+        text: text.trim(),
+        userId: firebaseUid,
+        userName,
+      });
 
-    const { error } = await supabase
-      .from('uplify_comments')
-      .insert([
-        {
-          post_id: postId,
-          comment_text: text.trim(),
-          user_id: firebaseUid,
-          user_name: userName
-        },
-      ]);
+      const { success, message, comment } = res.data;
 
-    if (error) {
-      console.error('Supabase insert error:', error);
-      toast.error('Failed to add comment');
-    } else {
+      if (!success) {
+        return toast.error(message);
+      }
+
+      toast.success("Comment added!");
+
+      // Option 1: Refetch comments
       fetchComments();
-      setNewComments(prev => ({ ...prev, [postId]: '' }));
+
+      // Option 2 (Better): Add directly to state (Optimistic UI)
+      // setComments(prev => [...prev, comment]);
+
+      setNewComments(prev => ({
+        ...prev,
+        [postId]: "",
+      }));
+
+    } 
+    catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
     }
   };
 

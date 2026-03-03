@@ -96,5 +96,4 @@ const UplifyCommunity = () => {
     </div>
   );
 };
-
 export default UplifyCommunity;

@@ -8,6 +8,7 @@ import JobAndInternshipRoutes from './Routes/JobAndInternshipRoutes.js';
 import ResourcesRoutes from './Routes/ResourcesRoutes.js';
 import MyApplicationRoutes from './Routes/MyApplicationRoutes.js';
 import BlogsRoutes from './Routes/BlogsRoutes.js';
+import CommunityRoutes from './Routes/CommunityRoutes.js';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use('/api/internships-jobs-all', JobAndInternshipRoutes);
 app.use('/api/resources', ResourcesRoutes);
 app.use('/api/myapplications', MyApplicationRoutes);
 app.use('/api/all-blogs', BlogsRoutes);
+app.use('/api/community', CommunityRoutes);
 app.use('/api',geminiRoutes)
 
 const PORT = process.env.PORT || 5000;

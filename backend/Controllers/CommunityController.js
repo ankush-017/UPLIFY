@@ -180,6 +180,7 @@ export const toggleLike = async (req, res) => {
 
 
 export const addComment = async (req, res) => {
+
   try {
     const { postId, text, userId, userName } = req.body;
 
@@ -220,4 +221,5 @@ export const addComment = async (req, res) => {
       message: "Server error",
     });
   }
+  
 };

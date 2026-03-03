@@ -22,7 +22,7 @@ const CommunityPost = ({ filter }) => {
   const fetchPosts = async () => {
 
     try {
-      const res = await API(`/community/posts/?filter=${filter || "All Time"}`);
+      const res = await API.get(`/community/posts/?filter=${filter || "All Time"}`);
       if (res.success == false) {
         toast.error("Failed to fetch posts.");
         return;
@@ -41,7 +41,7 @@ const CommunityPost = ({ filter }) => {
   const fetchLikes = async () => {
 
     try {
-      const res = await API('/community/likes');
+      const res = await API.get('/community/likes');
       if (res.success == false) {
         toast.error("Failed to fetch likes.");
         return;
@@ -62,7 +62,7 @@ const CommunityPost = ({ filter }) => {
   const fetchComments = async () => {
 
     try {
-      const res = await API('/community/comments');
+      const res = await API.get('/community/comments');
       if (res.success == false) {
         toast.error("Failed to fetch comments.");
         return;
@@ -133,18 +133,12 @@ const CommunityPost = ({ filter }) => {
       });
 
       const { success, message, comment } = res.data;
-
       if (!success) {
         return toast.error(message);
       }
 
       toast.success("Comment added!");
-
-      // Option 1: Refetch comments
       fetchComments();
-
-      // Option 2 (Better): Add directly to state (Optimistic UI)
-      // setComments(prev => [...prev, comment]);
 
       setNewComments(prev => ({
         ...prev,

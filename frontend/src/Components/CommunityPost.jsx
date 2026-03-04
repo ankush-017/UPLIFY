@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../superbaseClient.js';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -8,6 +7,7 @@ import { useSelector } from 'react-redux';
 import API from '../API.js';
 
 const CommunityPost = ({ filter }) => {
+
   const [posts, setPosts] = useState([]);
   const [likes, setLikes] = useState({});
   const [comments, setComments] = useState({});
@@ -80,12 +80,12 @@ const CommunityPost = ({ filter }) => {
 
       setComments(commentMap);
 
-    } 
+    }
     catch (err) {
       console.error(err);
       toast.error("An error occurred while fetching comments.");
     }
-    
+
   };
 
   const handleLike = async (postId) => {
@@ -163,15 +163,18 @@ const CommunityPost = ({ filter }) => {
     fetchComments();
   }, [filter]);
 
-
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, user => {
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setFirebaseUid(user.uid);
         setUserName(user.displayName);
+      } 
+      else {
+        // user logged out
         setFirebaseUid(null);
-        setUserName(null); // Clear on logout
+        setUserName(null);
       }
     });
 

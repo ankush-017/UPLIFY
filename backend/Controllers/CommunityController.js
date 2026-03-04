@@ -169,7 +169,7 @@ export const toggleLike = async (req, res) => {
             action: "liked",
         });
 
-    } 
+    }
     catch (err) {
         return res.status(500).json({
             success: false,
@@ -181,45 +181,114 @@ export const toggleLike = async (req, res) => {
 
 export const addComment = async (req, res) => {
 
-  try {
-    const { postId, text, userId, userName } = req.body;
+    try {
+        const { postId, text, userId, userName } = req.body;
 
-    if (!postId || !text || !userId) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing required fields",
-      });
+        if (!postId || !text || !userId) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields",
+            });
+        }
+
+        const { data, error } = await supabase
+            .from("uplify_comments")
+            .insert([
+                {
+                    post_id: postId,
+                    comment_text: text.trim(),
+                    user_id: userId,
+                    user_name: userName,
+                },
+            ])
+            .select(); // return inserted row
+
+        if (error) {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to add comment",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            comment: data[0], // send new comment back
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Server error",
+        });
     }
-
-    const { data, error } = await supabase
-      .from("uplify_comments")
-      .insert([
-        {
-          post_id: postId,
-          comment_text: text.trim(),
-          user_id: userId,
-          user_name: userName,
-        },
-      ])
-      .select(); // return inserted row
-
-    if (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Failed to add comment",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      comment: data[0], // send new comment back
-    });
-
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
 
 };
+
+
+export const uploadImagePost = async (req, res) => {
+
+    try {
+        const { filePath, file } = req.body;
+        if (!filePath || !file) {
+            return res.status(400).json({
+                success: false,
+                message: "filePath and file are required",
+            });
+        }
+        const { error: uploadError } = await supabase.storage.from('uplify-images').upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = await supabase.storage.from('uplify-images').getPublicUrl(filePath);
+        return res.status(200).json({
+            success: true,
+            publicUrl: publicUrlData.publicUrl,
+        });
+    }
+    catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Server error during image upload",
+        });
+    }
+
+};
+
+export const createPost = async (req, res) => {
+
+    try {
+        const { message, image, userId } = req.body;
+        if (!message || !userId) {
+            return res.status(400).json({
+                success: false,
+                message: "message and userId are required",
+            });
+        }
+        const { data, error } = await supabase.from("uplify_discussion")
+            .insert([
+                {
+                    message: message.trim(),
+                    image: image || null,
+                    user_id: userId,
+                },
+            ]).select(); // return inserted row
+        if (error) {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to create post",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            post: data[0],
+        });
+    }
+    catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Server error during post creation",
+        });
+    }
+
+}

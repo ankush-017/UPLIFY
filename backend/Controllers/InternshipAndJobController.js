@@ -30,3 +30,44 @@ export const getAllInternshipsAndJobsController = async (req, res) => {
   }
   
 };
+
+
+export const postInternshipOrJobController = async (req, res) => {
+  
+  const { title, company, location, stipend, type, job_type, link, source_type, skills } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from("internships")
+      .insert([
+        {
+          title,
+          company,
+          location,
+          stipend,
+          type,   
+          job_type,
+          link,
+          source_type,
+          skills,
+          status: "pending"
+        }
+      ]);
+
+    if (error) {
+      console.error("Error inserting internship or job:", error);
+      return res.status(500).json({ error: "Failed to post internship or job" });
+    }
+
+    return res.status(201).json({ 
+      success: true, 
+    });
+  }
+  catch (err) {
+    console.error("Error inserting internship or job:", err);
+    return res.status(500).json({ 
+      error: "Failed to post internship or job" 
+    });
+  }
+
+}

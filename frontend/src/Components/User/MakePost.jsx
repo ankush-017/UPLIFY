@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { supabase } from '../../../superbaseClient.js';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ImagePlus, Send, X, Sparkles } from 'lucide-react';
 import API from '../../API.js'
-
 
 function MakePost() {
   const [message, setMessage] = useState('');
@@ -15,7 +13,7 @@ function MakePost() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const navigate = useNavigate();
 
-  // Handle image selection and preview
+  // handle image selection and preview
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -31,63 +29,52 @@ function MakePost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!message.trim()) {
       toast.error("Message can't be empty");
       return;
     }
 
     setLoading(true);
-    let imageUrl = '';
+    let imageUrl = "";
 
     try {
       if (image) {
-        const fileExt = image.name.split('.').pop();
+        const fileExt = image.name.split(".").pop();
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `post/${fileName}`;
 
-        // const { error: uploadError } = await supabase.storage
-        //   .from('uplify-images')
-        //   .upload(filePath, image);
+        const formData = new FormData();
+        formData.append("file", image);
+        formData.append("filePath", filePath);
 
-        // if (uploadError) throw uploadError;
+        const res = await API.post("/api/community/upload-post-image", formData);
 
-        // const { data: publicUrlData } = supabase.storage
-        //   .from('uplify-images')
-        //   .getPublicUrl(filePath);
-        const res = await API.post('/api/community/upload-post-image', {
-          filePath,
-          file: image
-        })
         if (!res.data.success) {
-          toast.error('Failed to upload image');
-          throw new Error('Failed to upload image');
+          toast.error("Failed to upload image");
+          throw new Error("Failed to upload image");
         }
 
         imageUrl = res.data.publicUrl;
       }
 
-      // const { error: insertError } = await supabase.from('uplify_discussion').insert([
-      //   { image: imageUrl, message },
-      // ]);
-
-      // if (insertError) throw insertError;
-
-      const res = await API.post('/api/community/create-post', {
+      const res = await API.post("/api/community/create-post", {
         image: imageUrl,
-        message
-      })
+        message,
+      });
+
       if (!res.data.success) {
-        toast.error('Failed to create post');
-        throw new Error('Failed to create post');
+        toast.error("Failed to create post");
+        throw new Error("Failed to create post");
       }
 
-      toast.success('Post shared to the Circle!');
-      navigate('/user/uplify-community');
-    }
+      toast.success("Post shared to the Circle!");
+      navigate("/user/uplify-community");
+    } 
     catch (err) {
-      toast.error('Something went wrong');
       console.error(err);
-    }
+      toast.error("Something went wrong");
+    } 
     finally {
       setLoading(false);
     }
@@ -103,8 +90,8 @@ function MakePost() {
       <form
         onSubmit={handleSubmit}
         className={`relative w-full max-w-2xl backdrop-blur-3xl p-8 rounded-[2.5rem] border transition-all duration-500 ${darkMode
-            ? 'bg-[#081508]/40 border-emerald-500/10 shadow-[0_20px_80px_rgba(0,0,0,0.4)] text-white'
-            : 'bg-white border-slate-200 shadow-[0_20px_80px_rgba(0,0,0,0.05)] text-slate-900'
+          ? 'bg-[#081508]/40 border-emerald-500/10 shadow-[0_20px_80px_rgba(0,0,0,0.4)] text-white'
+          : 'bg-white border-slate-200 shadow-[0_20px_80px_rgba(0,0,0,0.05)] text-slate-900'
           }`}
       >
         {/* Header */}
@@ -127,8 +114,8 @@ function MakePost() {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Share a perspective or update..."
             className={`w-full rounded-3xl p-6 text-base font-medium focus:outline-none border transition-all resize-none ${darkMode
-                ? 'bg-black/40 border-white/5 focus:border-emerald-500/80 text-emerald-50 placeholder:text-emerald-700/80'
-                : 'bg-slate-50 border-slate-100 focus:border-emerald-500 shadow-inner text-slate-800 placeholder:text-slate-400'
+              ? 'bg-black/40 border-white/5 focus:border-emerald-500/80 text-emerald-50 placeholder:text-emerald-700/80'
+              : 'bg-slate-50 border-slate-100 focus:border-emerald-500 shadow-inner text-slate-800 placeholder:text-slate-400'
               }`}
             rows={6}
           />
@@ -161,8 +148,8 @@ function MakePost() {
             type="submit"
             disabled={loading}
             className={`flex items-center gap-2 px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl hover:-translate-y-1 active:scale-95 disabled:opacity-50 ${darkMode
-                ? 'bg-emerald-500 text-emerald-950 shadow-emerald-500/20 hover:bg-yellow-400'
-                : 'bg-slate-900 text-white shadow-slate-900/20 hover:bg-emerald-600'
+              ? 'bg-emerald-500 text-emerald-950 shadow-emerald-500/20 hover:bg-yellow-400'
+              : 'bg-slate-900 text-white shadow-slate-900/20 hover:bg-emerald-600'
               }`}
           >
             {loading ? (

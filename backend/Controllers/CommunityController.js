@@ -226,32 +226,37 @@ export const addComment = async (req, res) => {
 
 
 export const uploadImagePost = async (req, res) => {
-
     try {
-        const { filePath, file } = req.body;
+        const { filePath } = req.body;
+        const file = req.file;
+
         if (!filePath || !file) {
             return res.status(400).json({
                 success: false,
                 message: "filePath and file are required",
             });
         }
-        const { error: uploadError } = await supabase.storage.from('uplify-images').upload(filePath, file);
+
+        const { error: uploadError } = await supabase.storage.from("uplify-images").upload(filePath, file.buffer, {
+                contentType: file.mimetype,
+            });
 
         if (uploadError) throw uploadError;
+        const { data } = supabase.storage.from("uplify-images").getPublicUrl(filePath);
 
-        const { data: publicUrlData } = await supabase.storage.from('uplify-images').getPublicUrl(filePath);
         return res.status(200).json({
             success: true,
-            publicUrl: publicUrlData.publicUrl,
+            publicUrl: data.publicUrl,
         });
-    }
+
+    } 
     catch (err) {
+        console.error(err);
         return res.status(500).json({
             success: false,
             message: "Server error during image upload",
         });
     }
-
 };
 
 export const createPost = async (req, res) => {

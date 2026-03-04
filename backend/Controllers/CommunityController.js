@@ -257,8 +257,8 @@ export const uploadImagePost = async (req, res) => {
 export const createPost = async (req, res) => {
 
     try {
-        const { message, image, userId } = req.body;
-        if (!message || !userId) {
+        const { message, image } = req.body;
+        if (!message) {
             return res.status(400).json({
                 success: false,
                 message: "message and userId are required",

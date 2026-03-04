@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ImagePlus, Send, X, Sparkles } from 'lucide-react';
+import API from '../../API.js'
 
 
 function MakePost() {

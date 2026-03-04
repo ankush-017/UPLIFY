@@ -268,8 +268,7 @@ export const createPost = async (req, res) => {
             .insert([
                 {
                     message: message.trim(),
-                    image: image || null,
-                    user_id: userId,
+                    image: image || null
                 },
             ]).select(); // return inserted row
         if (error) {

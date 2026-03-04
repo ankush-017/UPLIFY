@@ -1,5 +1,5 @@
 import express from 'express';
-import {multer} from 'multer';
+import multer from 'multer';
 
 import { GetPostLikes,GetCommunityPosts,getComments,toggleLike, addComment, uploadImagePost, createPost} from '../Controllers/CommunityController.js';
 

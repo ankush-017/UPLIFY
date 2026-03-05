@@ -8,8 +8,8 @@ router.post('/', postInternshipOrJobController);
 router.get('/pending', getPendingInternshipsController);
 router.put('/approve/:id', approveInternshipController);
 router.delete('/reject/:id', rejectInternshipController);
-router.delete('/:id', deleteInternshipOrJobController);
-router.get('/:id', getSingleInternshipController);
-router.put('/:id', updateInternshipController);
+router.delete('/job/:id', deleteInternshipOrJobController);
+router.get('/one-job/:id', getSingleInternshipController);
+router.put('/admin-update/:id', updateInternshipController);
 
 export default router;

@@ -35,7 +35,7 @@ export default function UpdateInternship() {
   useEffect(() => {
     const fetchInternship = async () => {
       try {
-        const res = await API.get(`/api/job-single/${id}`);
+        const res = await API.get(`/api/job-single/one-job/${id}`);
         if (res.data.success) setForm(res.data.data);
       } catch (error) {
         toast.error("Fetch failed");
@@ -54,7 +54,7 @@ export default function UpdateInternship() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await API.put(`/api/update-job/${id}`, form);
+      const res = await API.put(`/api/update-job/admin-update/${id}`, form);
       if (res.data.success) {
         toast.success("Database updated");
         navigate("/admin/all-internships");

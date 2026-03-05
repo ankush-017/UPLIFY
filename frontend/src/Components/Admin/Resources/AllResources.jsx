@@ -4,6 +4,7 @@ import { ExternalLink, IndianRupee } from 'lucide-react';
 import { Spin } from 'antd';
 import { Link } from 'react-router-dom';
 import Seo from '../../Seo';
+import API from '../../../API';
 
 export default function AllResources() {
 
@@ -12,11 +13,29 @@ export default function AllResources() {
 
     useEffect(() => {
         const fetchResources = async () => {
-            
-        };
-        fetchResources();
-    }, []);
+            try {
 
+                const res = await API.get('/api/resources');
+
+                if (res.data.success) {
+                    setResources(res.data.resources);
+                }
+
+            } catch (err) {
+
+                console.log(err);
+                toast.error("Failed to fetch resources");
+
+            } finally {
+
+                setLoading(false);
+
+            }
+        };
+
+        fetchResources();
+
+    }, []);
     return (
         <>
             <Seo

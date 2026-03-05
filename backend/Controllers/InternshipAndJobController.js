@@ -186,7 +186,7 @@ export const getPendingInternshipsController = async (req, res) => {
     const { data, error } = await supabase
       .from("internships")
       .select("*")
-      .eq("status", "pendingdd")
+      .eq("status", "pending")
       .order("created_at", { ascending: false });
 
     if (error) {

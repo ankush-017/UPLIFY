@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { supabase } from '../../superbaseClient';
 import {
   Briefcase, MapPin, Filter, Calendar,
   Clock, Sparkles, Search,

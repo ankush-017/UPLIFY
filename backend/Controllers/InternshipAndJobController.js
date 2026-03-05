@@ -181,19 +181,21 @@ export const updateInternshipController = async (req, res) => {
 
 
 export const getPendingInternshipsController = async (req, res) => {
-
   try {
+
     const { data, error } = await supabase
       .from("internships")
       .select("*")
-      .eq("status", "pending")
+      .filter("status", "eq", "pending")
       .order("created_at", { ascending: false });
 
     if (error) {
+      console.log("Supabase error:", error);
+
       return res.status(400).send({
         success: false,
         message: "Failed to fetch pending internships",
-        error
+        error: error.message
       });
     }
 
@@ -202,15 +204,16 @@ export const getPendingInternshipsController = async (req, res) => {
       internships: data
     });
 
-  }
+  } 
   catch (error) {
-    console.log(error);
+    console.log("Server error:", error);
+
     res.status(500).send({
       success: false,
       message: "Server error"
     });
-  }
 
+  }
 };
 
 
@@ -268,7 +271,7 @@ export const rejectInternshipController = async (req, res) => {
       message: "Internship deleted"
     });
 
-  } 
+  }
   catch (error) {
     console.log(error);
 

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../../../../superbaseClient';
 import { useSelector } from 'react-redux';
 import {
   CheckCircle, Search, Loader2, ShieldCheck,
   MapPin, Briefcase, Wallet, Calendar, Code2,
-  XCircle, Zap, Globe2, Layers, Trash2
+  XCircle, Zap, Globe2, Layers, Trash2, Cpu, Activity, Clock, ChevronRight
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
+import API from '../../../API.js'
 
 function ApproveJob() {
+
   const { darkMode } = useSelector((state) => state.theme);
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,73 +20,40 @@ function ApproveJob() {
   }, []);
 
   const fetchPendingInternships = async () => {
-
+    
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await API.get("/api/internships-jobs-all/pending");
-
-      if (!res.data.success) {
-        toast.error("Failed to sync with cloud engine");
-        return;
-      }
-      setInternships(res.data.internships || []);
-
+      const res = await API.get('/api/internships-jobs-all/pending');
+      console.log(res.data.internships);
+      if (res.data.success) setInternships(res.data.internships || []);
     } 
     catch (error) {
-      toast.error("Failed to sync with cloud engine");
-      console.error(error);
+      toast.error("Sync failed");
+    } 
+    finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleApprove = async (id) => {
-
     try {
       const res = await API.put(`/api/internships-jobs-all/approve/${id}`);
-      if (!res.data.success) {
-        toast.error("Approval failed");
-        return;
+      if (res.data.success) {
+        toast.success("Published");
+        setInternships(internships.filter(item => item.id !== id));
       }
-
-      toast.success("Listing Published Successfully!", {
-        icon: "🚀",
-        style: {
-          borderRadius: "15px",
-          background: darkMode ? "#1e293b" : "#fff",
-          color: darkMode ? "#fff" : "#1e293b",
-          fontWeight: "bold"
-        },
-      });
-
-      setInternships(internships.filter(item => item.id !== id));
-
-    } catch (error) {
-      toast.error("Approval failed");
-    }
+    } catch (error) { toast.error("Approval failed"); }
   };
 
   const handleReject = async (id) => {
-
-    if (window.confirm("Permanently delete this submission? This cannot be undone.")) {
+    if (window.confirm("Purge entry?")) {
       try {
         const res = await API.delete(`/api/internships-jobs-all/reject/${id}`);
-
-        if (!res.data.success) {
-          toast.error("Deletion failed");
-          return;
+        if (res.data.success) {
+          toast.error("Purged");
+          setInternships(internships.filter(item => item.id !== id));
         }
-
-        toast.error("Listing Rejected & Purged", {
-          icon: "🗑️",
-        });
-
-        setInternships(internships.filter(item => item.id !== id));
-
-      } catch (error) {
-        toast.error("Deletion failed");
-      }
-
+      } catch (error) { toast.error("Purge failed"); }
     }
   };
 
@@ -94,161 +62,114 @@ function ApproveJob() {
     item.company?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const theme = {
+    bg: darkMode ? 'bg-[#080808]' : 'bg-[#F9FAFB]',
+    card: darkMode ? 'bg-[#111111] border-white/5' : 'bg-white border-slate-200 shadow-sm',
+    input: darkMode ? 'bg-white/[0.02] border-white/10' : 'bg-slate-50 border-slate-200',
+    textMain: darkMode ? 'text-white' : 'text-slate-900',
+    textMuted: darkMode ? 'text-slate-500' : 'text-slate-400',
+    accent: 'from-yellow-400 to-lime-500'
+  };
+
   return (
-    <div className={`min-h-screen transition-all duration-700 font-sans pb-32 ${darkMode ? 'bg-[#030712] text-slate-200' : 'bg-[#f8fafc] text-slate-900'
-      }`}>
-      <Toaster position="top-right" reverseOrder={false} />
+    <div className={`min-h-screen transition-colors duration-300 font-sans pb-20 ${theme.bg} ${theme.textMain} selection:bg-lime-500/30`}>
+      <Toaster position="top-right" />
 
-      {/* Background Orbs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className={`absolute -top-24 -left-24 w-96 h-96 rounded-full blur-[120px] opacity-20 ${darkMode ? 'bg-blue-500' : 'bg-blue-200'}`}></div>
-        <div className={`absolute top-1/2 -right-24 w-80 h-80 rounded-full blur-[120px] opacity-20 ${darkMode ? 'bg-purple-600' : 'bg-purple-300'}`}></div>
-      </div>
-
-      <div className="relative p-4 md:p-8 max-w-7xl mx-auto">
-
-        {/* Header Architecture */}
-        <header className="mb-12 pt-8 md:pt-16">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-            <div className="space-y-4">
-              <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[11px] font-black tracking-[0.2em] uppercase ${darkMode ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-blue-50 border-blue-200 text-blue-700'
-                }`}>
-                <ShieldCheck size={14} /> Admin Verification Portal
-              </div>
-              <h1 className="text-5xl md:text-7xl font-black tracking-tighter italic">
-                Approve <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600">Jobs.</span>
-              </h1>
-            </div>
-
-            <div className={`grid grid-cols-2 gap-4 p-2 rounded-[2.5rem] border backdrop-blur-3xl ${darkMode ? 'bg-white/5 border-white/10 shadow-2xl' : 'bg-white border-slate-200 shadow-xl'
-              }`}>
-              <StatBox label="Waiting" value={internships.length} color="text-blue-500" />
-              <div className={`p-6 text-center rounded-[2rem] ${darkMode ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}>
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">System</p>
-                <p className="text-xl font-black italic">Active</p>
-              </div>
+      {/* SaaS Compact Header */}
+      <nav className={`sticky top-0 z-50 backdrop-blur-md border-b ${darkMode ? 'bg-black/40 border-white/5' : 'bg-white/70 border-slate-200'} px-6 py-3`}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h2 className="text-sm font-black uppercase tracking-tighter italic">
+              Verification <span className={`bg-gradient-to-r ${theme.accent} bg-clip-text text-transparent`}>Queue</span>
+            </h2>
+            <div className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest ${darkMode ? 'bg-lime-500/10 text-lime-400 border border-lime-500/20' : 'bg-lime-50 text-lime-700 border border-lime-200'}`}>
+               {internships.length} Pending
             </div>
           </div>
-        </header>
-
-        {/* Search Architecture */}
-        <div className="relative group mb-12">
-          <Search className={`absolute left-6 top-1/2 -translate-y-1/2 transition-colors duration-300 ${darkMode ? 'text-slate-600 group-focus-within:text-blue-500' : 'text-slate-400'}`} size={24} />
-          <input
-            type="text"
-            placeholder="Search by role or company..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={`w-full pl-16 pr-8 py-6 rounded-3xl border transition-all duration-300 text-lg font-bold outline-none ${darkMode ? 'bg-white/5 border-white/10 focus:bg-white/10 focus:border-blue-500/50' : 'bg-white border-slate-200 focus:shadow-2xl focus:border-blue-500'
-              }`}
-          />
+          
+          <div className="flex items-center gap-3">
+            <div className={`relative flex items-center rounded-lg border ${theme.input}`}>
+                <Search size={12} className="absolute left-3 opacity-30" />
+                <input 
+                  type="text" 
+                  placeholder="Quick filter..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-transparent pl-8 pr-3 py-1.5 outline-none text-[10px] w-48" 
+                />
+            </div>
+          </div>
         </div>
+      </nav>
 
-        {/* Content System */}
+      <main className="max-w-6xl mx-auto px-6 py-8">
+        
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 gap-4">
-            <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
-            <span className="text-xs font-black uppercase tracking-widest text-slate-500">Querying Supabase</span>
+          <div className="flex flex-col items-center justify-center py-40 gap-3">
+            <Loader2 className="w-6 h-6 text-lime-500 animate-spin" />
+            <span className="text-[9px] font-bold uppercase tracking-widest opacity-40">Syncing_Nodes</span>
           </div>
         ) : filteredData.length === 0 ? (
-          <div className="text-center py-32 opacity-30 italic">
-            <h3 className="text-3xl font-black uppercase">No pending requests</h3>
+          <div className="text-center py-32 opacity-20 italic">
+            <Zap size={32} className="mx-auto mb-3" />
+            <p className="text-[10px] font-bold uppercase tracking-widest">Queue Clear</p>
           </div>
         ) : (
-          <div className="grid gap-8">
+          <div className="space-y-3">
             {filteredData.map((item) => (
-              <div key={item.id} className="group relative">
-                <div className={`relative overflow-hidden rounded-[3rem] border transition-all duration-500 hover:translate-y-[-4px] ${darkMode ? 'bg-[#0f172a]/60 border-white/10' : 'bg-white border-slate-200 shadow-lg'
-                  }`}>
-                  <div className="p-8 md:p-12">
-                    <div className="flex flex-col lg:flex-row gap-10">
+              <div key={item.id} className={`group rounded-xl border p-4 flex flex-col md:flex-row md:items-center gap-6 transition-all hover:border-lime-500/30 ${theme.card}`}>
+                
+                {/* Brand Identity */}
+                <div className="flex items-center gap-4 min-w-[240px]">
+                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-xl font-black ${darkMode ? 'bg-white/5 text-lime-400' : 'bg-slate-900 text-white'}`}>
+                      {item.company?.charAt(0)}
+                   </div>
+                   <div>
+                      <h3 className="text-sm font-bold leading-tight">{item.title}</h3>
+                      <p className="text-[9px] font-black text-blue-500 uppercase tracking-widest mt-0.5">{item.company}</p>
+                   </div>
+                </div>
 
-                      {/* Section 1: Brand */}
-                      <div className="flex items-center gap-6 min-w-[320px]">
-                        <div className={`w-20 h-20 md:w-24 md:h-24 rounded-[2rem] flex items-center justify-center text-4xl font-black shadow-inner ${darkMode ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white' : 'bg-slate-900 text-white'
-                          }`}>
-                          {item.company?.charAt(0)}
-                        </div>
-                        <div className="space-y-1">
-                          <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none italic uppercase">
-                            {item.title}
-                          </h2>
-                          <div className="flex flex-wrap gap-2 pt-2">
-                            <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase ${darkMode ? 'bg-white/10 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
-                              {item.company}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                {/* Compact Metrics Grid */}
+                <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-4">
+                   <MetricItem icon={<MapPin size={12}/>} label="Loc" value={item.location} />
+                   <MetricItem icon={<Layers size={12}/>} label="Mode" value={item.job_type} />
+                   <MetricItem icon={<Wallet size={12}/>} label="Pay" value={item.stipend} isGreen />
+                   <MetricItem icon={<Globe2 size={12}/>} label="Src" value={item.source_type} />
+                </div>
 
-                      {/* Section 2: Info Bento */}
-                      <div className="flex-1 space-y-6">
-                        <div className="flex flex-wrap gap-2">
-                          {item.skills?.split(',').map((skill, i) => (
-                            <span key={i} className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase border ${darkMode ? 'border-white/5 bg-white/5 text-slate-400' : 'border-slate-100 bg-slate-50 text-slate-500'
-                              }`}>
-                              {skill.trim()}
-                            </span>
-                          ))}
-                        </div>
+                {/* Vertical Divider */}
+                <div className="hidden lg:block w-[1px] h-10 bg-inherit opacity-10" />
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4 border-t border-dashed border-slate-500/20">
-                          <MiniMetric icon={<MapPin size={14} />} label="Loc" value={item.location} darkMode={darkMode} />
-                          <MiniMetric icon={<Layers size={14} />} label="Type" value={item.job_type} darkMode={darkMode} />
-                          <MiniMetric icon={<Wallet size={14} />} label="Pay" value={item.stipend} darkMode={darkMode} isEmerald />
-                          <MiniMetric icon={<Globe2 size={14} />} label="Src" value={item.source_type} darkMode={darkMode} />
-                        </div>
-                      </div>
-
-                      {/* Section 3: Admin Actions */}
-                      <div className="flex flex-row lg:flex-col justify-center items-center gap-4">
-                        <button
-                          onClick={() => handleApprove(item.id)}
-                          className="flex-1 lg:flex-none flex items-center gap-2 px-8 py-4 rounded-[1.5rem] bg-emerald-500 text-white font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
-                        >
-                          <CheckCircle size={18} /> Approve
-                        </button>
-                        <button
-                          onClick={() => handleReject(item.id)}
-                          className={`flex-1 lg:flex-none flex items-center gap-2 px-8 py-4 rounded-[1.5rem] font-black text-xs uppercase tracking-widest transition-all active:scale-95 ${darkMode ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white' : 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white'
-                            }`}
-                        >
-                          <XCircle size={18} /> Reject
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-slate-500/10 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] opacity-40 italic">
-                      <span>Submitted: {new Date(item.created_at).toLocaleDateString()}</span>
-                      <span>ID: {item.id.slice(0, 8)}</span>
-                    </div>
-                  </div>
+                {/* SaaS Actions */}
+                <div className="flex items-center gap-2">
+                   <button 
+                    onClick={() => handleApprove(item.id)}
+                    className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${theme.accent} text-black font-black text-[9px] uppercase tracking-widest active:scale-95 transition-all`}
+                   >
+                     <CheckCircle size={14} /> Approve
+                   </button>
+                   <button 
+                    onClick={() => handleReject(item.id)}
+                    className={`p-2 rounded-lg border transition-colors ${darkMode ? 'border-white/5 hover:bg-red-500/10 text-red-500' : 'border-slate-200 hover:bg-red-50 text-red-600'}`}
+                   >
+                     <Trash2 size={14} />
+                   </button>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }
-
-/* --- Optimized Sub-Components --- */
-
-const StatBox = ({ label, value, color }) => (
-  <div className="p-6 text-center">
-    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">{label}</p>
-    <p className={`text-4xl font-black ${color}`}>{value}</p>
-  </div>
-);
-
-const MiniMetric = ({ icon, label, value, isEmerald, darkMode }) => (
-  <div className="space-y-1 overflow-hidden">
-    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+const MetricItem = ({ icon, label, value, isGreen }) => (
+  <div className="overflow-hidden">
+    <p className="text-[8px] font-bold text-slate-500 uppercase tracking-tighter flex items-center gap-1.5 mb-0.5">
       {icon} {label}
     </p>
-    <p className={`text-xs font-black truncate uppercase ${isEmerald ? 'text-emerald-500' : darkMode ? 'text-slate-200' : 'text-slate-800'
-      }`}>
+    <p className={`text-[10px] font-bold truncate uppercase ${isGreen ? 'text-emerald-500' : 'opacity-80'}`}>
       {value || '---'}
     </p>
   </div>

@@ -35,6 +35,9 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/user', authRoutes);
 app.use('/api/internships-jobs-all', JobAndInternshipRoutes);
+app.use('/api/job-single', JobAndInternshipRoutes);
+app.use('/api/job-single', JobAndInternshipRoutes);
+app.use('/api/update-job', JobAndInternshipRoutes);
 app.use('/api/resources', ResourcesRoutes);
 app.use('/api/myapplications', MyApplicationRoutes);
 app.use('/api/all-blogs', BlogsRoutes);

@@ -7,6 +7,7 @@ import { Spin } from 'antd';
 import { useSelector } from 'react-redux';
 
 export default function UpdateInternship() {
+
   const { id } = useParams();
   const navigate = useNavigate();
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -26,23 +27,26 @@ export default function UpdateInternship() {
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
 
-  // Fetch internship data
   useEffect(() => {
     const fetchInternship = async () => {
-      const { data, error } = await supabase
-        .from('internships')
-        .select('*')
-        .eq('id', id)
-        .single();
+      try {
+        const res = await API.get(`/api/job-single/${id}`);
 
-      if (error) {
-        toast.error('Failed to fetch internship');
-        console.error(error.message);
-      } else {
-        setForm(data);
+        if (!res.data.success) {
+          toast.error("Failed to fetch internship");
+          return;
+        }
+
+        setForm(res.data.data);
       }
+      catch (error) {
+        toast.error("Failed to fetch internship");
+        console.error(error);
+      }
+
       setInitializing(false);
     };
+
     fetchInternship();
   }, [id]);
 
@@ -54,32 +58,29 @@ export default function UpdateInternship() {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase
-      .from('internships')
-      .update(form)
-      .eq('id', id);
+    try {
+      const res = await API.put(`/api/update-job/${id}`, form);
+
+      if (!res.data.success) {
+        toast.error("Failed to update internship!");
+        return;
+      }
+
+      toast.success("Internship updated successfully!");
+      navigate("/admin/all-internships");
+
+    } 
+    catch (error) {
+      toast.error("Failed to update internship!");
+      console.error(error);
+    }
 
     setLoading(false);
-
-    if (error) {
-      toast.error('Failed to update internship!');
-      console.error(error.message);
-    } else {
-      toast.success('Internship updated successfully!');
-      navigate('/admin/all-internships');
-    }
   };
-
-  if (initializing) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Spin size={30} />
-      </div>
-    );
-  }
 
   return (
     <div className="flex justify-center items-center px-4 pt-6 pb-14">
@@ -87,16 +88,13 @@ export default function UpdateInternship() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className={`w-full max-w-2xl ${
-          darkMode ? 'bg-gray-900' : 'bg-white/5'
-        } backdrop-blur-md rounded-2xl p-8 shadow-xl border ${
-          darkMode ? 'border-red-500/30' : 'border-white/10'
-        }`}
+        className={`w-full max-w-2xl ${darkMode ? 'bg-gray-900' : 'bg-white/5'
+          } backdrop-blur-md rounded-2xl p-8 shadow-xl border ${darkMode ? 'border-red-500/30' : 'border-white/10'
+          }`}
       >
         <h2
-          className={`text-2xl font-bold mb-6 text-center ${
-            darkMode ? 'text-red-400' : 'text-blue-400'
-          }`}
+          className={`text-2xl font-bold mb-6 text-center ${darkMode ? 'text-red-400' : 'text-blue-400'
+            }`}
         >
           Update Jobs & Internships – Uplify
         </h2>
@@ -117,9 +115,8 @@ export default function UpdateInternship() {
               value={form[name] || ''}
               onChange={handleChange}
               placeholder={placeholder}
-              className={`w-full px-4 py-3 rounded-lg ${
-                darkMode ? 'bg-gray-800 text-white' : 'bg-white/10 text-white'
-              } placeholder:text-gray-400 outline-none`}
+              className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white/10 text-white'
+                } placeholder:text-gray-400 outline-none`}
               {...(required && { required: true })}
             />
           ))}
@@ -128,9 +125,8 @@ export default function UpdateInternship() {
             name="type"
             value={form.type}
             onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg outline-none ${
-              darkMode ? 'bg-gray-800 text-red-400' : 'bg-white/10 text-blue-500'
-            }`}
+            className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-gray-800 text-red-400' : 'bg-white/10 text-blue-500'
+              }`}
             required
           >
             <option value="" disabled>Select Internship Type</option>
@@ -143,9 +139,8 @@ export default function UpdateInternship() {
             name="job_type"
             value={form.job_type}
             onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg outline-none ${
-              darkMode ? 'bg-gray-800 text-red-400' : 'bg-white/10 text-blue-500'
-            }`}
+            className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-gray-800 text-red-400' : 'bg-white/10 text-blue-500'
+              }`}
             required
           >
             <option value="" disabled>Select Job Type</option>
@@ -182,9 +177,8 @@ export default function UpdateInternship() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full ${
-              darkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-purple-600 hover:bg-purple-700'
-            } text-white font-bold py-3 rounded-lg transition disabled:opacity-50`}
+            className={`w-full ${darkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-purple-600 hover:bg-purple-700'
+              } text-white font-bold py-3 rounded-lg transition disabled:opacity-50`}
           >
             {loading ? 'Updating...' : 'Update Jobs & Internships'}
           </button>

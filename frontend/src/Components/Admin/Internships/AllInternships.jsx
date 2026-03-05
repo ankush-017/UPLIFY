@@ -35,12 +35,13 @@ export default function AllInternships() {
     const handleDelete = async (id) => {
         if (window.confirm("Permanent delete? This cannot be undone.")) {
             try {
-                const res = await API.delete(`/api/internship-job-delete/job/${id}`);
+                const res = await API.delete(`/api/internship-jobs-delete/job/${id}`);
                 if (res.data.success) {
                     toast.success("Listing removed");
                     fetchInternships();
                 }
-            } catch (err) {
+            } 
+            catch (err) {
                 toast.error("Delete failed");
             }
         }

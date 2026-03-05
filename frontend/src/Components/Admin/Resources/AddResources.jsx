@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { supabase } from '../../../../superbaseClient.js';
 import { toast } from 'react-hot-toast';
 import Seo from '../../Seo.jsx';
+import API from '../../../API.js';
 
 function AddResources() {
     const [form, setForm] = useState({
@@ -21,30 +21,23 @@ function AddResources() {
     };
 
     const handleSubmit = async (e) => {
+        
         e.preventDefault();
-
-        const { error } = await supabase.from('resources').insert([
-            {
-                ...form,
+        try {
+            const res = await API.post('/api/resources/add', form);
+            if (!res.data.success) {
+                toast.error("Failed to add resource");
+                return;
             }
-        ]);
+            toast.success("Resource added successfully");
 
-        if (error) {
-            toast.error('Failed to add blog');
-            console.error(error);
-        } else {
-            toast.success('Course added successfully!');
-            setForm({
-                title: '',
-                description: '',
-                author: '',
-                category: '',
-                image: '',
-                sellprice: '',
-                originalprice: '',
-                courseUrl: ''
-            });
+        } 
+        catch (err) {
+            console.log(err);
+            toast.error("Something went wrong");
+
         }
+
     };
 
     return (

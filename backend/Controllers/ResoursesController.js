@@ -17,3 +17,6 @@ export const ResoursesController = async (req, res) => {
     }
 
 }
+
+
+export const addResoursesController = async (re)

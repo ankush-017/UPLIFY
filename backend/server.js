@@ -40,6 +40,8 @@ app.use('/api/myapplications', MyApplicationRoutes);
 app.use('/api/all-blogs', BlogsRoutes);
 app.use('/api/community', CommunityRoutes);
 app.use('/api/add-internships', JobAndInternshipRoutes);
+app.use('/api/add-blogs', BlogsRoutes);
+app.use('/api/update-blogs', BlogsRoutes);
 app.use('/api',geminiRoutes)
 
 const PORT = process.env.PORT || 5000;

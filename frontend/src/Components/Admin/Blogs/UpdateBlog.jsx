@@ -1,43 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../../../superbaseClient.js';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  ArrowLeft, CheckCircle, Terminal, User, Tag, Calendar, Edit3, Sparkles, Image as ImageIcon, Layout, Eye
+} from 'lucide-react';
 import Seo from '../../Seo.jsx';
+import API from '../../../API.js';
 
 function UpdateBlog() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [post, setPost] = useState(null);
     const [form, setForm] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [previewMode, setPreviewMode] = useState(false);
+
+    // ⚡ Redux state for dark mode
+    const darkMode = useSelector((state) => state.theme.darkMode);
 
     useEffect(() => {
         const fetchPost = async () => {
-            const { data, error } = await supabase
-                .from('blogs')
-                .select('*')
-                .eq('id', id)
-                .single();
-
-            if (error) {
-                console.error('Error fetching blog:', error.message);
-                toast.error('Failed to load blog data');
+            try {
+                setLoading(true);
+                const res = await API.get('/api/all-blogs');
+                if (!res.data.success) throw new Error(res.data.message);
+                const data = res.data.blogs.find(blog => blog.id === id);
+                if (!data) { toast.error("Blog not found"); return; }
+                setForm(data);
+            } catch (err) {
+                toast.error("Failed to load blog data");
+            } finally {
+                setLoading(false);
             }
-            else {
-                setPost(data);
-                setForm({
-                    title: data.title,
-                    excerpt: data.excerpt,
-                    author: data.author,
-                    category: data.category,
-                    image: data.image,
-                    fullContent: data.fullContent,
-                    date: data.date,
-                });
-            }
-            setLoading(false);
         };
-
         fetchPost();
     }, [id]);
 
@@ -48,120 +43,148 @@ function UpdateBlog() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const { error } = await supabase
-            .from('blogs')
-            .update({
-                ...form,
-                fullContent: form.fullContent.trim(),
-            })
-            .eq('id', id);
-
-        if (error) {
-            toast.error('Failed to update blog');
-            console.error(error);
-        }
-        else {
-            toast.success('Blog updated successfully!');
-            navigate('/admin/all-blogs');
+        try {
+            setLoading(true);
+            const payload = { ...form, fullContent: form.fullContent?.trim() };
+            const res = await API.put(`/api/update-blogs/${id}`, payload);
+            if (!res.data?.success) throw new Error(res.data?.message || "Update failed");
+            toast.success("Blog updated successfully! ✨");
+            navigate("/admin/all-blogs");
+        } catch (error) {
+            toast.error(error.message || "Something went wrong");
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (loading || !form) {
-        return <div className="text-white text-center flex justify-center items-center h-screen">Loading...</div>;
-    }
+    // 🎨 Theme Engine - Yellow & Green focus
+    const theme = {
+        bg: darkMode ? 'bg-[#050505]' : 'bg-[#FAFAFA]',
+        card: darkMode ? 'bg-[#0D0D0D] border-white/5' : 'bg-white border-slate-200 shadow-sm',
+        input: darkMode ? 'bg-white/[0.02] border-white/10 text-white focus:border-lime-500/50' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-yellow-500',
+        label: darkMode ? 'text-lime-500' : 'text-yellow-600',
+        textMain: darkMode ? 'text-white' : 'text-slate-900',
+        textMuted: darkMode ? 'text-slate-500' : 'text-slate-400',
+        accentGradient: 'from-yellow-400 to-lime-500'
+    };
+
+    if (loading || !form) return (
+        <div className={`flex flex-col items-center justify-center h-screen ${theme.bg}`}>
+            <Terminal className={`animate-pulse ${theme.label}`} size={40} />
+        </div>
+    );
 
     return (
-        <>
-            <Seo
-                title="Update Blog | Uplify Admin"
-                description="Edit and update your existing blog post."
-                url="https://uplify.in/admin/blogs/update/:id"
-                image="https://uplify.in/og-image-update-blog.jpg"
-            />
+        <div className={`min-h-screen transition-colors duration-500 ${theme.bg} ${theme.textMain} font-sans selection:bg-lime-500/30`}>
+            <Seo title="Update Blog | Uplify Admin" />
 
-            <div className="min-h-screen px-4 py-7 md:px-10 text-white">
-                <div className="max-w-4xl mx-auto p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-xl">
-                    <h1 className="text-3xl font-bold pb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
-                        Update Blog
+            {/* Smart Navbar */}
+            <nav className={`sticky top-0 z-50 backdrop-blur-md px-6 py-4 border-b ${darkMode ? 'bg-black/40 border-white/5' : 'bg-white/70 border-slate-200'}`}>
+                <div className="max-w-7xl mx-auto flex items-center justify-between">
+                    <button onClick={() => navigate(-1)} className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${theme.textMuted} hover:${theme.label}`}>
+                        <ArrowLeft size={14} /> Return
+                    </button>
+                    
+                    <button 
+                        onClick={() => setPreviewMode(!previewMode)}
+                        className={`flex items-center gap-2 px-6 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all ${
+                            previewMode 
+                            ? 'bg-lime-500 border-lime-500 text-black shadow-lg shadow-lime-500/20' 
+                            : `${theme.card}`
+                        }`}
+                    >
+                        {previewMode ? <Edit3 size={14} /> : <Eye size={14} />}
+                        {previewMode ? 'Editor' : 'Preview'}
+                    </button>
+                </div>
+            </nav>
+
+            <main className="max-w-7xl mx-auto px-6 py-12">
+                <header className="mb-10 text-center lg:text-left">
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-2">
+                        {previewMode ? 'Live Render' : 'Update Blog'}
                     </h1>
+                    <p className={`text-sm font-medium ${theme.textMuted}`}>
+                        Update your article content and publish to the Uplify network.
+                    </p>
+                </header>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {[
-                            { name: 'title', placeholder: 'Blog title', required: true },
-                            { name: 'excerpt', placeholder: 'Short excerpt', required: true },
-                            { name: 'author', placeholder: 'Author name', required: true },
-                            { name: 'category', placeholder: 'Category (e.g., AI, Coding)' },
-                            { name: 'image', placeholder: 'Image URL', type: 'url' },
-                        ].map(({ name, placeholder, required = false, type = 'text' }) => (
-                            <div key={name} className="space-y-2">
-                                <label
-                                    htmlFor={name}
-                                    className="block text-sm font-medium text-blue-400 capitalize"
-                                >
-                                    {name}
-                                </label>
-                                <input
-                                    id={name}
-                                    name={name}
-                                    type={type}
-                                    required={required}
-                                    value={form[name]}
-                                    onChange={handleChange}
-                                    placeholder={placeholder}
-                                    className="w-full p-3 rounded-lg bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                                />
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                    {/* Left: Editor Section */}
+                    <form onSubmit={handleSubmit} className={`space-y-6 transition-all duration-500 ${previewMode ? 'lg:col-span-6' : 'lg:col-span-10 lg:col-start-1'}`}>
+                        
+                        <div className={`p-8 rounded-[2.5rem] border ${theme.card}`}>
+                            <label className={`text-[10px] font-black uppercase tracking-widest mb-4 block ${theme.label}`}>Manifest Headline</label>
+                            <input name="title" value={form.title} onChange={handleChange} className="w-full bg-transparent text-3xl font-bold outline-none placeholder:opacity-20" placeholder="Title..." required />
+                        </div>
+
+                        {!previewMode && (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    {[
+                                        { name: 'author', label: 'Curator', icon: <User size={12}/> },
+                                        { name: 'category', label: 'Taxonomy', icon: <Tag size={12}/> },
+                                        { name: 'date', label: 'Date', icon: <Calendar size={12}/>, type: 'date' },
+                                    ].map((f) => (
+                                        <div key={f.name} className={`p-6 rounded-3xl border transition-all ${theme.input}`}>
+                                            <label className="flex items-center gap-2 text-[9px] font-black uppercase text-slate-500 mb-2">{f.icon} {f.label}</label>
+                                            <input type={f.type || 'text'} name={f.name} value={form[f.name]} onChange={handleChange} className="w-full bg-transparent outline-none font-bold text-sm [color-scheme:dark]" required />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={`p-6 rounded-3xl border ${theme.input}`}>
+                                    <label className="flex items-center gap-2 text-[9px] font-black uppercase text-slate-500 mb-2"><ImageIcon size={12}/> Image URL</label>
+                                    <input name="image" value={form.image} onChange={handleChange} className="w-full bg-transparent outline-none font-mono text-xs text-blue-500" placeholder="https://..." />
+                                </div>
+                            </>
+                        )}
+
+                        <div className={`rounded-[2.5rem] border overflow-hidden ${theme.card}`}>
+                            <div className={`px-8 py-4 border-b flex justify-between items-center ${darkMode ? 'bg-white/[0.02]' : 'bg-slate-50'}`}>
+                                <span className={`text-[9px] font-black uppercase tracking-widest ${theme.textMuted}`}>Markdown Kernel</span>
+                                <div className="flex gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/20" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-lime-500/20" />
+                                </div>
                             </div>
-                        ))}
-
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="fullContent"
-                                className="block text-sm font-medium text-blue-400"
-                            >
-                                Full Content (Markdown)
-                            </label>
-                            <textarea
-                                id="fullContent"
-                                name="fullContent"
-                                placeholder="Write full blog content in Markdown..."
-                                value={form.fullContent}
-                                onChange={handleChange}
-                                rows={10}
-                                required
-                                className="w-full p-3 rounded-lg bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            <textarea 
+                                name="fullContent" 
+                                rows={previewMode ? 24 : 15} 
+                                value={form.fullContent} 
+                                onChange={handleChange} 
+                                className="w-full p-8 bg-transparent outline-none font-mono text-sm leading-relaxed resize-none transition-colors focus:bg-lime-500/[0.01]" 
+                                required 
                             />
                         </div>
-
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="date"
-                                className="block text-sm font-medium text-blue-400"
-                            >
-                                Blog Date
-                            </label>
-                            <input
-                                type="date"
-                                id="date"
-                                name="date"
-                                value={form.date}
-                                onChange={handleChange}
-                                required
-                                className="w-full p-3 rounded-lg bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 py-3 rounded-lg text-white font-semibold"
-                        >
-                            Update Blog
+                        <button type="submit" disabled={loading} className={`w-full py-6 rounded-[2rem] bg-gradient-to-r ${theme.accentGradient} text-black font-black uppercase tracking-[0.3em] text-xs transition-all hover:scale-[1.01] active:scale-95 shadow-xl shadow-lime-500/10 flex items-center justify-center gap-3`}>
+                            {loading ? 'SYNCHRONIZING...' : <>PUSH TO PRODUCTION <CheckCircle size={18} /></>}
                         </button>
                     </form>
 
+                    {/* Right: Live Preview - Now darkMode Responsive */}
+                    {previewMode && (
+                        <div className={`lg:col-span-6 sticky top-32 h-[85vh] overflow-y-auto rounded-[3rem] border p-12 transition-all ${darkMode ? 'bg-white/[0.01] border-white/10' : 'bg-slate-50 border-slate-200 shadow-inner'}`}>
+                            <div className={`prose prose-sm ${darkMode ? 'prose-invert' : ''} max-w-none`}>
+                                <div className="flex items-center gap-2 text-lime-500 font-black text-[10px] uppercase tracking-[0.4em] mb-10">
+                                    <Layout size={16}/> Virtual Environment Render
+                                </div>
+                                {form.image && <img src={form.image} className="w-full h-72 object-cover rounded-[2rem] mb-10 shadow-2xl" alt="Cover" />}
+                                <h2 className={`text-5xl font-black mb-6 tracking-tighter leading-none ${theme.textMain}`}>{form.title || 'Untitled_Draft'}</h2>
+                                <div className="flex flex-wrap gap-4 text-[10px] font-black mb-10 uppercase tracking-widest opacity-60">
+                                    <span className="px-3 py-1 bg-lime-500/10 text-lime-500 rounded-lg">{form.category}</span>
+                                    <span className="py-1">By {form.author}</span>
+                                    <span className="py-1">{form.date}</span>
+                                </div>
+                                <div className={`text-xl leading-relaxed whitespace-pre-wrap ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                                    {form.fullContent || 'Awaiting transmission...'}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            </div>
-        </>
+            </main>
+        </div>
     );
 }
 

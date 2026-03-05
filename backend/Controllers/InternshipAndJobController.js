@@ -184,10 +184,11 @@ export const getPendingInternshipsController = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from('internships')
-      .select('*')
-      .order('created_at', { ascending: false });
-      
+      .from("internships")
+      .select("*")
+      .eq("status", "pendingdd")
+      .order("created_at", { ascending: false });
+
     if (error) {
       console.log("Supabase error:", error);
 

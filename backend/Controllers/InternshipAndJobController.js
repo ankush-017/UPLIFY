@@ -167,6 +167,107 @@ export const updateInternshipController = async (req, res) => {
       data
     });
 
+  }
+  catch (error) {
+    console.log(error);
+
+    res.status(500).send({
+      success: false,
+      message: "Server error"
+    });
+  }
+
+};
+
+
+export const getPendingInternshipsController = async (req, res) => {
+
+  try {
+    const { data, error } = await supabase
+      .from("internships")
+      .select("*")
+      .eq("status", "pending")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      return res.status(400).send({
+        success: false,
+        message: "Failed to fetch pending internships",
+        error
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      internships: data
+    });
+
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Server error"
+    });
+  }
+
+};
+
+
+export const approveInternshipController = async (req, res) => {
+
+  try {
+    const { id } = req.params;
+    const { error } = await supabase
+      .from("internships")
+      .update({ status: "approved" })
+      .eq("id", id);
+
+    if (error) {
+      return res.status(400).send({
+        success: false,
+        message: "Approval failed",
+        error
+      });
+    }
+    res.status(200).send({
+      success: true,
+      message: "Internship approved"
+    });
+
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Server error"
+    });
+  }
+
+};
+
+
+export const rejectInternshipController = async (req, res) => {
+
+  try {
+    const { id } = req.params;
+    const { error } = await supabase
+      .from("internships")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      return res.status(400).send({
+        success: false,
+        message: "Deletion failed",
+        error
+      });
+    }
+    res.status(200).send({
+      success: true,
+      message: "Internship deleted"
+    });
+
   } 
   catch (error) {
     console.log(error);
@@ -176,5 +277,5 @@ export const updateInternshipController = async (req, res) => {
       message: "Server error"
     });
   }
-  
+
 };

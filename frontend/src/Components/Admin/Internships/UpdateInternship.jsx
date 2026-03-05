@@ -1,189 +1,209 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '../../../../superbaseClient.js';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Spin } from 'antd';
 import { useSelector } from 'react-redux';
+import { 
+  ArrowLeft, Briefcase, MapPin, IndianRupee, 
+  Code, Save, Zap, Globe, Link as LinkIcon, Database
+} from 'lucide-react';
+import API from '../../../API.js';
 
 export default function UpdateInternship() {
-
   const { id } = useParams();
   const navigate = useNavigate();
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   const [form, setForm] = useState({
-    title: '',
-    company: '',
-    location: '',
-    stipend: '',
-    type: '',
-    job_type: '',
-    link: '',
-    source_type: '',
-    skills: '',
+    title: '', company: '', location: '', stipend: '',
+    type: '', job_type: '', link: '', source_type: '', skills: '',
   });
 
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
 
+  // SaaS Theme Map
+  const theme = {
+    bg: darkMode ? 'bg-[#080808]' : 'bg-[#F9FAFB]',
+    card: darkMode ? 'bg-[#111111] border-white/5' : 'bg-white border-slate-200 shadow-sm',
+    input: darkMode ? 'bg-white/[0.02] border-white/10 text-white focus:border-lime-500/50' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-yellow-500',
+    text: darkMode ? 'text-white' : 'text-slate-900',
+    muted: darkMode ? 'text-slate-500' : 'text-slate-400',
+    accent: 'from-yellow-400 to-lime-500'
+  };
+
   useEffect(() => {
     const fetchInternship = async () => {
       try {
         const res = await API.get(`/api/job-single/${id}`);
-
-        if (!res.data.success) {
-          toast.error("Failed to fetch internship");
-          return;
-        }
-
-        setForm(res.data.data);
+        if (res.data.success) setForm(res.data.data);
+      } catch (error) {
+        toast.error("Fetch failed");
+      } finally {
+        setInitializing(false);
       }
-      catch (error) {
-        toast.error("Failed to fetch internship");
-        console.error(error);
-      }
-
-      setInitializing(false);
     };
-
     fetchInternship();
   }, [id]);
 
   const handleChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
     setLoading(true);
-
     try {
       const res = await API.put(`/api/update-job/${id}`, form);
-
-      if (!res.data.success) {
-        toast.error("Failed to update internship!");
-        return;
+      if (res.data.success) {
+        toast.success("Database updated");
+        navigate("/admin/all-internships");
       }
-
-      toast.success("Internship updated successfully!");
-      navigate("/admin/all-internships");
-
-    } 
-    catch (error) {
-      toast.error("Failed to update internship!");
-      console.error(error);
+    } catch (error) {
+      toast.error("Update failed");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
+  if (initializing) return (
+    <div className={`h-screen flex items-center justify-center font-mono text-xs tracking-widest ${theme.bg} ${theme.muted}`}>
+      LOADING_RECORDS...
+    </div>
+  );
+
   return (
-    <div className="flex justify-center items-center px-4 pt-6 pb-14">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={`w-full max-w-2xl ${darkMode ? 'bg-gray-900' : 'bg-white/5'
-          } backdrop-blur-md rounded-2xl p-8 shadow-xl border ${darkMode ? 'border-red-500/30' : 'border-white/10'
-          }`}
-      >
-        <h2
-          className={`text-2xl font-bold mb-6 text-center ${darkMode ? 'text-red-400' : 'text-blue-400'
-            }`}
-        >
-          Update Jobs & Internships – Uplify
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {[
-            { name: 'title', placeholder: 'Jobs & Internships (e.g., Software Engineer Developer)', required: true },
-            { name: 'company', placeholder: 'Company Name', required: true },
-            { name: 'skills', placeholder: 'Skills (e.g., React, Node.js) (Optional)' },
-            { name: 'location', placeholder: 'Location (e.g., Remote) (Optional)' },
-            { name: 'stipend', placeholder: 'Stipend or Salary (e.g., ₹10,000/month) (Optional)' },
-            { name: 'link', placeholder: 'Link (Optional)' },
-          ].map(({ name, placeholder, required }) => (
-            <input
-              key={name}
-              type="text"
-              name={name}
-              value={form[name] || ''}
-              onChange={handleChange}
-              placeholder={placeholder}
-              className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white/10 text-white'
-                } placeholder:text-gray-400 outline-none`}
-              {...(required && { required: true })}
-            />
-          ))}
-
-          <select
-            name="type"
-            value={form.type}
-            onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-gray-800 text-red-400' : 'bg-white/10 text-blue-500'
-              }`}
-            required
-          >
-            <option value="" disabled>Select Internship Type</option>
-            <option value="Remote">Remote</option>
-            <option value="On-Site">On-Site</option>
-            <option value="Hybrid">Hybrid</option>
-          </select>
-
-          <select
-            name="job_type"
-            value={form.job_type}
-            onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg outline-none ${darkMode ? 'bg-gray-800 text-red-400' : 'bg-white/10 text-blue-500'
-              }`}
-            required
-          >
-            <option value="" disabled>Select Job Type</option>
-            <option value="Internships">Internship</option>
-            <option value="Full-Time">Full-Time</option>
-          </select>
-
-          <div className="flex gap-6 mt-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="source_type"
-                value="on-uplify"
-                checked={form.source_type === 'on-uplify'}
-                onChange={handleChange}
-                className="appearance-none w-5 h-5 border rounded-full checked:border-purple-500 checked:bg-purple-600 transition-all duration-200"
-              />
-              <span className={darkMode ? 'text-red-300' : 'text-blue-300'}>Posted on Uplify</span>
-            </label>
-
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="source_type"
-                value="forwarded"
-                checked={form.source_type === 'forwarded'}
-                onChange={handleChange}
-                className="appearance-none w-5 h-5 border rounded-full checked:border-yellow-500 checked:bg-yellow-400 transition-all duration-200"
-              />
-              <span className={darkMode ? 'text-red-300' : 'text-blue-300'}>Forwarded Source</span>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full ${darkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-purple-600 hover:bg-purple-700'
-              } text-white font-bold py-3 rounded-lg transition disabled:opacity-50`}
-          >
-            {loading ? 'Updating...' : 'Update Jobs & Internships'}
+    <div className={`min-h-screen ${theme.bg} ${theme.text} transition-colors duration-300 font-sans selection:bg-lime-500/30`}>
+      
+      {/* Header */}
+      <nav className={`sticky top-0 z-50 backdrop-blur-md border-b ${darkMode ? 'bg-black/40 border-white/5' : 'bg-white/70 border-slate-200'} px-6 py-3`}>
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <button onClick={() => navigate(-1)} className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${theme.muted} hover:text-lime-500 transition-colors`}>
+            <ArrowLeft size={14} /> Back to Hub
           </button>
+          <div className="flex items-center gap-3">
+            <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded border ${darkMode ? 'border-lime-500/30 text-lime-400' : 'border-yellow-500/30 text-yellow-600'}`}>
+              Admin v2.0
+            </span>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-4xl mx-auto px-6 py-10 pb-24">
+        
+        {/* Compact Title Section */}
+        <div className="mb-10 flex items-center gap-4">
+            <div className={`p-3 rounded-xl border ${theme.card}`}>
+                <Database size={24} className="text-lime-500" />
+            </div>
+            <div>
+                <h1 className="text-2xl font-bold tracking-tight">Edit Opportunity</h1>
+                <p className={`text-xs ${theme.muted}`}>Modify listing details for <span className="text-blue-500 font-mono italic">{id.slice(0,8)}</span></p>
+            </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Core Section Bento */}
+            <div className={`p-6 rounded-2xl border ${theme.card} space-y-6`}>
+                <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-lime-500 uppercase tracking-widest">Job Headline</label>
+                    <input name="title" value={form.title} onChange={handleChange} className="w-full bg-transparent text-lg font-bold outline-none border-b border-transparent focus:border-white/5 pb-1" placeholder="Title..." required />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Company</label>
+                        <div className="flex items-center gap-2 border-b border-inherit pb-1">
+                            <Briefcase size={14} className="opacity-30" />
+                            <input name="company" value={form.company} onChange={handleChange} className="w-full bg-transparent text-sm font-semibold outline-none" required />
+                        </div>
+                    </div>
+                    <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Location</label>
+                        <div className="flex items-center gap-2 border-b border-inherit pb-1 text-blue-500">
+                            <MapPin size={14} />
+                            <input name="location" value={form.location} onChange={handleChange} className="w-full bg-transparent text-sm font-semibold outline-none" placeholder="Remote/Hybrid" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Logistics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                    { label: 'Stipend', name: 'stipend', icon: <IndianRupee size={12}/> },
+                    { label: 'Mode', name: 'type', isSelect: true, options: ['Remote', 'On-Site', 'Hybrid'] },
+                    { label: 'Contract', name: 'job_type', isSelect: true, options: ['Internships', 'Full-Time'] },
+                ].map((f) => (
+                    <div key={f.name} className={`p-4 rounded-xl border ${theme.input}`}>
+                        <label className="flex items-center gap-2 text-[9px] font-bold text-slate-500 uppercase mb-2">
+                           {f.icon} {f.label}
+                        </label>
+                        {f.isSelect ? (
+                            <select name={f.name} value={form[f.name]} onChange={handleChange} className="w-full bg-transparent outline-none text-xs font-bold appearance-none cursor-pointer">
+                                {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+                            </select>
+                        ) : (
+                            <input name={f.name} value={form[f.name]} onChange={handleChange} className="w-full bg-transparent outline-none text-xs font-bold" />
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            {/* Technical Group */}
+            <div className={`p-6 rounded-2xl border ${theme.card} grid grid-cols-1 md:grid-cols-2 gap-6`}>
+                <div className="space-y-1">
+                    <label className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Required Stack</label>
+                    <div className="flex items-center gap-2 text-purple-400">
+                        <Code size={14} />
+                        <input name="skills" value={form.skills} onChange={handleChange} className="w-full bg-transparent text-xs font-bold outline-none" placeholder="Skill tags..." />
+                    </div>
+                </div>
+                <div className="space-y-1">
+                    <label className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">External URL</label>
+                    <div className="flex items-center gap-2 text-yellow-500">
+                        <LinkIcon size={14} />
+                        <input name="link" value={form.link} onChange={handleChange} className="w-full bg-transparent text-[10px] font-mono outline-none opacity-60 focus:opacity-100" placeholder="https://..." />
+                    </div>
+                </div>
+            </div>
+
+            {/* Source Origin Picker */}
+            <div className="flex flex-col sm:flex-row gap-3">
+                {[
+                    { id: 'on-uplify', label: 'Uplify Native', icon: <Zap size={14}/> },
+                    { id: 'forwarded', label: 'Forwarded Stream', icon: <Globe size={14}/> }
+                ].map((s) => (
+                    <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setForm(p => ({...p, source_type: s.id}))}
+                        className={`flex-1 flex items-center justify-between p-4 rounded-xl border transition-all ${
+                            form.source_type === s.id 
+                            ? 'bg-lime-500/5 border-lime-500 text-lime-500' 
+                            : 'bg-transparent border-inherit opacity-40 hover:opacity-100'
+                        }`}
+                    >
+                        <div className="flex items-center gap-3">
+                            {s.icon}
+                            <span className="text-[10px] font-black uppercase tracking-widest">{s.label}</span>
+                        </div>
+                        <div className={`w-2 h-2 rounded-full ${form.source_type === s.id ? 'bg-lime-500' : 'bg-slate-700'}`} />
+                    </button>
+                ))}
+            </div>
+
+            {/* Final Deploy Button */}
+            <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-4 rounded-xl bg-gradient-to-r ${theme.accent} text-black font-black uppercase tracking-[0.2em] text-[10px] transition-all hover:scale-[1.01] active:scale-95 shadow-lg shadow-lime-500/10 flex items-center justify-center gap-3`}
+            >
+                {loading ? 'SYNCING_CLOUD...' : <>DEPLOY UPDATES <Save size={16} /></>}
+            </button>
         </form>
-      </motion.div>
+      </main>
     </div>
   );
 }

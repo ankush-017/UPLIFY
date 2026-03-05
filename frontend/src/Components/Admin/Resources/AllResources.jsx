@@ -12,13 +12,7 @@ export default function AllResources() {
 
     useEffect(() => {
         const fetchResources = async () => {
-            const { data, error } = await supabase.from('resources').select('*');
-            if (error) {
-                console.error('Error fetching resources:', error);
-            } else {
-                setResources(data);
-            }
-            setLoading(false);
+            
         };
         fetchResources();
     }, []);

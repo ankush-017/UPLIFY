@@ -43,10 +43,85 @@ export const addResourcesController = async (req, res) => {
             data
         });
 
-    } 
+    }
     catch (error) {
 
         console.log("Server error:", error);
+
+        res.status(500).send({
+            success: false,
+            message: "Server error"
+        });
+
+    }
+};
+
+
+export const getSingleResourceController = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+        const { data, error } = await supabase
+            .from("resources")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                message: "Failed to fetch resource",
+                error: error.message
+            });
+        }
+
+        res.status(200).send({
+            success: true,
+            resource: data
+        });
+
+    }
+    catch (error) {
+
+        console.log(error);
+
+        res.status(500).send({
+            success: false,
+            message: "Server error"
+        });
+
+    }
+};
+
+
+export const updateResourceController = async (req, res) => {
+    
+    try {
+        const { id } = req.params;
+        const formData = req.body;
+
+        const { data, error } = await supabase
+            .from("resources")
+            .update(formData)
+            .eq("id", id);
+
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                message: "Failed to update resource",
+                error: error.message
+            });
+        }
+
+        res.status(200).send({
+            success: true,
+            message: "Resource updated successfully"
+        });
+
+    } catch (error) {
+
+        console.log(error);
 
         res.status(500).send({
             success: false,

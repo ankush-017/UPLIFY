@@ -6,10 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, MapPin, IndianRupee, Link as LinkIcon, Sparkles, Send, Globe, Zap, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { postCompany } from '../assets/image.js';
+import API from '../API.js'
 
-/** * IMPORTANT: InputField must stay OUTSIDE the main component 
- * to prevent losing focus while typing.
- */
+
 const InputField = ({ label, icon: Icon, darkMode, ...props }) => (
     <div className="space-y-2 w-full group">
         <label
@@ -22,8 +21,8 @@ const InputField = ({ label, icon: Icon, darkMode, ...props }) => (
         <div className="relative">
             <div className={`absolute left-4 top-1/2 -translate-y-1/2 z-10 transition-all duration-300 
             ${darkMode
-                ? 'text-slate-500 group-focus-within:text-[#3DDC84] group-focus-within:scale-110'
-                : 'text-slate-300 group-focus-within:text-[#166534] group-focus-within:scale-110'}`}
+                    ? 'text-slate-500 group-focus-within:text-[#3DDC84] group-focus-within:scale-110'
+                    : 'text-slate-300 group-focus-within:text-[#166534] group-focus-within:scale-110'}`}
             >
                 <Icon size={18} strokeWidth={2.5} />
             </div>
@@ -32,9 +31,9 @@ const InputField = ({ label, icon: Icon, darkMode, ...props }) => (
                 {...props}
                 className={`w-full pl-12 pr-4 py-4 rounded-[1.5rem] outline-none border transition-all duration-300 text-sm font-black
                 ${darkMode
-                    ? 'bg-slate-900/50 border-white/5 text-white placeholder:text-slate-700 focus:border-[#3DDC84] focus:ring-[6px] focus:ring-[#3DDC84]/10 focus:bg-slate-900'
-                    : 'bg-slate-100/50 border-slate-200 text-slate-900 placeholder:text-slate-300 focus:border-[#3DDC84] focus:ring-[6px] focus:ring-[#3DDC84]/10 focus:bg-white shadow-sm'
-                }`}
+                        ? 'bg-slate-900/50 border-white/5 text-white placeholder:text-slate-700 focus:border-[#3DDC84] focus:ring-[6px] focus:ring-[#3DDC84]/10 focus:bg-slate-900'
+                        : 'bg-slate-100/50 border-slate-200 text-slate-900 placeholder:text-slate-300 focus:border-[#3DDC84] focus:ring-[6px] focus:ring-[#3DDC84]/10 focus:bg-white shadow-sm'
+                    }`}
             />
             <div className={`absolute bottom-0 left-6 right-6 h-[2px] rounded-full transition-all duration-500 scale-x-0 group-focus-within:scale-x-100 
             ${darkMode ? 'bg-[#3DDC84] shadow-[0_0_15px_#3DDC84]' : 'bg-[#166534]'}`}
@@ -61,25 +60,43 @@ function PostInternship() {
 
     const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     setLoading(true);
+
+    //     // Logic: Only send link if source_type is forwarded
+    //     const submissionData = { 
+    //         ...form, 
+    //         link: form.source_type === 'on-uplify' ? '' : form.link 
+    //     };
+
+    //     const { error } = await supabase.from('internships').insert([submissionData]);
+    //     setLoading(false);
+
+    //     if (error) {
+    //         toast.error('Failed to publish opportunity');
+    //     } 
+    //     else {
+    //         toast.success('Submitted successfully. Awaiting admin approval.');
+    //         setForm({ ...form, title: '', company: '', location: '', stipend: '', link: '', skills: '' });
+    //     }
+    // };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        
-        // Logic: Only send link if source_type is forwarded
-        const submissionData = { 
-            ...form, 
-            link: form.source_type === 'on-uplify' ? '' : form.link 
-        };
-
-        const { error } = await supabase.from('internships').insert([submissionData]);
-        setLoading(false);
-
-        if (error) {
+        try {
+            setLoading(true);
+            const res = await API.post("/api/add-internships", form);
+            if (res.data.success) {
+                toast.success('Submitted successfully. Awaiting admin approval.');
+                setForm({ title: '', company: '', location: '', stipend: '', type: '', job_type: '', link: '', source_type: 'on-uplify', skills: '' });
+            }
+        } 
+        catch (err) {
             toast.error('Failed to publish opportunity');
         } 
-        else {
-            toast.success('Submitted successfully. Awaiting admin approval.');
-            setForm({ ...form, title: '', company: '', location: '', stipend: '', link: '', skills: '' });
+        finally {
+            setLoading(false);
         }
     };
 
@@ -162,11 +179,11 @@ function PostInternship() {
                                 {/* CONDITIONAL LINK FIELD */}
                                 <AnimatePresence mode="wait">
                                     {form.source_type === 'forwarded' && (
-                                        <motion.div 
+                                        <motion.div
                                             key="link-field"
-                                            initial={{ height: 0, opacity: 0, y: -10 }} 
-                                            animate={{ height: 'auto', opacity: 1, y: 0 }} 
-                                            exit={{ height: 0, opacity: 0, y: -10 }} 
+                                            initial={{ height: 0, opacity: 0, y: -10 }}
+                                            animate={{ height: 'auto', opacity: 1, y: 0 }}
+                                            exit={{ height: 0, opacity: 0, y: -10 }}
                                             className="overflow-hidden"
                                         >
                                             <InputField darkMode={darkMode} label="Application Link" icon={LinkIcon} name="link" value={form.link} onChange={handleChange} placeholder="https://careers.yourcompany.com" required />

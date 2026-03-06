@@ -79,7 +79,6 @@ function UpdateResources() {
         }
     };
 
-    // 🎨 SaaS Theme Engine
     const theme = {
         bg: darkMode ? 'bg-[#050505]' : 'bg-[#F8FAFC]',
         card: darkMode ? 'bg-[#0D0D0D] border-white/5 shadow-2xl' : 'bg-white border-slate-200 shadow-sm',
@@ -100,7 +99,7 @@ function UpdateResources() {
         <div className={`min-h-screen transition-colors duration-500 ${theme.bg} ${theme.textMain} font-sans selection:bg-lime-500/30`}>
             <Seo title={`Update ${form.title} | Uplify Admin`} />
 
-            <main className="max-w-5xl mx-auto px-6 py-12 md:py-16">
+            <main className="max-w-5xl mx-auto px-6">
                 {/* 🏷️ Top Navigation Bar */}
                 <div className="flex items-center justify-between mb-12">
                     <button 

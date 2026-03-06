@@ -34,7 +34,7 @@ export const getAllInternshipsAndJobsController = async (req, res) => {
 
 export const postInternshipOrJobController = async (req, res) => {
 
-  const { title, company, location, stipend, type, job_type, link, source_type, skills } = req.body;
+  const { title, company, location, stipend, type, job_type, link, source_type, skills, uid} = req.body;
 
   try {
     const { data, error } = await supabase
@@ -50,6 +50,7 @@ export const postInternshipOrJobController = async (req, res) => {
           link,
           source_type,
           skills,
+          uid,
           status: "pending"
         }
       ]);

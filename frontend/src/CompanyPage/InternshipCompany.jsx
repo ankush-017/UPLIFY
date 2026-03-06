@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { Loader2, Briefcase, MapPin, IndianRupee, Clock, Sparkles, ArrowUpRight } from 'lucide-react';
 import { useSelector } from 'react-redux';
+import API from '../API'
 
 function InternshipCompany() {
   const [interns, setInterns] = useState([]);
@@ -11,28 +12,31 @@ function InternshipCompany() {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   const fetchInterns = async () => {
-    setLoading(true);
 
-    // Logic: Calculate date 30 days ago
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const { data, error } = await supabase
-      .from('internships')
-      .select('*')
-      .eq('status', 'approved')
-      .gte('created_at', thirtyDaysAgo.toISOString()) // Only show last 30 days
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      toast.error("Error fetching opportunities");
-    } else {
-      setInterns(data || []);
+    try {
+      setLoading(true);
+      // console.log("Fetching internships and jobs from backend...");
+      // console.log("API Base URL:", import.meta.env.VITE_API_BASE_URL);
+      const response = await API.get('/api/internships-jobs-all');
+      // console.log("Received response:", response.job.data);
+      setInterns(response.data.job);
     }
-    setLoading(false);
-  };
+    catch (error) {
+      console.log("ERROR FULL:", error);
+      console.log("ERROR RESPONSE:", error.response);
+      console.log("ERROR MESSAGE:", error.message);
+      toast.error("Live feed interrupted. Try again.");
+    }
+    finally {
+      setLoading(false);
+    }
 
-  useEffect(() => { fetchInterns(); }, []);
+  }
+
+  useEffect(() => {
+    fetchInterns();
+  }, []);
+
 
   const timeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -135,7 +139,7 @@ function InternshipCompany() {
                 </div>
 
                 {/* Details Footer */}
-                <div className={`pt-6 border-t ${darkMode?"border-white/20":"border-slate-200"} space-y-3`}>
+                <div className={`pt-6 border-t ${darkMode ? "border-white/20" : "border-slate-200"} space-y-3`}>
                   <div className="flex items-center justify-between text-xs font-medium">
                     <div className="flex items-center gap-2 opacity-60"><MapPin size={14} /> {job.location}</div>
                     <div className="flex items-center gap-2 text-[#3DDC84] font-bold"><IndianRupee size={14} /> {job.stipend}</div>

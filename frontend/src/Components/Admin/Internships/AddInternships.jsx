@@ -8,9 +8,10 @@ import API from '../../../API.js';
 export default function AddInternships() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const [loading, setLoading] = useState(false);
+  const { uid } = JSON.parse(localStorage.getItem('uplify_user')) || {};
   const [form, setForm] = useState({
     title: '', company: '', location: '', stipend: '',
-    type: '', job_type: '', link: '', source_type: 'on-uplify', skills: '',
+    type: 'Remote', job_type: '', link: '', source_type: 'on-uplify', skills: '', uid: uid ? uid.toString():''
   });
 
   const handleChange = (e) => {
@@ -24,11 +25,13 @@ export default function AddInternships() {
       const res = await API.post("/api/add-internships", form);
       if (res.data.success) {
         toast.success("Opportunity listed successfully!");
-        setForm({ title: '', company: '', location: '', stipend: '', type: '', job_type: '', link: '', source_type: 'on-uplify', skills: '' });
+        setForm({ title: '', company: '', location: '', stipend: '', type: '', job_type: '', link: '', source_type: 'on-uplify', skills: ''});
       }
-    } catch (err) {
+    } 
+    catch (err) {
       toast.error("Error adding internship");
-    } finally {
+    } 
+    finally {
       setLoading(false);
     }
   };

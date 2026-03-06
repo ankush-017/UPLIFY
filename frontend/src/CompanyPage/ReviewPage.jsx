@@ -7,6 +7,7 @@ import {
   Cpu,
   SoapDispenserDroplet
 } from 'lucide-react';
+import API from '../API'
 
 function ReviewPage() {
   const { user } = useSelector((state) => state.auth);
@@ -19,18 +20,32 @@ function ReviewPage() {
     if (user?.uid) fetchInternships();
   }, [user?.uid]);
 
+  // const fetchInternships = async () => {
+  //   setLoading(true);
+  //   const { data, error } = await supabase
+  //     .from('internships')
+  //     .select('*')
+  //     .eq('uid', user.uid)
+  //     .eq('status', 'pending')
+  //     .order('created_at', { ascending: false });
+
+  //   if (error) console.error(error);
+  //   else setInternships(data || []);
+  //   setLoading(false);
+  // };
+
   const fetchInternships = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('internships')
-      .select('*')
-      .eq('uid', user.uid)
-      .eq('status', 'pending')
-      .order('created_at', { ascending: false });
-
-    if (error) console.error(error);
-    else setInternships(data || []);
-    setLoading(false);
+    try {
+      const res = await API.get('/api/internships-jobs-all/pending');
+      if (res.data.success) setInternships(res.data.internships || []);
+    } 
+    catch (error) {
+      toast.error("Failed to Load !");
+    } 
+    finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (id) => {

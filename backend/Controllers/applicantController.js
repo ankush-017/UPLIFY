@@ -10,22 +10,22 @@ export const deleteApplicantController = async (req, res) => {
       .eq("id", id);
 
     if (error) {
-      return res.status(400).json({
+      return res.status(400).send({
         success: false,
         message: error.message
       });
     }
-    res.status(200).json({
+    res.status(200).send({
       success: true,
       message: "Applicant deleted successfully"
     });
 
   } 
   catch (err) {
-    res.status(500).json({
+    res.status(500).send({
       success: false,
       message: "Server error"
     });
   }
-  
+
 };

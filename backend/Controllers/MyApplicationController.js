@@ -76,7 +76,7 @@ export const applyJobController = async (req, res) => {
           linkedin: form.linkedin,
           github: form.github,
           portfolio: form.portfolio,
-          cover_letter: form.message,
+          cover_letter: form.cover_letter,
           resume_url: resumeUrl
         }
       ]);
@@ -96,7 +96,7 @@ export const applyJobController = async (req, res) => {
 
   } 
   catch (err) {
-    
+
     return res.status(500).json({
       success: false,
       message: "Server error"

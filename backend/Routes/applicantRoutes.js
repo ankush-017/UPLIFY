@@ -1,5 +1,5 @@
 import express from 'express'
-import { deleteApplicantController } from '../Controllers/applicantController';
+import { deleteApplicantController } from '../Controllers/applicantController.js';
 
 const router = express.Router();
 

@@ -20,20 +20,6 @@ function ReviewPage() {
     if (user?.uid) fetchInternships();
   }, [user?.uid]);
 
-  // const fetchInternships = async () => {
-  //   setLoading(true);
-  //   const { data, error } = await supabase
-  //     .from('internships')
-  //     .select('*')
-  //     .eq('uid', user.uid)
-  //     .eq('status', 'pending')
-  //     .order('created_at', { ascending: false });
-
-  //   if (error) console.error(error);
-  //   else setInternships(data || []);
-  //   setLoading(false);
-  // };
-
   const fetchInternships = async () => {
     setLoading(true);
     try {

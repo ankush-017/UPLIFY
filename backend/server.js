@@ -9,7 +9,7 @@ import ResourcesRoutes from './Routes/ResourcesRoutes.js';
 import MyApplicationRoutes from './Routes/MyApplicationRoutes.js';
 import BlogsRoutes from './Routes/BlogsRoutes.js';
 import CommunityRoutes from './Routes/CommunityRoutes.js';
-import applicantRoutes from './Routes/applicantRoutes.js'
+import applicantRoutes from "./Routes/applicantRoutes.js"
 
 dotenv.config();
 

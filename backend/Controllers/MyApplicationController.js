@@ -45,7 +45,7 @@ export const applyJobController = async (req, res) => {
     const { data: existing, error: checkError } = await supabase
       .from("applyapplications")
       .select("internship_id")
-      .eq("uuid", uid)
+      .eq("uid", uid)
       .eq("internship_id", jobId);
 
     if (checkError) {

@@ -33,12 +33,28 @@ export const applyJobController = async (req, res) => {
 
   try {
     const { form, resumeUrl, jobId, uid } = req.body;
-    // check existing application
-    const { data: existing } = await supabase
+
+    if (!form || !resumeUrl || !jobId || !uid) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields"
+      });
+    }
+
+    // check if user already applied
+    const { data: existing, error: checkError } = await supabase
       .from("applyapplications")
-      .select("*")
-      .eq("uid", uid)
+      .select("internship_id")
+      .eq("uuid", uid)
       .eq("internship_id", jobId);
+
+    if (checkError) {
+      console.error("CHECK ERROR:", checkError);
+      return res.status(500).json({
+        success: false,
+        message: "Database error"
+      });
+    }
 
     if (existing && existing.length > 0) {
       return res.status(400).json({
@@ -47,35 +63,44 @@ export const applyJobController = async (req, res) => {
       });
     }
 
-    const { error } = await supabase
+    // insert application
+    const { error: insertError } = await supabase
       .from("applyapplications")
       .insert([
         {
-          ...form,
-          resume_url: resumeUrl,
           internship_id: jobId,
-          uid
+          uid: uid,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          linkedin: form.linkedin,
+          github: form.github,
+          portfolio: form.portfolio,
+          cover_letter: form.message,
+          resume_url: resumeUrl
         }
       ]);
 
-    if (error) {
+    if (insertError) {
+      console.error("INSERT ERROR:", insertError);
       return res.status(500).json({
         success: false,
         message: "Submission failed"
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Application submitted successfully"
     });
 
   } 
   catch (err) {
-    res.status(500).json({
+    
+    return res.status(500).json({
       success: false,
       message: "Server error"
     });
-  }
 
+  }
 };

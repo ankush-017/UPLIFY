@@ -1,5 +1,5 @@
 import express from 'express';
-import { approveInternshipController, deleteInternshipOrJobController, getAllInternshipsAndJobsController, getPendingInternshipsController, getSingleInternshipController, postInternshipOrJobController, rejectInternshipController, updateInternshipController } from '../Controllers/InternshipAndJobController.js';
+import { approveInternshipController, deleteInternshipOrJobController, getAllInternshipsAndJobsController, getApprovedJobController, getPendingInternshipsController, getSingleInternshipController, postInternshipOrJobController, rejectInternshipController, updateInternshipController } from '../Controllers/InternshipAndJobController.js';
 
 const router = express.Router();
 

@@ -5,7 +5,6 @@ import { toast } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { useSelector } from "react-redux";
-import { applyInternBG } from "../../../assets/image.js";
 import API from '../../../API.js';
 import {
   FileText, User, Mail, Phone, Linkedin, Github,
@@ -86,6 +85,7 @@ export default function ApplicationForm() {
       });
 
       if (res.data.success) {
+        // console.log(res.data.url);
         return res.data.url;
       }
       else {

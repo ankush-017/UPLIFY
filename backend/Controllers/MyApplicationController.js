@@ -32,13 +32,13 @@ export const MyApplicationController = async (req, res) => {
 export const applyJobController = async (req, res) => {
 
   try {
-    const { form, resumeUrl, internshipId, uid } = req.body;
+    const { form, resumeUrl, jobId, uid } = req.body;
     // check existing application
     const { data: existing } = await supabase
       .from("applyapplications")
       .select("*")
       .eq("uid", uid)
-      .eq("internship_id", internshipId);
+      .eq("internship_id", jobId);
 
     if (existing && existing.length > 0) {
       return res.status(400).json({
@@ -53,7 +53,7 @@ export const applyJobController = async (req, res) => {
         {
           ...form,
           resume_url: resumeUrl,
-          internship_id: internshipId,
+          internship_id: jobId,
           uid
         }
       ]);

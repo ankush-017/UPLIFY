@@ -1,10 +1,6 @@
 import express from 'express';
-import multer from 'multer';
-
 import { GetPostLikes,GetCommunityPosts,getComments,toggleLike, addComment, uploadImagePost, createPost} from '../Controllers/CommunityController.js';
-
-
-const upload = multer({ storage: multer.memoryStorage() });
+import {upload} from '../Middlewares/upload.js';
 
 const router = express.Router();
 

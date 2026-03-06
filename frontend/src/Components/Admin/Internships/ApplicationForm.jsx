@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { useSelector } from "react-redux";
 import { applyInternBG } from "../../../assets/image.js";
+import API from '../../../API.js';
 import {
   FileText, User, Mail, Phone, Linkedin, Github,
   Globe, Send, CheckCircle, ShieldCheck,
@@ -14,7 +15,8 @@ import {
 import Seo from "../../Seo.jsx";
 
 export default function ApplicationForm() {
-  const { id: internshipId } = useParams();
+
+  const { id: jobId } = useParams();
   const navigate = useNavigate();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -25,7 +27,7 @@ export default function ApplicationForm() {
   const [form, setForm] = useState({
     name: "", email: "", phone: "", linkedin: "",
     github: "", portfolio: "", cover_letter: "",
-    internship_id: "", uid: "",
+    jobId: "", uid: "",
   });
 
   const [resumeFile, setResumeFile] = useState(null);
@@ -33,58 +35,106 @@ export default function ApplicationForm() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
+
     const fetchInternshipDetails = async () => {
       try {
         setDataLoading(true);
-        const { data, error } = await supabase
-          .from("internships")
-          .select("title, company, id, location, stipend, type, skills")
-          .eq("id", internshipId)
-          .single();
-
-        if (error) throw error;
-        setInternshipData(data);
-      } catch (error) {
-        console.error("Error fetching:", error.message);
+        const res = await API.get(`/api/job-single/one-job/${jobId}`);
+        if (res.data.success) {
+          setInternshipData(res.data.data);
+        }
+        else {
+          toast.error("Failed to load internship details");
+        }
+      }
+      catch (err) {
+        console.error("Fetch error:", err);
         toast.error("Could not load internship details.");
-      } finally {
+      }
+      finally {
         setDataLoading(false);
       }
     };
-    if (internshipId) fetchInternshipDetails();
-  }, [internshipId]);
+    if (jobId) {
+      fetchInternshipDetails();
+    }
+
+  }, [jobId]);
 
   useEffect(() => {
-    if (user && internshipId) {
-      setForm((prev) => ({ ...prev, uid: user.uid, internship_id: internshipId }));
+    if (user && jobId) {
+      setForm((prev) => ({ ...prev, uid: user.uid, internship_id: jobId }));
     }
-  }, [user, internshipId]);
+  }, [user, jobId]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
   const handleResumeChange = (e) => setResumeFile(e.target.files[0]);
 
   const uploadResume = async () => {
-    if (!resumeFile) { toast.error("Please upload your resume."); return null; }
-    const fileExt = resumeFile.name.split(".").pop();
-    const fileName = `${Date.now()}.${fileExt}`;
-    const filePath = `resumes/${fileName}`;
-    const { error } = await supabase.storage.from("uplify-resumes").upload(filePath, resumeFile);
-    if (error) { toast.error("File upload failed."); return null; }
-    const { data: publicData } = supabase.storage.from("uplify-resumes").getPublicUrl(filePath);
-    return publicData?.publicUrl || null;
+
+    if (!resumeFile) {
+      toast.error("Please upload your resume.");
+      return null;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("resume", resumeFile);
+      const res = await API.post("/api/resume/upload-resume", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      if (res.data.success) {
+        return res.data.url;
+      }
+      else {
+        toast.error("Upload failed");
+        return null;
+      }
+    }
+    catch (err) {
+      console.error(err);
+      toast.error("File upload failed");
+      return null;
+    }
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     setLoading(true);
-    const { data: existing } = await supabase.from("applyapplications").select("*").eq("uid", user.uid).eq("internship_id", internshipId);
-    if (existing?.length > 0) { toast.error("Application already submitted!"); setLoading(false); return; }
-    const resumeUrl = await uploadResume();
-    if (!resumeUrl) { setLoading(false); return; }
-    const { error } = await supabase.from("applyapplications").insert([{ ...form, resume_url: resumeUrl, internship_id: internshipId, uid: user.uid }]);
-    setLoading(false);
-    if (error) { toast.error("Submission failed"); }
-    else { setSubmitted(true); setTimeout(() => navigate('/'), 3000); }
+
+    try {
+      const resumeUrl = await uploadResume();
+      if (!resumeUrl) {
+        setLoading(false);
+        return;
+      }
+      const res = await API.post("/api/myapplications/apply", {
+        form,
+        resumeUrl,
+        jobId,
+        uid: user.uid
+      });
+      if (res.data.success) {
+        setSubmitted(true);
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      } 
+      else {
+        toast.error(res.data.message);
+      }
+    } 
+    catch (err) {
+      console.error(err);
+      toast.error("Submission failed");
+    } 
+    finally {
+      setLoading(false);
+    }
+
   };
 
   const inputFields = [

@@ -10,6 +10,7 @@ import MyApplicationRoutes from './Routes/MyApplicationRoutes.js';
 import BlogsRoutes from './Routes/BlogsRoutes.js';
 import CommunityRoutes from './Routes/CommunityRoutes.js';
 import applicantRoutes from "./Routes/applicantRoutes.js"
+import resumeRoutes from './Routes/resumeRoutes.js'
 
 dotenv.config();
 
@@ -35,7 +36,8 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', authRoutes);
-app.use('/api/applicants',applicantRoutes)
+app.use('/api/applicants',applicantRoutes);
+app.use('/api/resume', resumeRoutes);
 app.use('/api/resources', ResourcesRoutes);
 app.use('/api/internships-jobs-all', JobAndInternshipRoutes);
 app.use('/api/internship-jobs-delete', JobAndInternshipRoutes);

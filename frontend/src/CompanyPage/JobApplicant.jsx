@@ -6,6 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Mail, Phone, Linkedin, Github, Globe, FileText, Sparkles, Target, ShieldCheck, Loader2, ChevronRight, MessageSquare, Lock, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import API from '../API';
 
 function JobApplicant() {
   const darkMode = useSelector((state) => state.theme.darkMode);

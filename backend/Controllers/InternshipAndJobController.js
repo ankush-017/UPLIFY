@@ -34,7 +34,7 @@ export const getAllInternshipsAndJobsController = async (req, res) => {
 
 export const postInternshipOrJobController = async (req, res) => {
 
-  const { title, company, location, stipend, type, job_type, link, source_type, skills, uid} = req.body;
+  const { title, company, location, stipend, type, job_type, link, source_type, skills, uid } = req.body;
 
   try {
     const { data, error } = await supabase
@@ -276,6 +276,40 @@ export const rejectInternshipController = async (req, res) => {
   catch (error) {
     console.log(error);
 
+    res.status(500).send({
+      success: false,
+      message: "Server error"
+    });
+  }
+
+};
+
+
+export const getApprovedJobController = async (req, res) => {
+
+  try {
+    const { uid } = req.params;
+    
+    const { data, error } = await supabase
+      .from("internships")
+      .select("*")
+      .eq("uid", uid)
+      .eq("status", "approved")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server error"
+      });
+      return;
+    }
+    res.status(200).send({
+      success: true,
+      jobList: data
+    })
+  }
+  catch (err) {
     res.status(500).send({
       success: false,
       message: "Server error"

@@ -11,10 +11,10 @@ function JobApplicant() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [aiScores, setAiScores] = useState({}); 
+  const [aiScores, setAiScores] = useState({});
   const [skillsRequired, setSkillsRequired] = useState([]);
   const [scoreVisibility, setScoreVisibility] = useState({});
 
@@ -38,23 +38,28 @@ function JobApplicant() {
     fetchApplicants();
   }, [id]);
 
-  // --- DELETE FUNCTION ---
+  // Delete Aplicant
   const handleDeleteApplicant = async (applicantId) => {
+
     if (!window.confirm("Are you sure you want to remove this applicant?")) return;
-    
+
     try {
-      const { error } = await supabase
-        .from('applyapplications')
-        .delete()
-        .eq('id', applicantId);
+      const res = await API.delete(`/api/applicants/delete-applicant/${applicantId}`);
+      if (res.data.success) {
+        toast.success("Applicant removed from grid");
+        setApplicants(prev =>
+          prev.filter(app => app.id !== applicantId)
+        );
+      } 
+      else {
+        toast.error(res.data.message);
+      }
+    }
+    catch (err) {
 
-      if (error) throw error;
-
-      toast.success("Applicant removed from grid");
-      setApplicants(prev => prev.filter(app => app.id !== applicantId));
-    } catch (err) {
       toast.error("Purge failed");
       console.error(err);
+
     }
   };
 
@@ -69,7 +74,8 @@ function JobApplicant() {
       setAiScores(prev => ({ ...prev, [applicantId]: { ...result, loading: false } }));
       setScoreVisibility(prev => ({ ...prev, [applicantId]: true }));
       toast.success("Intelligence report ready");
-    } catch (err) {
+    }
+    catch (err) {
       toast.error('Evaluation failed');
       setAiScores(prev => ({ ...prev, [applicantId]: { loading: false } }));
     }
@@ -83,14 +89,14 @@ function JobApplicant() {
 
   return (
     <div className={`min-h-screen pt-4 md:pt-8 pb-20 px-4 md:px-6 transition-all duration-700 selection:bg-[#3DDC84] ${darkMode ? 'bg-[#020617] text-white' : 'bg-[#F8FAFC] text-slate-900'}`}>
-      
+
       {/* --- BACKGROUND ACCENTS --- */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className={`absolute top-0 right-0 w-[300px] md:w-[400px] h-[300px] md:h-[400px] rounded-full blur-[100px] md:blur-[120px] opacity-10 ${darkMode ? 'bg-[#3DDC84]' : 'bg-[#3DDC84]'}`} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        
+
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-10 gap-4">
           <div className="space-y-2">
@@ -142,13 +148,13 @@ function JobApplicant() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       className={`group relative flex flex-col lg:grid lg:grid-cols-12 items-start lg:items-center p-5 md:px-8 md:py-5 rounded-2xl border transition-all duration-300 gap-4 lg:gap-0
-                        ${darkMode 
-                          ? "bg-[#151d2b] border-white/5 hover:border-[#3DDC84]/30" 
+                        ${darkMode
+                          ? "bg-[#151d2b] border-white/5 hover:border-[#3DDC84]/30"
                           : "bg-white border-slate-100 shadow-sm hover:border-[#3DDC84]"
                         }`}
                     >
                       {/* --- DELETE BUTTON (TOP RIGHT) --- */}
-                      <button 
+                      <button
                         onClick={() => handleDeleteApplicant(applicant.id)}
                         className="absolute top-[-15px] right-0 p-2 rounded-lg text-red-500 hover:bg-red-500/10 transition-all opacity-60 hover:opacity-100 z-20"
                         title="Remove Candidate"
@@ -164,15 +170,15 @@ function JobApplicant() {
                         <div className="min-w-0 pr-10 md:pr-6">
                           <h2 className={`text-sm md:text-lg font-black tracking-tight leading-none uppercase italic truncate`}>{applicant.name}</h2>
                           <div className="flex gap-3 mt-2 opacity-60 md:opacity-30 group-hover:opacity-100 transition-opacity">
-                             {[
-                                { icon: Linkedin, url: applicant.linkedin },
-                                { icon: Github, url: applicant.github },
-                                { icon: Globe, url: applicant.portfolio }
-                             ].map((link, i) => link.url && (
-                                <a key={i} href={link.url} target="_blank" rel="noreferrer">
-                                   <link.icon size={15} className="hover:text-[#3DDC84]" />
-                                </a>
-                             ))}
+                            {[
+                              { icon: Linkedin, url: applicant.linkedin },
+                              { icon: Github, url: applicant.github },
+                              { icon: Globe, url: applicant.portfolio }
+                            ].map((link, i) => link.url && (
+                              <a key={i} href={link.url} target="_blank" rel="noreferrer">
+                                <link.icon size={15} className="hover:text-[#3DDC84]" />
+                              </a>
+                            ))}
                           </div>
                         </div>
                       </div>
@@ -187,19 +193,19 @@ function JobApplicant() {
                       <div className="col-span-3 flex lg:justify-center w-full">
                         {ai.loading ? (
                           <div className="flex items-center gap-2">
-                             <Loader2 size={12} className="animate-spin text-[#3DDC84]" />
-                             <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Analyzing...</span>
+                            <Loader2 size={12} className="animate-spin text-[#3DDC84]" />
+                            <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Analyzing...</span>
                           </div>
                         ) : ai.score ? (
                           <div className="flex items-center justify-between lg:justify-center w-full gap-6 bg-white/5 p-3 rounded-xl lg:bg-transparent lg:p-0 border lg:border-none border-white/5">
-                             <div className="flex items-baseline gap-1">
-                               <span className="text-3xl font-black text-[#3DDC84] leading-none">{ai.score}</span>
-                               <span className="text-[10px] font-black opacity-30">% Match</span>
-                             </div>
-                             <button onClick={() => setScoreVisibility(p => ({...p, [applicant.id]: !p[applicant.id]}))}
-                               className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 hover:opacity-100 underline decoration-[#3DDC84]">
-                               {visible ? 'Hide report' : 'Insights'}
-                             </button>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-3xl font-black text-[#3DDC84] leading-none">{ai.score}</span>
+                              <span className="text-[10px] font-black opacity-30">% Match</span>
+                            </div>
+                            <button onClick={() => setScoreVisibility(p => ({ ...p, [applicant.id]: !p[applicant.id] }))}
+                              className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 hover:opacity-100 underline decoration-[#3DDC84]">
+                              {visible ? 'Hide report' : 'Insights'}
+                            </button>
                           </div>
                         ) : (
                           <button onClick={() => evaluateResume(applicant.resume_url, applicant.id)}
@@ -216,9 +222,9 @@ function JobApplicant() {
                             <MessageSquare size={18} className="text-slate-400" />
                           </button>
                           <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover/chat:opacity-100 transition-all pointer-events-none">
-                             <span className="whitespace-nowrap bg-[#3DDC84] text-[#002D15] text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-widest flex items-center gap-1 shadow-lg">
-                                <Lock size={8} /> Coming Soon
-                             </span>
+                            <span className="whitespace-nowrap bg-[#3DDC84] text-[#002D15] text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-widest flex items-center gap-1 shadow-lg">
+                              <Lock size={8} /> Coming Soon
+                            </span>
                           </div>
                         </div>
 
@@ -233,8 +239,8 @@ function JobApplicant() {
                         {visible && ai.explanation && (
                           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="col-span-12 w-full overflow-hidden">
                             <div className={`mt-4 p-5 rounded-2xl border ${darkMode ? 'bg-black/40 border-white/5' : 'bg-slate-50 border-slate-200'}`}>
-                               <p className="text-[11px] md:text-xs leading-relaxed font-medium opacity-80" 
-                                  dangerouslySetInnerHTML={{ __html: `💡 Logic: ${highlightKeywords(ai.explanation, skillsRequired)}` }} />
+                              <p className="text-[11px] md:text-xs leading-relaxed font-medium opacity-80"
+                                dangerouslySetInnerHTML={{ __html: `💡 Logic: ${highlightKeywords(ai.explanation, skillsRequired)}` }} />
                             </div>
                           </motion.div>
                         )}
@@ -247,7 +253,7 @@ function JobApplicant() {
                             <ChevronRight size={12} className="group-open:rotate-90 transition-transform" /> Candidate Statement
                           </summary>
                           <p className={`mt-3 p-5 rounded-xl text-[11px] leading-relaxed font-medium ${darkMode ? 'bg-white/5 text-slate-300' : 'bg-slate-100/50 text-slate-600 border border-slate-100'}`}>
-                             {applicant.cover_letter}
+                            {applicant.cover_letter}
                           </p>
                         </details>
                       </div>

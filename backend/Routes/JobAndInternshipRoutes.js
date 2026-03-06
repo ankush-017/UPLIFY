@@ -6,6 +6,7 @@ const router = express.Router();
 router.get('/', getAllInternshipsAndJobsController);
 router.post('/', postInternshipOrJobController);
 router.get('/pending', getPendingInternshipsController);
+router.get('/approved-job/:uid', getApprovedJobController);
 router.put('/approve/:id', approveInternshipController);
 router.delete('/reject/:id', rejectInternshipController);
 router.delete('/job/:id', deleteInternshipOrJobController);

@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../superbaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector } from 'react-redux';
-import { 
-  FileUser, IndianRupee, MapPin, Pencil, Trash2, 
-  Clock, Terminal, Globe2, BarChart3, Target, 
+import {
+  FileUser, IndianRupee, MapPin, Pencil, Trash2,
+  Clock, Terminal, Globe2, BarChart3, Target,
   Activity, LayoutGrid, Plus
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Spin, Tooltip } from 'antd';
+import API from '../API';
 
 function TrackApplication() {
   const [applications, setApplications] = useState([]);
@@ -17,33 +18,54 @@ function TrackApplication() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const navigate = useNavigate();
   const { uid } = JSON.parse(localStorage.getItem('uplify_user')) || {};
-  const uidString = uid ? uid.toString() : '';
+  // const uidString = uid ? uid.toString() : '';
 
   const fetchApplications = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('internships')
-      .select('*')
-      .eq('uid', uidString)
-      .eq('status', 'approved')
-      .order('created_at', { ascending: false });
+    try {
+      setLoading(true);
 
-    if (error) {
-      toast.error('Network sync failed');
-    } else {
-      setApplications(data || []);
+      const res = await API.get(`/api/internships-jobs-all/approved-job/${uid}`)
+      if (res.data.success) {
+        setApplications(res.data.jobList);
+      } 
+      else {
+        toast.error("Failed to fetch applications");
+      }
     }
-    setLoading(false);
+    catch (error) {
+      toast.error("Failed to load, Try again");
+      console.error(error);
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (id) => {
+
     if (!window.confirm("Confirm: Permanent removal of this node?")) return;
-    const { error } = await supabase.from('internships').delete().eq('id', id);
-    if (error) {
-      toast.error('Purge failed');
-    } else {
-      toast.success('Node removed successfully');
-      setApplications(prev => prev.filter(app => app.id !== id));
+
+    try {
+      setLoading(true);
+      const res = await API.delete(`/api/internship-jobs-delete/job/${id}`);
+
+      if (res.data.success) {
+        toast.success("List removed successfully");
+        setApplications(prev =>
+          prev.filter(app => app.id !== id)
+        );
+
+      } 
+      else {
+        toast.error(res.data.message || "Purge failed");
+      }
+    } 
+    catch (err) {
+      console.error(err);
+      toast.error("Network error while deleting");
+    } 
+    finally {
+      setLoading(false);
     }
   };
 
@@ -59,22 +81,19 @@ function TrackApplication() {
 
   return (
     <div className={`min-h-screen transition-all duration-1000 selection:bg-[#3DDC84] selection:text-[#002D15] ${darkMode ? 'bg-[#020617] text-slate-200' : 'bg-[#F9FAFB] text-slate-900'}`}>
-      
+
       {/* --- BEST-IN-CLASS BACKGROUND --- */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        
+
         {/* Subtle Noise Texture */}
         <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }} />
       </div>
 
       <div className="max-w-[1440px] mx-auto px-6 lg:px-12 relative z-10">
-        
+
         {/* --- COMPACT PROFESSIONAL HEADER --- */}
         <header className="pt-10 pb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div className="space-y-2">
-            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 text-[#3DDC84] font-black text-[9px] uppercase tracking-[0.4em]">
-              <Terminal size={14} /> Intelligence Console
-            </motion.div>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-none italic uppercase">
               Monitor <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0bb457] to-[#99bd13] not-italic">Your Listing.</span>
             </h1>
@@ -91,7 +110,7 @@ function TrackApplication() {
                 <p className="text-lg font-mono font-bold text-[#3DDC84]">{applications.length}</p>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => navigate('/company/post-internship')}
               className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-[#3DDC84] text-[#002D15] font-black text-xs uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-emerald-500/20"
             >
@@ -109,8 +128,8 @@ function TrackApplication() {
             </div>
           ) : applications.length === 0 ? (
             <div className={`py-40 text-center border-2 border-dashed rounded-[3rem] ${darkMode ? 'border-white/5' : 'border-slate-200'}`}>
-               <Target size={48} className="mx-auto mb-4 opacity-10" />
-               <h3 className="text-sm font-black opacity-30 uppercase tracking-widest">Sector Empty: Deploy New Listing</h3>
+              <Target size={48} className="mx-auto mb-4 opacity-10" />
+              <h3 className="text-sm font-black opacity-30 uppercase tracking-widest">Sector Empty: Deploy New Listing</h3>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -131,8 +150,8 @@ function TrackApplication() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.98 }}
                     className={`group relative grid grid-cols-1 lg:grid-cols-12 items-center px-8 lg:px-12 py-6 rounded-[2rem] border transition-all duration-300 backdrop-blur-sm
-                      ${darkMode 
-                        ? "bg-white/[0.03] border-white/5 hover:border-[#3DDC84]/30 hover:bg-white/[0.06]" 
+                      ${darkMode
+                        ? "bg-white/[0.03] border-white/5 hover:border-[#3DDC84]/30 hover:bg-white/[0.06]"
                         : "bg-white border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl hover:border-[#3DDC84]"
                       }`}
                   >
@@ -159,11 +178,11 @@ function TrackApplication() {
                     <div className="col-span-1 lg:col-span-4 mb-6 lg:mb-0 pr-4">
                       <div className="flex flex-wrap gap-1.5">
                         {job.skills?.split(',').map((skill, i) => (
-                          <span 
-                            key={i} 
+                          <span
+                            key={i}
                             className={`text-[9px] font-black px-2.5 py-1 rounded-md border transition-all
-                              ${darkMode 
-                                ? 'bg-white/5 border-white/5 text-slate-400 group-hover:text-[#3DDC84]' 
+                              ${darkMode
+                                ? 'bg-white/5 border-white/5 text-slate-400 group-hover:text-[#3DDC84]'
                                 : 'bg-slate-50 border-slate-100 text-slate-500 group-hover:bg-white group-hover:border-[#3DDC84]'}`}
                           >
                             {skill.trim()}
@@ -192,7 +211,7 @@ function TrackApplication() {
                           </Link>
                         </Tooltip>
                       )}
-                      
+
                       <Tooltip title="Update Listing">
                         <Link
                           to={`/company/update-internship/${job.id}`}

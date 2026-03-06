@@ -3,7 +3,7 @@ import { applyJobController, MyApplicationController } from '../Controllers/MyAp
 
 const router = express.Router();
 
+router.post('/apply/form', applyJobController)
 router.get('/:uid', MyApplicationController);
-router.post('/apply', applyJobController)
 
 export default router;

@@ -111,7 +111,7 @@ export default function ApplicationForm() {
         setLoading(false);
         return;
       }
-      const res = await API.post("/api/myapplications/apply", {
+      const res = await API.post("/api/myapplications/apply/form", {
         form,
         resumeUrl,
         jobId,

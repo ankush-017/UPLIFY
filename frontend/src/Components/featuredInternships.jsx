@@ -57,7 +57,7 @@ export default function FeaturedInternships() {
       window.open(link, "_blank");
     } 
     else {
-      navigate(`/user/internships/u/apply-internships/${job_id}`);
+      navigate(`/user/job-internships/u/apply-internships/${job_id}`);
     }
   }
 
